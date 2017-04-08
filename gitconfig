@@ -49,6 +49,7 @@
   pager = less -F -X
   editor = /usr/bin/vim
   precomposeunicode = true
+  showUntrackedFiles = all
 [commit]
   template = ~/.gitmessage
 [fetch]
