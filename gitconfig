@@ -50,7 +50,6 @@
   editor = /usr/bin/vim
   precomposeunicode = true
 [commit]
-  gpgSign = true
   template = ~/.gitmessage
 [fetch]
   prune = true
