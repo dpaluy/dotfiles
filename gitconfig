@@ -26,6 +26,8 @@
   co = checkout
   dc = diff --cached
   df = diff
+  glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+
   lg = log -p
   lol = log --graph --decorate --pretty=oneline --abbrev-commit
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
@@ -35,7 +37,10 @@
   ign = ls-files -o -i --exclude-standard
 
   pf = push --force-with-lease
+  prune = fetch --prune
   st = status -sb
+  stash-all = stash save --include-untracked
+  undo = reset --soft HEAD^
 [branch]
   autosetuprebase = always
 [core]
@@ -45,6 +50,7 @@
   editor = /usr/bin/vim
   precomposeunicode = true
 [commit]
+  gpgSign = true
   template = ~/.gitmessage
 [fetch]
   prune = true

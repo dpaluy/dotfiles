@@ -48,6 +48,7 @@ alias aar="rails generate active_admin:resource"
 # Heroku
 alias heroku_prod="gp production master && heroku run rake db:migrate --remote production && heroku restart --remote production"
 alias heroku_stg="gp staging master && heroku run rake db:migrate --remote staging && heroku restart --remote staging"
+alias heroku_qa="gp qa master && heroku run rake db:migrate --remote qa && heroku restart --remote qa"
 
 # Include custom aliases
 [[ -f ~/.aliases.local ]] && source ~/.aliases.local
