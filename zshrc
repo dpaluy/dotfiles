@@ -96,3 +96,5 @@ export PATH=".git/safe/../../bin:$PATH"
 # aliases
 [[ -f ~/.aliases ]] && source ~/.aliases
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
