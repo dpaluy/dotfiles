@@ -62,3 +62,6 @@
   autosquash = true
 [include]
   path = ~/.gitconfig.local
+[init]
+  templateDir = /Users/david/.git-templates/git-secrets
+
