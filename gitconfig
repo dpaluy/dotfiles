@@ -41,6 +41,7 @@
   st = status -sb
   stash-all = stash save --include-untracked
   undo = reset --soft HEAD^
+  cleanup = !git branch --merged origin/master | egrep -v \"(^\\*|master|production|staging|dev)\" | xargs git branch -d
 [branch]
   autosetuprebase = always
 [core]
