@@ -9,22 +9,22 @@ begin
   require 'awesome_print'
 
   module AwesomePrint
-    class Formatter
-
-      private
-
+    Formatter.prepend(Module.new do
       def awesome_self(object, type)
-        if @options[:raw] && object.instance_variables.any?
-          awesome_object(object)
-        elsif object.respond_to?(:to_hash)
-          awesome_hash(object.to_hash)
+        if type == :string && @options[:string_limit] && object.inspect.to_s.length > @options[:string_limit]
+          colorize(object.inspect.to_s[0..@options[:string_limit]] + "...", type)
         else
-          colorize(object.inspect.to_s, type)
+          super(object, type)
         end
       end
-    end
+    end)
   end
 
+  AwesomePrint.defaults = {
+    string_limit: 80,
+    indent: 2,
+    multiline: true
+  }
   AwesomePrint.pry!
 rescue
   puts 'There is no Awesome Print gem installed'
