@@ -85,6 +85,11 @@ if which rbenv &>/dev/null ; then
   eval "$(rbenv init - --no-rehash)"
 fi
 
+export MAKE="make --jobs 8"
+
+# disable autoupdates
+export HOMEBREW_NO_AUTO_UPDATE=1
+
 export PATH="$HOME/.bin:$PATH"
 
 # mkdir .git/safe in the root of repositories you trust
@@ -98,3 +103,6 @@ export PATH=".git/safe/../../bin:$PATH"
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Added by serverless binary installer
+export PATH="$HOME/.serverless/bin:$PATH"

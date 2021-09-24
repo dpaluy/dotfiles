@@ -2,7 +2,10 @@
 Pry.editor = 'vi'
 
 # === PROMPT ===
-Pry.prompt = [ ->(obj, nest_level, _) { "✎ " }, ->(obj, nest_level, _) { "#{' ' * nest_level}  " } ]
+Pry.config.prompt = Pry::Prompt.new(
+  'custom', 'my custom prompt',
+  [ ->(obj, nest_level, _) { "✎ " }, ->(obj, nest_level, _) { "#{' ' * nest_level}  " } ]
+)
 
 # === COLORS ===
 unless ENV['PRY_BW']
@@ -13,9 +16,8 @@ unless ENV['PRY_BW']
 end
 
 # === HISTORY ===
-Pry.config.history.should_save = true
 Pry::Commands.command /^$/, "repeat last command" do
-  _pry_.run_command Pry.history.to_a.last
+  pry_instance.run_command Pry.history.to_a.last
 end
 
 if defined?(PryByebug)
@@ -23,6 +25,11 @@ if defined?(PryByebug)
   Pry.commands.alias_command 's', 'step'
   Pry.commands.alias_command 'n', 'next'
   Pry.commands.alias_command 'f', 'finish'
+  Pry.commands.alias_command 'ff', 'frame'
+  Pry.commands.alias_command 'u', 'up'
+  Pry.commands.alias_command 'd', 'down'
+  Pry.commands.alias_command 'b', 'break'
+  Pry.commands.alias_command 'w', 'whereami'
 end
 
 # === Listing config ===
@@ -37,28 +44,10 @@ Pry.config.ls.protected_method_color = :yellow
 Pry.config.ls.private_method_color = :bright_black
 
 begin
-  require 'awesome_print'
-
-  module AwesomePrint
-    Formatter.prepend(Module.new do
-      def awesome_self(object, type)
-        if type == :string && @options[:string_limit] && object.inspect.to_s.length > @options[:string_limit]
-          colorize(object.inspect.to_s[0..@options[:string_limit]] + "...", type)
-        else
-          super(object, type)
-        end
-      end
-    end)
-  end
-
-  AwesomePrint.defaults = {
-    string_limit: 80,
-    indent: 2,
-    multiline: true
-  }
-  AwesomePrint.pry!
+  require "amazing_print"
+  AmazingPrint.pry!
 rescue
-  puts 'gem install awesome_print  # <-- highly recommended'
+  puts 'gem install amazing_print  # <-- highly recommended'
 end
 
 # === CUSTOM COMMANDS ===
@@ -90,3 +79,4 @@ end
 Pry.hooks.add_hook :after_read, :hack_utf8 do |str, _|
   str.force_encoding('utf-8')
 end
+
