@@ -2,6 +2,7 @@
   # templatedir = ~/.git_template
 [push]
   default = simple
+  autoSetupRemote = true
 [color]
   ui = 1
 [color "branch"]
@@ -42,6 +43,7 @@
   stash-all = stash save --include-untracked
   undo = reset --soft HEAD^
   cleanup = !git branch --merged origin/master | egrep -v \"(^\\*|master|production|staging|dev)\" | xargs git branch -d
+	gone = ! git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D
 [branch]
   autosetuprebase = always
 [core]
@@ -65,3 +67,4 @@
   path = ~/.gitconfig.local
 [init]
   templateDir = /Users/david/.git-templates/git-secrets
+	defaultBranch = master
