@@ -46,6 +46,7 @@ alias migrate="rake db:migrate db:rollback && rake db:migrate"
 alias s="rspec"
 alias aar="rails generate active_admin:resource"
 alias component="rails generate view_component"
+alias routes="bin/rails routes | fzf -e"
 
 # Heroku
 alias heroku_prod="gp production master && heroku run rake db:migrate --remote production && heroku restart --remote production"

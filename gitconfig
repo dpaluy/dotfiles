@@ -60,11 +60,12 @@
 [help]
   autocorrect = 1
 [merge]
-  # ff = only
+  ff = only
 [rebase]
   autosquash = true
 [include]
   path = ~/.gitconfig.local
 [init]
   templateDir = /Users/david/.git-templates/git-secrets
-	defaultBranch = master
+  defaultBranch = master
+
