@@ -48,15 +48,17 @@
   autosetuprebase = always
 [core]
   excludesfile = ~/.gitignore
-  autocrlf = input
-  pager = less -F -X
+	autocrlf = false
+  # pager = less -F -X
+  pager = delta
   editor = /usr/bin/vim
   precomposeunicode = true
   showUntrackedFiles = all
+	eol = lf
 [commit]
   template = ~/.gitmessage
 [fetch]
-  prune = true
+	prune = true
 [help]
   autocorrect = 1
 [merge]
@@ -68,4 +70,25 @@
 [init]
   templateDir = /Users/david/.git-templates/git-secrets
   defaultBranch = master
+[interactive]
+  diffFilter = delta --color-only
+[delta]
+  line-numbers = true
+  navigate = true    # use n and N to move between diff sections
 
+  # delta detects terminal colors automatically; set one of these to disable auto-detection
+  # dark = true
+  # light = true
+[merge]
+  conflictstyle = diff3
+[diff]
+  colorMoved = default
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+
+[digg "rails_credentials"]
+  textconv = rails encrypted:show
+  cachetextconv = false

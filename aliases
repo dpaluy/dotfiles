@@ -19,19 +19,17 @@ alias ffind="grep -rnw `pwd` -e"
 alias ctags="`brew --prefix`/bin/ctags"
 
 # git
-alias gci="git pull --rebase -i"
 alias gwc='git whatchanged -p --abbrev-commit --pretty=medium'
 alias ghistory='git log --follow -p'
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr     ) %C(bold blue)<%an>%Creset' --abbrev-commit"
 alias gst='git status -sb'
-alias gcd='git checkout develop'
-alias undeployed='git fetch --multiple production origin && git log production/master..origin/master'
+alias g='git'
+alias gcm='git commit -m'
+alias gcam='git commit -a -m'
+alias gcad='git commit -a --amend'
 
 # Bundler
-alias b="bundle"
-
-# Bower
-alias bower='noglob bower'
+alias bundle="MAKE='make --jobs $(nproc)' bundle"
 
 # Tests and Specs
 alias t="ruby -I test"
@@ -48,10 +46,16 @@ alias aar="rails generate active_admin:resource"
 alias component="rails generate view_component"
 alias routes="bin/rails routes | fzf -e"
 
+# Tools
+alias wtf3000="lsof -i tcp:3000"
+
 # Heroku
 alias heroku_prod="gp production master && heroku run rake db:migrate --remote production && heroku restart --remote production"
 alias heroku_stg="gp staging master && heroku run rake db:migrate --remote staging && heroku restart --remote staging"
 alias heroku_qa="gp qa master && heroku run rake db:migrate --remote qa && heroku restart --remote qa"
+
+# AI
+alias tm="taskmaster"
 
 # Pyenv
 # alias brew='env PATH=${PATH//$(pyenv root)\/shims:/} brew'

@@ -5,6 +5,7 @@
 require "irb/completion"
 # require "irb/ext/save-history"
 require "rubygems"
+require "irb/command"
 
 begin
   require "amazing_print"
@@ -39,13 +40,12 @@ class String
 end
 
 if defined?(Rails)
-  module Rails::ConsoleMethods
-    alias r reload!
-
-    def cuser
+  class UserRails < IRB::Command::Base
+    def execute(arg)
       User.first
     end
   end
+  IRB::Command.register(:cuser, UserRails)
 
   project_name = File.basename(Dir.pwd).cyan
   environment = ENV['RAILS_ENV'][0..2].red

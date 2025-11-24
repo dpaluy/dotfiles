@@ -89,6 +89,11 @@ export PATH="$HOME/.bin:$PATH"
 # mkdir .git/safe in the root of repositories you trust
 export PATH=".git/safe/../../bin:$PATH"
 
+# export GEM_HOME=$HOME/.gem
+# export PATH=$HOME/.gem/bin:$PATH
+export GEM_HOME="$HOME/.asdf/installs/ruby/$(asdf current ruby | tail -1 | awk '{print $2}')/lib/ruby/gems"
+export GEM_PATH="$GEM_HOME"
+
 if command -v ngrok &>/dev/null; then
   eval "$(ngrok completion)"
 fi
@@ -105,8 +110,6 @@ fi
 # Added by serverless binary installer
 export PATH="$HOME/.serverless/bin:$PATH"
 
-# . /opt/homebrew/opt/asdf/libexec/asdf.sh
-
 # bun completions
 [ -s "/Users/david/.bun/_bun" ] && source "/Users/david/.bun/_bun"
 
@@ -117,6 +120,8 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # AI Config
 [[ -f ~/.ai_config.local ]] && source ~/.ai_config.local
 
+# Custom Keys
+[[ -f ~/.keys.local ]] && source ~/.keys.local
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -136,3 +141,33 @@ unset __conda_setup
 
 # Created by `pipx` on 2024-05-13 03:25:10
 export PATH="$PATH:/Users/david/.local/bin"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/david/.cache/lm-studio/bin"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/david/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/david/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/david/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/david/google-cloud-sdk/completion.zsh.inc'; fi
+
+asdf_version() {
+  asdf current "$1" | awk '{print $2}' | tail -n1
+}
+
+export PATH="$(asdf where ruby)/bin:$PATH"
+export GEM_PATH=/Users/david/.asdf/installs/ruby/$(asdf_version ruby)/lib/ruby/gems/3.4.0
+
+export PATH="$HOME/.asdf/installs/golang/$(asdf_version golang)/bin:$PATH"
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+
+# opencode
+export PATH=/Users/david/.opencode/bin:$PATH
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"
