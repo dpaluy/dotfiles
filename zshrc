@@ -83,8 +83,8 @@ export GPG_TTY=$(tty)
 
 # disable autoupdates
 export HOMEBREW_NO_AUTO_UPDATE=1
-
 export PATH="$HOME/.bin:$PATH"
+export PATH="$HOME/.asdf/shims:$PATH"
 
 # mkdir .git/safe in the root of repositories you trust
 export PATH=".git/safe/../../bin:$PATH"
@@ -162,12 +162,11 @@ export GEM_PATH=/Users/david/.asdf/installs/ruby/$(asdf_version ruby)/lib/ruby/g
 
 export PATH="$HOME/.asdf/installs/golang/$(asdf_version golang)/bin:$PATH"
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
-
-
 # opencode
 export PATH=/Users/david/.opencode/bin:$PATH
 
 . "$HOME/.atuin/bin/env"
 
 eval "$(atuin init zsh)"
+
+alias claude="/Users/david/.claude/local/claude"
