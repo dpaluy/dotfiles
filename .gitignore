@@ -1,10 +1,16 @@
-# macOS
-.DS_Store
+# Ignore local/private files that might be accidentally placed here
+*.local
 
-# Editors
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
 *.swp
 *.swo
 *~
+.idea/
+.vscode/
 
 # IDE tooling
 .ruby-lsp/

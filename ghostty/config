@@ -1,21 +1,34 @@
 # Ghostty Configuration
 # https://ghostty.org/docs/config
+# Machine-specific settings (font, size, theme) go in ~/.local/dotfiles/ghostty.local
 
 # ------------------------------------------------------------------------------
-# Font
+# Theme
 # ------------------------------------------------------------------------------
 
-font-family = "MartianMono Nerd Font"
-font-size = 14
+# Omarchy theme integration (Linux) - only loads if file exists
+config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
+
+# Override with specific theme (uncomment to use)
+# theme = "Catppuccin Mocha"
+
+# ------------------------------------------------------------------------------
+# Font (override in ~/.local/dotfiles/ghostty.local)
+# ------------------------------------------------------------------------------
+
+# Default font - override in local config for machine-specific preference
+# macOS default: MartianMono Nerd Font, size 14
+# Linux default: JetBrainsMono Nerd Font, size 9
+font-family = "JetBrainsMono Nerd Font"
+font-size = 12
 
 # ------------------------------------------------------------------------------
 # Window
 # ------------------------------------------------------------------------------
 
-working-directory = home
-window-padding-x = 10
-window-padding-y = 10
-window-decoration = true
+window-padding-x = 12
+window-padding-y = 12
+confirm-close-surface = false
 
 # ------------------------------------------------------------------------------
 # Cursor
@@ -29,12 +42,13 @@ cursor-style-blink = false
 # ------------------------------------------------------------------------------
 
 shell-integration = zsh
+shell-integration-features = no-cursor,ssh-env
 
 # ------------------------------------------------------------------------------
-# Keybindings
+# Keybindings - macOS (Cmd/Super key)
+# Comment out this section on Linux
 # ------------------------------------------------------------------------------
 
-# Use Super (Cmd) for common shortcuts
 keybind = super+c=copy_to_clipboard
 keybind = super+v=paste_from_clipboard
 keybind = super+t=new_tab
@@ -53,8 +67,24 @@ keybind = super+d=new_split:right
 keybind = super+shift+d=new_split:down
 
 # ------------------------------------------------------------------------------
-# Local overrides
-# Include machine-specific settings from local file
+# Keybindings - Linux (uncomment on Linux, comment macOS section above)
 # ------------------------------------------------------------------------------
 
-# config-file = ~/.local/dotfiles/ghostty.local
+# keybind = shift+insert=paste_from_clipboard
+# keybind = control+insert=copy_to_clipboard
+# keybind = super+control+shift+alt+arrow_down=resize_split:down,100
+# keybind = super+control+shift+alt+arrow_up=resize_split:up,100
+# keybind = super+control+shift+alt+arrow_left=resize_split:left,100
+# keybind = super+control+shift+alt+arrow_right=resize_split:right,100
+
+# ------------------------------------------------------------------------------
+# Mouse
+# ------------------------------------------------------------------------------
+
+mouse-scroll-multiplier = 1.0
+
+# ------------------------------------------------------------------------------
+# Local overrides (font, size, theme preferences)
+# ------------------------------------------------------------------------------
+
+config-file = ?"~/.local/dotfiles/ghostty.local"

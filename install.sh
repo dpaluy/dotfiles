@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Dotfiles Installation Script for macOS
-# Creates symlinks and sets up development environment
+# Cross-Platform Dotfiles Installation Script
+# Works on macOS and Linux (Debian/Ubuntu, Fedora, Arch)
 #
 
 set -e
@@ -50,8 +50,8 @@ create_symlink() {
     local dest="$2"
 
     if [[ ! -e "$src" ]]; then
-        error "Source $src does not exist"
-        return 1
+        warn "Source $src does not exist, skipping"
+        return 0
     fi
 
     backup_if_exists "$dest"
@@ -95,17 +95,30 @@ ask_yes_no() {
     [[ "$answer" =~ ^[Yy] ]]
 }
 
-echo ""
-echo "=================================="
-echo "  macOS Dotfiles Installation"
-echo "=================================="
-echo ""
+# Detect OS
+detect_os() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "macos"
+    elif [[ -f /etc/arch-release ]]; then
+        echo "arch"
+    elif [[ -f /etc/debian_version ]]; then
+        echo "debian"
+    elif [[ -f /etc/fedora-release ]]; then
+        echo "fedora"
+    else
+        echo "unknown"
+    fi
+}
 
-# Check if we're on macOS
-if [[ "$OSTYPE" != "darwin"* ]]; then
-    error "This script is designed for macOS only"
-    exit 1
-fi
+OS=$(detect_os)
+
+echo ""
+echo "=================================="
+echo "  Cross-Platform Dotfiles Setup"
+echo "=================================="
+echo ""
+info "Detected OS: $OS"
+echo ""
 
 # Check if we're in the right directory
 if [[ ! -d "$DOTFILES_DIR/zsh" ]]; then
@@ -113,55 +126,74 @@ if [[ ! -d "$DOTFILES_DIR/zsh" ]]; then
     exit 1
 fi
 
-# ------------------------------------------------------------------------------
-# Install Homebrew
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# macOS: Homebrew
+# ==============================================================================
 
-header "Homebrew"
+if [[ "$OS" == "macos" ]]; then
+    header "Homebrew"
 
-if ! command -v brew &> /dev/null; then
-    info "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if ! command -v brew &> /dev/null; then
+        info "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    # Add Homebrew to PATH for this session
-    if [[ -f "/opt/homebrew/bin/brew" ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -f "/usr/local/bin/brew" ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
+        # Add Homebrew to PATH for this session
+        if [[ -f "/opt/homebrew/bin/brew" ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        elif [[ -f "/usr/local/bin/brew" ]]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
+
+        info "Homebrew installed"
+    else
+        info "Homebrew already installed"
     fi
 
-    info "Homebrew installed"
-else
-    info "Homebrew already installed"
+    header "Brew Packages"
+    info "Installing packages from Brewfile..."
+    brew bundle --file="$DOTFILES_DIR/Brewfile"
+
+    header "Optional Tools"
+    if ask_yes_no "Install Raycast?"; then
+        info "Installing Raycast..."
+        brew install --cask raycast
+    else
+        info "Skipping Raycast"
+    fi
 fi
 
-# ------------------------------------------------------------------------------
-# Install packages from Brewfile
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# Linux: Package Installation
+# ==============================================================================
 
-header "Brew Packages"
+if [[ "$OS" != "macos" && "$OS" != "unknown" ]]; then
+    header "System Packages"
 
-info "Installing packages from Brewfile..."
-brew bundle --file="$DOTFILES_DIR/Brewfile"
+    # Install zsh if not present
+    if ! command -v zsh &> /dev/null; then
+        info "Installing zsh..."
+        case "$OS" in
+            arch)   sudo pacman -S --noconfirm zsh ;;
+            debian) sudo apt update && sudo apt install -y zsh ;;
+            fedora) sudo dnf install -y zsh ;;
+        esac
+        info "Zsh installed"
+    else
+        info "Zsh already installed"
+    fi
 
-# ------------------------------------------------------------------------------
-# Optional: Raycast
-# ------------------------------------------------------------------------------
-
-header "Optional Tools"
-
-if ask_yes_no "Install Raycast?"; then
-    info "Installing Raycast..."
-    brew install --cask raycast
-    INSTALL_RAYCAST=true
-else
-    info "Skipping Raycast"
-    INSTALL_RAYCAST=false
+    # Install common tools
+    info "Installing common tools (git, curl, etc.)..."
+    case "$OS" in
+        arch)   sudo pacman -S --noconfirm git curl neovim fzf fd ripgrep ;;
+        debian) sudo apt install -y git curl neovim fzf fd-find ripgrep ;;
+        fedora) sudo dnf install -y git curl neovim fzf fd-find ripgrep ;;
+    esac
 fi
 
-# ------------------------------------------------------------------------------
-# Install Oh My Zsh
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# Oh My Zsh
+# ==============================================================================
 
 header "Oh My Zsh"
 
@@ -186,23 +218,29 @@ if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
     git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
-# ------------------------------------------------------------------------------
-# Install Atuin
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# Atuin (Shell History)
+# ==============================================================================
 
 header "Atuin"
 
 if ! command -v atuin &> /dev/null; then
     info "Installing Atuin..."
-    brew install atuin
+    case "$OS" in
+        macos)  brew install atuin ;;
+        arch)   sudo pacman -S --noconfirm atuin ;;
+        debian) curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh ;;
+        fedora) sudo dnf install -y atuin ;;
+        *)      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh ;;
+    esac
     info "Atuin installed"
 else
     info "Atuin already installed"
 fi
 
-# ------------------------------------------------------------------------------
-# Create symlinks
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# Create Symlinks
+# ==============================================================================
 
 header "Symlinks"
 
@@ -223,8 +261,10 @@ create_symlink "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
 # Starship
 create_symlink "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
-# Tmux
-create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+# Tmux (if exists)
+if [[ -f "$DOTFILES_DIR/tmux/tmux.conf" ]]; then
+    create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+fi
 
 # Claude Code
 mkdir -p "$HOME/.claude"
@@ -234,18 +274,18 @@ create_symlink "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 mkdir -p "$HOME/.codex"
 create_symlink "$DOTFILES_DIR/codex/config.toml" "$HOME/.codex/config.toml"
 
-# Raycast (if selected)
-if [[ "$INSTALL_RAYCAST" == true ]] && [[ -d "$DOTFILES_DIR/raycast" ]]; then
-    # Raycast scripts are usually in ~/Library/Application Support/Raycast/
-    RAYCAST_DIR="$HOME/Library/Application Support/Raycast"
-    if [[ -d "$RAYCAST_DIR" ]]; then
-        info "Raycast directory found, scripts can be imported via Raycast app"
+# Linux-only: Hyprland
+if [[ "$OS" != "macos" ]]; then
+    if [[ -d "$DOTFILES_DIR/hypr" ]]; then
+        mkdir -p "$HOME/.config/hypr"
+        create_symlink "$DOTFILES_DIR/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf"
+        create_symlink "$DOTFILES_DIR/hypr/bindings.conf" "$HOME/.config/hypr/bindings.conf"
     fi
 fi
 
-# ------------------------------------------------------------------------------
-# Create local dotfiles directory and templates
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# Local Configuration Directory
+# ==============================================================================
 
 header "Local Configuration"
 
@@ -258,7 +298,7 @@ create_local_template "$DOTFILES_LOCAL/functions.local" "Local shell functions"
 create_local_template "$DOTFILES_LOCAL/exports.local" "Local environment variables (API keys, tokens, etc.)"
 create_local_template "$DOTFILES_LOCAL/path.local" "Local PATH additions"
 create_local_template "$DOTFILES_LOCAL/gitconfig.local" "Local git config (name, email, signing keys)"
-create_local_template "$DOTFILES_LOCAL/ghostty.local" "Local ghostty overrides"
+create_local_template "$DOTFILES_LOCAL/ghostty.local" "Local ghostty overrides (font, size, theme)"
 create_local_template "$DOTFILES_LOCAL/ai.local" "Local AI tool settings (API keys, model preferences)"
 create_local_template "$DOTFILES_LOCAL/rails.local" "Local Rails/Ruby settings"
 
@@ -276,26 +316,28 @@ if [[ $(wc -l < "$DOTFILES_LOCAL/gitconfig.local") -le 3 ]]; then
 EOF
 fi
 
-# ------------------------------------------------------------------------------
-# Set up LazyVim
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# macOS: LazyVim Setup
+# ==============================================================================
 
-header "Neovim / LazyVim"
+if [[ "$OS" == "macos" ]]; then
+    header "Neovim / LazyVim"
 
-if [[ ! -d "$HOME/.config/nvim" ]]; then
-    if ask_yes_no "Install LazyVim starter configuration?" "y"; then
-        info "Cloning LazyVim starter..."
-        git clone https://github.com/LazyVim/starter "$HOME/.config/nvim"
-        rm -rf "$HOME/.config/nvim/.git"
-        info "LazyVim installed. Run 'nvim' to complete setup."
+    if [[ ! -d "$HOME/.config/nvim" ]]; then
+        if ask_yes_no "Install LazyVim starter configuration?" "y"; then
+            info "Cloning LazyVim starter..."
+            git clone https://github.com/LazyVim/starter "$HOME/.config/nvim"
+            rm -rf "$HOME/.config/nvim/.git"
+            info "LazyVim installed. Run 'nvim' to complete setup."
+        fi
+    else
+        info "Neovim config already exists at ~/.config/nvim"
     fi
-else
-    info "Neovim config already exists at ~/.config/nvim"
 fi
 
-# ------------------------------------------------------------------------------
-# Set zsh as default shell
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# Default Shell
+# ==============================================================================
 
 header "Default Shell"
 
@@ -308,26 +350,23 @@ else
     info "Zsh is already the default shell"
 fi
 
-# ------------------------------------------------------------------------------
-# Initialize tools
-# ------------------------------------------------------------------------------
+# ==============================================================================
+# macOS: Tool Initialization
+# ==============================================================================
 
-header "Tool Initialization"
+if [[ "$OS" == "macos" ]]; then
+    header "Tool Initialization"
 
-# Initialize fzf if not already done
-if [[ ! -f "$HOME/.fzf.zsh" ]]; then
-    info "Setting up fzf..."
-    "$(brew --prefix)"/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish
+    # Initialize fzf if not already done
+    if [[ ! -f "$HOME/.fzf.zsh" ]]; then
+        info "Setting up fzf..."
+        "$(brew --prefix)"/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish
+    fi
 fi
 
-# Initialize atuin if not already done
-if [[ ! -d "$HOME/.atuin" ]]; then
-    info "Atuin will be initialized on first shell start"
-fi
-
-# ------------------------------------------------------------------------------
+# ==============================================================================
 # Done
-# ------------------------------------------------------------------------------
+# ==============================================================================
 
 echo ""
 echo "=================================="
@@ -345,6 +384,11 @@ fi
 echo ""
 info "Next steps:"
 echo "  1. Edit $DOTFILES_LOCAL/gitconfig.local with your name/email"
-echo "  2. Run 'nvim' to complete LazyVim setup"
-echo "  3. Run 'atuin login' or 'atuin register' for shell history sync"
+if [[ "$OS" == "macos" ]]; then
+    echo "  2. Run 'nvim' to complete LazyVim setup"
+    echo "  3. Run 'atuin login' or 'atuin register' for shell history sync"
+else
+    echo "  2. Run 'atuin login' or 'atuin register' for shell history sync"
+    echo "  3. Edit ghostty config keybindings (comment macOS, uncomment Linux)"
+fi
 echo ""

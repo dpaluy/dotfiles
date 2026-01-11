@@ -17,14 +17,13 @@ alias -- -='cd -'
 # ------------------------------------------------------------------------------
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS: use -G for color, or use GNU ls if installed via brew
+    # macOS: use -G for color, or GNU ls if installed via brew
     if command -v gls &> /dev/null; then
         alias ls='gls --color=auto'
     else
         alias ls='ls -G'
     fi
 else
-    # Linux: --color=auto works natively
     alias ls='ls --color=auto'
 fi
 
@@ -77,7 +76,7 @@ alias mkdir='mkdir -pv'
 alias df='df -h'
 alias du='du -h'
 
-# Linux-only: free command doesn't exist on macOS
+# free command only exists on Linux
 if [[ "$OSTYPE" == "linux"* ]]; then
     alias free='free -h'
 fi
