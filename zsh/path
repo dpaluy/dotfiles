@@ -2,7 +2,7 @@
 # Add machine-specific paths to ~/.local/dotfiles/path.local
 
 # ------------------------------------------------------------------------------
-# Helper functions to add to PATH (avoids duplicates)
+# Helper function to add to PATH (avoids duplicates)
 # ------------------------------------------------------------------------------
 
 path_prepend() {
@@ -18,13 +18,27 @@ path_append() {
 }
 
 # ------------------------------------------------------------------------------
-# Homebrew (must be first for Apple Silicon)
+# Homebrew (macOS only)
 # ------------------------------------------------------------------------------
 
-if [[ -f "/opt/homebrew/bin/brew" ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [[ -f "/usr/local/bin/brew" ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [[ -f "/opt/homebrew/bin/brew" ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f "/usr/local/bin/brew" ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+fi
+
+# ------------------------------------------------------------------------------
+# Linuxbrew (Linux only, if installed)
+# ------------------------------------------------------------------------------
+
+if [[ "$OSTYPE" == "linux"* ]]; then
+    if [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    elif [[ -f "$HOME/.linuxbrew/bin/brew" ]]; then
+        eval "$("$HOME/.linuxbrew/bin/brew" shellenv)"
+    fi
 fi
 
 # ------------------------------------------------------------------------------
@@ -44,11 +58,11 @@ path_prepend "$HOME/.cargo/bin"
 # Go
 path_prepend "$HOME/go/bin"
 
-# Node.js global
+# Node.js (if using volta or nvm, this may be managed elsewhere)
 path_prepend "$HOME/.npm-global/bin"
 
 # ------------------------------------------------------------------------------
-# Trusted binstubs
+# Trusted binstubs (macOS pattern)
 # mkdir .git/safe in the root of repositories you trust
 # ------------------------------------------------------------------------------
 

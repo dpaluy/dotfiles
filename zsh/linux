@@ -1,0 +1,31 @@
+# Linux-specific configuration
+# This file is only sourced on Linux systems
+
+# ------------------------------------------------------------------------------
+# Clipboard (xclip/xsel integration)
+# ------------------------------------------------------------------------------
+
+if command -v xclip &> /dev/null; then
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
+elif command -v xsel &> /dev/null; then
+    alias pbcopy='xsel --clipboard --input'
+    alias pbpaste='xsel --clipboard --output'
+fi
+
+# ------------------------------------------------------------------------------
+# Open command (like macOS 'open')
+# ------------------------------------------------------------------------------
+
+if command -v xdg-open &> /dev/null; then
+    alias open='xdg-open'
+fi
+
+# ------------------------------------------------------------------------------
+# System monitoring
+# ------------------------------------------------------------------------------
+
+# Top alternative
+if command -v htop &> /dev/null; then
+    alias top='htop'
+fi

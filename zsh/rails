@@ -9,6 +9,13 @@ alias be='bundle exec'
 alias bi='bundle install'
 alias bu='bundle update'
 
+# Cross-platform CPU core count for parallel builds
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export BUNDLE_JOBS=$(sysctl -n hw.ncpu)
+else
+    export BUNDLE_JOBS=$(nproc 2>/dev/null || echo 4)
+fi
+
 # ------------------------------------------------------------------------------
 # Rails
 # ------------------------------------------------------------------------------

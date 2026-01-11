@@ -45,7 +45,13 @@ DOTFILES_LOCAL="$HOME/.local/dotfiles"
 [[ -f "$DOTFILES_DIR/zsh/functions" ]] && source "$DOTFILES_DIR/zsh/functions"
 [[ -f "$DOTFILES_DIR/zsh/ai" ]] && source "$DOTFILES_DIR/zsh/ai"
 [[ -f "$DOTFILES_DIR/zsh/rails" ]] && source "$DOTFILES_DIR/zsh/rails"
-[[ -f "$DOTFILES_DIR/zsh/macos" ]] && source "$DOTFILES_DIR/zsh/macos"
+
+# OS-specific configs
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    [[ -f "$DOTFILES_DIR/zsh/macos" ]] && source "$DOTFILES_DIR/zsh/macos"
+elif [[ "$OSTYPE" == "linux"* ]]; then
+    [[ -f "$DOTFILES_DIR/zsh/linux" ]] && source "$DOTFILES_DIR/zsh/linux"
+fi
 
 # ------------------------------------------------------------------------------
 # Source Local Configs (machine-specific, not version controlled)

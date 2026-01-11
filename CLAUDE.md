@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-macOS dotfiles repository using a public/private configuration split pattern. Public configs are version-controlled here; private configs (API keys, machine-specific settings) go in `~/.local/dotfiles/` and are never committed.
+Cross-platform dotfiles repository (macOS + Linux) using a public/private configuration split pattern. Public configs are version-controlled here; private configs (API keys, machine-specific settings) go in `~/.local/dotfiles/` and are never committed.
 
 ## Commands
 
@@ -15,11 +15,20 @@ macOS dotfiles repository using a public/private configuration split pattern. Pu
 # Test zsh config changes without restarting terminal
 source ~/.zshrc
 
-# Update Homebrew packages
+# Update Homebrew packages (macOS)
 brew bundle --file=~/dotfiles/Brewfile
 ```
 
 ## Architecture
+
+**Cross-Platform Strategy**: OS-specific code uses `$OSTYPE` conditionals:
+```bash
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS specific
+elif [[ "$OSTYPE" == "linux"* ]]; then
+    # Linux specific
+fi
+```
 
 **Symlink Strategy**: `install.sh` symlinks configs to their expected locations:
 - `zsh/zshrc` → `~/.zshrc`
@@ -27,12 +36,15 @@ brew bundle --file=~/dotfiles/Brewfile
 - `ghostty/config` → `~/.config/ghostty/config`
 - `tmux/tmux.conf` → `~/.tmux.conf`
 - `starship/starship.toml` → `~/.config/starship.toml`
+- `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
+- `codex/config.toml` → `~/.codex/config.toml`
 
 **Zsh Loading Order** (`zsh/zshrc`):
 1. Oh My Zsh initialization
-2. Public modules: `zsh/{path,exports,aliases,functions,ai,rails,macos}`
-3. Local overrides: `~/.local/dotfiles/*.local`
-4. Tool initializations: mise, starship, atuin
+2. Public modules: `zsh/{path,exports,aliases,functions,ai,rails}`
+3. OS-specific: `zsh/macos` (darwin) or `zsh/linux` (linux)
+4. Local overrides: `~/.local/dotfiles/*.local`
+5. Tool initializations: mise, starship, atuin
 
 **Public/Private Split**:
 - Public (this repo): Shareable configurations
@@ -42,8 +54,14 @@ brew bundle --file=~/dotfiles/Brewfile
 
 ## Key Design Decisions
 
+- **Single repo** for both macOS and Linux (OS conditionals, not separate repos)
 - **mise** over asdf for version management (faster, simpler)
 - **Oh My Zsh** with z plugin for directory jumping
 - **LazyVim** for neovim configuration (installed separately to ~/.config/nvim)
-- **Delta** as git pager with line numbers
 - **XDG-style paths** for git config (`~/.config/git/`)
+
+## OS-Specific Files
+
+- `zsh/macos` - macOS-only settings (Finder aliases, etc.)
+- `zsh/linux` - Linux-only settings (xclip aliases, xdg-open, etc.)
+- `Brewfile` - macOS Homebrew packages

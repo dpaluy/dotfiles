@@ -13,10 +13,21 @@ alias ~='cd ~'
 alias -- -='cd -'
 
 # ------------------------------------------------------------------------------
-# Listing
+# Listing (cross-platform)
 # ------------------------------------------------------------------------------
 
-alias ls='ls --color=auto'
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: use -G for color, or use GNU ls if installed via brew
+    if command -v gls &> /dev/null; then
+        alias ls='gls --color=auto'
+    else
+        alias ls='ls -G'
+    fi
+else
+    # Linux: --color=auto works natively
+    alias ls='ls --color=auto'
+fi
+
 alias ll='ls -lah'
 alias la='ls -A'
 alias l='ls -CF'
@@ -45,6 +56,7 @@ alias gb='git branch'
 alias gf='git fetch'
 alias gwc='git whatchanged -p --abbrev-commit --pretty=medium'
 alias ghistory='git log --follow -p'
+alias lg='lazygit'
 
 # ------------------------------------------------------------------------------
 # Safety
@@ -64,7 +76,11 @@ alias egrep='egrep --color=auto'
 alias mkdir='mkdir -pv'
 alias df='df -h'
 alias du='du -h'
-alias free='free -h'
+
+# Linux-only: free command doesn't exist on macOS
+if [[ "$OSTYPE" == "linux"* ]]; then
+    alias free='free -h'
+fi
 
 # ------------------------------------------------------------------------------
 # Editor
