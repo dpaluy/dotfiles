@@ -46,11 +46,10 @@ shell-integration-features = no-cursor,ssh-env
 
 # ------------------------------------------------------------------------------
 # Keybindings - macOS (Cmd/Super key)
+# Note: Cmd+C/V are Ghostty defaults on macOS - don't override them
 # Comment out this section on Linux
 # ------------------------------------------------------------------------------
 
-keybind = super+c=copy_to_clipboard
-keybind = super+v=paste_from_clipboard
 keybind = super+t=new_tab
 keybind = super+w=close_surface
 keybind = super+n=new_window
