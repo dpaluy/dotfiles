@@ -1,0 +1,55 @@
+# Path - Public PATH additions
+# Add machine-specific paths to ~/.local/dotfiles/path.local
+
+# ------------------------------------------------------------------------------
+# Helper functions to add to PATH (avoids duplicates)
+# ------------------------------------------------------------------------------
+
+path_prepend() {
+    if [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$1:$PATH"
+    fi
+}
+
+path_append() {
+    if [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$PATH:$1"
+    fi
+}
+
+# ------------------------------------------------------------------------------
+# Homebrew (must be first for Apple Silicon)
+# ------------------------------------------------------------------------------
+
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -f "/usr/local/bin/brew" ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# ------------------------------------------------------------------------------
+# Standard paths
+# ------------------------------------------------------------------------------
+
+path_prepend "$HOME/.local/bin"
+path_prepend "$HOME/bin"
+
+# ------------------------------------------------------------------------------
+# Development tools
+# ------------------------------------------------------------------------------
+
+# Cargo (Rust)
+path_prepend "$HOME/.cargo/bin"
+
+# Go
+path_prepend "$HOME/go/bin"
+
+# Node.js global
+path_prepend "$HOME/.npm-global/bin"
+
+# ------------------------------------------------------------------------------
+# Trusted binstubs
+# mkdir .git/safe in the root of repositories you trust
+# ------------------------------------------------------------------------------
+
+path_prepend ".git/safe/../../bin"

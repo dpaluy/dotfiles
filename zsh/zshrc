@@ -1,0 +1,89 @@
+# ~/.zshrc - Main zsh configuration
+# Managed by ~/dotfile-mac - https://github.com/dpaluy/dotfile-mac
+
+# ------------------------------------------------------------------------------
+# Oh My Zsh Configuration
+# ------------------------------------------------------------------------------
+
+export ZSH="$HOME/.oh-my-zsh"
+
+# Theme - empty because we use Starship prompt
+ZSH_THEME=""
+
+# Plugins
+plugins=(
+    1password
+    gitfast
+    git-extras
+    z
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    fzf
+    history-substring-search
+    docker
+    bundler
+    rails
+)
+
+# Load Oh My Zsh
+[[ -d "$ZSH" ]] && source "$ZSH/oh-my-zsh.sh"
+
+# ------------------------------------------------------------------------------
+# Dotfiles Directories
+# ------------------------------------------------------------------------------
+
+DOTFILES_DIR="$HOME/dotfiles"
+DOTFILES_LOCAL="$HOME/.local/dotfiles"
+
+# ------------------------------------------------------------------------------
+# Source Public Configs
+# ------------------------------------------------------------------------------
+
+[[ -f "$DOTFILES_DIR/zsh/path" ]] && source "$DOTFILES_DIR/zsh/path"
+[[ -f "$DOTFILES_DIR/zsh/exports" ]] && source "$DOTFILES_DIR/zsh/exports"
+[[ -f "$DOTFILES_DIR/zsh/aliases" ]] && source "$DOTFILES_DIR/zsh/aliases"
+[[ -f "$DOTFILES_DIR/zsh/functions" ]] && source "$DOTFILES_DIR/zsh/functions"
+[[ -f "$DOTFILES_DIR/zsh/ai" ]] && source "$DOTFILES_DIR/zsh/ai"
+[[ -f "$DOTFILES_DIR/zsh/rails" ]] && source "$DOTFILES_DIR/zsh/rails"
+[[ -f "$DOTFILES_DIR/zsh/macos" ]] && source "$DOTFILES_DIR/zsh/macos"
+
+# ------------------------------------------------------------------------------
+# Source Local Configs (machine-specific, not version controlled)
+# ------------------------------------------------------------------------------
+
+[[ -f "$DOTFILES_LOCAL/path.local" ]] && source "$DOTFILES_LOCAL/path.local"
+[[ -f "$DOTFILES_LOCAL/exports.local" ]] && source "$DOTFILES_LOCAL/exports.local"
+[[ -f "$DOTFILES_LOCAL/aliases.local" ]] && source "$DOTFILES_LOCAL/aliases.local"
+[[ -f "$DOTFILES_LOCAL/functions.local" ]] && source "$DOTFILES_LOCAL/functions.local"
+[[ -f "$DOTFILES_LOCAL/ai.local" ]] && source "$DOTFILES_LOCAL/ai.local"
+[[ -f "$DOTFILES_LOCAL/rails.local" ]] && source "$DOTFILES_LOCAL/rails.local"
+
+# ------------------------------------------------------------------------------
+# Mise (tool version manager - replaces asdf)
+# ------------------------------------------------------------------------------
+
+if command -v mise &> /dev/null; then
+    eval "$(mise activate zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+# Starship Prompt
+# ------------------------------------------------------------------------------
+
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+# Atuin (shell history)
+# ------------------------------------------------------------------------------
+
+if command -v atuin &> /dev/null; then
+    eval "$(atuin init zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+# FZF
+# ------------------------------------------------------------------------------
+
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh

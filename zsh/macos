@@ -1,0 +1,87 @@
+# macOS - Mac-specific settings and aliases
+# These only work on macOS
+
+# ------------------------------------------------------------------------------
+# System Aliases
+# ------------------------------------------------------------------------------
+
+# Flush DNS cache
+alias flushdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+
+# Show/hide hidden files in Finder
+alias showfiles='defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder'
+alias hidefiles='defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder'
+
+# Show/hide desktop icons
+alias showdesktop='defaults write com.apple.finder CreateDesktop -bool true && killall Finder'
+alias hidedesktop='defaults write com.apple.finder CreateDesktop -bool false && killall Finder'
+
+# Restart Dock and Finder
+alias killdock='killall Dock'
+alias killfinder='killall Finder'
+
+# Lock screen
+alias afk='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
+
+# Empty trash
+alias emptytrash='sudo rm -rf ~/.Trash/*'
+
+# Get macOS software updates
+alias update='sudo softwareupdate -i -a'
+
+# ------------------------------------------------------------------------------
+# Network
+# ------------------------------------------------------------------------------
+
+# Get local IP address
+alias localip="ipconfig getifaddr en0"
+
+# List all network interfaces
+alias ips="ifconfig -a | grep -o 'inet6\\? \\(addr:\\)\\?\\s\\?\\(\\(\\([0-9]\\+\\.\\)\\{3\\}[0-9]\\+\\)\\|[a-fA-F0-9:]\\+\\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+
+# ------------------------------------------------------------------------------
+# Applications
+# ------------------------------------------------------------------------------
+
+# Open current directory in Finder
+alias finder='open -a Finder .'
+
+# Open in various apps
+alias chrome='open -a "Google Chrome"'
+alias safari='open -a Safari'
+
+# ------------------------------------------------------------------------------
+# Process Management
+# ------------------------------------------------------------------------------
+
+# What's using port 3000?
+alias wtf3000="lsof -i tcp:3000"
+
+# CPU and memory hogs
+alias cpu='top -o cpu'
+alias mem='top -o mem'
+
+# ------------------------------------------------------------------------------
+# Clipboard
+# ------------------------------------------------------------------------------
+
+# Copy/paste from command line
+alias pbp='pbpaste'
+alias pbc='pbcopy'
+
+# Copy current directory path
+alias cpwd='pwd | tr -d "\n" | pbcopy'
+
+# ------------------------------------------------------------------------------
+# Homebrew Completions
+# ------------------------------------------------------------------------------
+
+if type brew &>/dev/null; then
+    FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+fi
+
+# ------------------------------------------------------------------------------
+# Enable colored output from ls
+# ------------------------------------------------------------------------------
+
+export CLICOLOR=1

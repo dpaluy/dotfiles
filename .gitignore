@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Editors
+*.swp
+*.swo
+*~
+
+# IDE tooling
+.ruby-lsp/
+.claude/current_task.txt

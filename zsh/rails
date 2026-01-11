@@ -1,0 +1,68 @@
+# Rails/Ruby Aliases
+# Add machine-specific overrides to ~/.local/dotfiles/rails.local
+
+# ------------------------------------------------------------------------------
+# Bundler
+# ------------------------------------------------------------------------------
+
+alias be='bundle exec'
+alias bi='bundle install'
+alias bu='bundle update'
+
+# ------------------------------------------------------------------------------
+# Rails
+# ------------------------------------------------------------------------------
+
+alias rc='bin/rails console'
+alias rs='bin/rails server'
+alias rg='bin/rails generate'
+alias routes='bin/rails routes | fzf -e'
+
+# ------------------------------------------------------------------------------
+# Database
+# ------------------------------------------------------------------------------
+
+alias migrate='bin/rails db:migrate'
+alias rollback='bin/rails db:rollback'
+alias dbseed='bin/rails db:seed'
+alias dbreset='bin/rails db:drop db:create db:migrate db:seed'
+
+# ------------------------------------------------------------------------------
+# Testing - RSpec
+# ------------------------------------------------------------------------------
+
+alias rspec='bundle exec rspec'
+alias sp='bundle exec rspec'
+alias spf='bundle exec rspec --fail-fast'
+
+# ------------------------------------------------------------------------------
+# Testing - Minitest
+# ------------------------------------------------------------------------------
+
+alias mt='bin/rails test'
+alias mta='bin/rails test:all'
+alias mts='bin/rails test:system'
+alias mtf='bin/rails test --fail-fast'
+
+# ------------------------------------------------------------------------------
+# Rake (noglob prevents zsh glob expansion)
+# ------------------------------------------------------------------------------
+
+alias rake='noglob bundle exec rake'
+
+# ------------------------------------------------------------------------------
+# Logs
+# ------------------------------------------------------------------------------
+
+alias devlog='tail -f log/development.log'
+alias testlog='tail -f log/test.log'
+alias prodlog='tail -f log/production.log'
+
+# ------------------------------------------------------------------------------
+# Generators
+# ------------------------------------------------------------------------------
+
+alias scaffold='bin/rails generate scaffold'
+alias model='bin/rails generate model'
+alias controller='bin/rails generate controller'
+alias migration='bin/rails generate migration'

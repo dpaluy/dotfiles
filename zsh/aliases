@@ -1,0 +1,102 @@
+# Aliases - Public aliases
+# Add machine-specific aliases to ~/.local/dotfiles/aliases.local
+
+# ------------------------------------------------------------------------------
+# Navigation
+# ------------------------------------------------------------------------------
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ~='cd ~'
+alias -- -='cd -'
+
+# ------------------------------------------------------------------------------
+# Listing
+# ------------------------------------------------------------------------------
+
+alias ls='ls --color=auto'
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -CF'
+alias lt='ls -lahtr'  # Sort by time, newest last
+
+# ------------------------------------------------------------------------------
+# Git
+# ------------------------------------------------------------------------------
+
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gcam='git commit -am'
+alias gcad='git commit -a --amend'
+alias gco='git checkout'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gp='git push'
+alias gl='git pull'
+alias gs='git status'
+alias gst='git status -sb'
+alias gb='git branch'
+alias gf='git fetch'
+alias gwc='git whatchanged -p --abbrev-commit --pretty=medium'
+alias ghistory='git log --follow -p'
+
+# ------------------------------------------------------------------------------
+# Safety
+# ------------------------------------------------------------------------------
+
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
+
+# ------------------------------------------------------------------------------
+# Utilities
+# ------------------------------------------------------------------------------
+
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias mkdir='mkdir -pv'
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+
+# ------------------------------------------------------------------------------
+# Editor
+# ------------------------------------------------------------------------------
+
+alias v='nvim'
+alias vi='nvim'
+alias vim='nvim'
+
+# ------------------------------------------------------------------------------
+# Misc
+# ------------------------------------------------------------------------------
+
+alias c='clear'
+alias h='history'
+alias j='jobs -l'
+alias path='echo -e ${PATH//:/\\n}'
+alias reload='source ~/.zshrc'
+alias tlf='tail -f'
+
+# ------------------------------------------------------------------------------
+# Global Pipe Aliases (zsh only)
+# ------------------------------------------------------------------------------
+
+alias -g G='| grep'
+alias -g L='| wc -l'
+alias -g H='| head'
+alias -g T='| tail'
+
+# ------------------------------------------------------------------------------
+# Debug
+# ------------------------------------------------------------------------------
+
+alias wtf3000='lsof -i tcp:3000'
+alias wtf='lsof -i tcp:'  # usage: wtf3000 or wtf 8080

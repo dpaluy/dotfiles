@@ -1,0 +1,117 @@
+# Git Configuration - Public settings
+# Machine-specific settings go in ~/.local/dotfiles/gitconfig.local
+# See https://git-scm.com/docs/git-config
+
+# ------------------------------------------------------------------------------
+# Include local config (for work email, signing keys, etc.)
+# ------------------------------------------------------------------------------
+
+[include]
+	path = ~/.local/dotfiles/gitconfig.local
+
+# ------------------------------------------------------------------------------
+# User (override in local config if needed)
+# ------------------------------------------------------------------------------
+
+# [user] name and email configured in ~/.local/dotfiles/gitconfig.local
+
+# ------------------------------------------------------------------------------
+# Core
+# ------------------------------------------------------------------------------
+
+[init]
+	defaultBranch = master
+
+[core]
+	excludesfile = ~/.config/git/ignore
+
+# ------------------------------------------------------------------------------
+# Aliases
+# ------------------------------------------------------------------------------
+
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	last = log -1 HEAD
+	unstage = reset HEAD --
+	amend = commit --amend --no-edit
+	lg = log --graph --oneline --decorate --all
+	# Pretty log with graph
+	glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+	# Safe force push
+	pf = push --force-with-lease
+	# Branch cleanup
+	cleanup = !git branch --merged origin/master | grep -Ev '(^\\*|master|main|production|staging)' | xargs -r git branch -d
+	gone = !git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D
+	# Stash including untracked
+	stash-all = stash save --include-untracked
+	# Undo last commit (keep changes)
+	undo = reset --soft HEAD^
+	# List branches by recent activity
+	branches = for-each-ref --sort=-committerdate --format='%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)' refs/remotes
+
+# ------------------------------------------------------------------------------
+# Pull / Push / Fetch
+# ------------------------------------------------------------------------------
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[fetch]
+	prune = true
+
+# ------------------------------------------------------------------------------
+# Diff
+# ------------------------------------------------------------------------------
+
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+
+# ------------------------------------------------------------------------------
+# Commit
+# ------------------------------------------------------------------------------
+
+[commit]
+	verbose = true
+
+# ------------------------------------------------------------------------------
+# Branch / Tag
+# ------------------------------------------------------------------------------
+
+[column]
+	ui = auto
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = -version:refname
+
+# ------------------------------------------------------------------------------
+# Merge / Rebase
+# ------------------------------------------------------------------------------
+
+[rerere]
+	enabled = true
+	autoupdate = true
+
+[merge]
+	conflictstyle = diff3
+
+[rebase]
+	autoStash = true
+	autosquash = true
+
+# ------------------------------------------------------------------------------
+# Help
+# ------------------------------------------------------------------------------
+
+[help]
+	autocorrect = 1

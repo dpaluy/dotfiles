@@ -1,0 +1,19 @@
+# Git Local Configuration Example
+# Copy this to ~/.local/dotfiles/gitconfig.local and fill in your details
+# This file is NOT version controlled
+
+[user]
+    name = Your Name
+    email = your.email@example.com
+    # signingkey = YOUR_GPG_KEY_ID
+
+# Uncomment to enable GPG signing
+# [commit]
+#     gpgsign = true
+
+# [gpg]
+#     program = gpg
+
+# Work-specific settings (example)
+# [includeIf "gitdir:~/work/"]
+#     path = ~/.config/git/work.config
