@@ -18,6 +18,7 @@ brew "gh"                   # GitHub CLI
 brew "neovim"               # Editor
 brew "tmux"                 # Terminal multiplexer
 brew "mise"                 # Version manager (replaces asdf)
+brew "uv"                   # Fast Python package installer (uses mise Python)
 brew "lazygit"              # Terminal UI for git
 
 # ------------------------------------------------------------------------------
