@@ -74,3 +74,11 @@ fi
 
 # Get local IP (Linux version)
 alias localip="ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -1"
+
+# ------------------------------------------------------------------------------
+# Trash (macOS compatibility - requires trash-cli: pacman -S trash-cli)
+# ------------------------------------------------------------------------------
+
+if command -v trash-put &> /dev/null; then
+    alias trash='trash-put'
+fi

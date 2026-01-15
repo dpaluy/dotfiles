@@ -42,6 +42,7 @@ brew "atuin"                # Shell history
 
 brew "jq"                   # JSON processor
 brew "gum"                  # Shell script UI components
+brew "trash"                # Move files to trash (safer rm)
 
 # ------------------------------------------------------------------------------
 # Languages (dependencies for mise-installed languages)
