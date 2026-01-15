@@ -18,8 +18,7 @@ export FORCE_AUTO_BACKGROUND_TASKS=1
 export CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR=1
 
 export ENABLE_LSP_TOOL=1
-export ENABLE_EXPERIMENTAL_MCP_CLI=true
-# export ENABLE_TOOL_SEARCH=true
+export ENABLE_TOOL_SEARCH=true
 
 # ------------------------------------------------------------------------------
 # OpenAI Codex
