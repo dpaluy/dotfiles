@@ -2,6 +2,13 @@
 # Add machine-specific AI settings to ~/.local/dotfiles/ai.local
 
 # ------------------------------------------------------------------------------
+# AI Functions
+# ------------------------------------------------------------------------------
+
+[[ -f "$HOME/dotfiles/zsh/ai-tools/git" ]] && source "$HOME/dotfiles/zsh/ai-tools/git"
+[[ -f "$HOME/dotfiles/zsh/ai-tools/codex" ]] && source "$HOME/dotfiles/zsh/ai-tools/codex"
+
+# ------------------------------------------------------------------------------
 # Claude Code
 # ------------------------------------------------------------------------------
 
@@ -19,38 +26,3 @@ export CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR=1
 
 export ENABLE_LSP_TOOL=1
 export ENABLE_TOOL_SEARCH=true
-
-# ------------------------------------------------------------------------------
-# OpenAI Codex
-# ------------------------------------------------------------------------------
-
-cdx() {
-    local default_profile="dev"
-    local -A shortcuts=([d]=dev [q]=quick [r]=research)
-
-    case "$1" in
-        help|-h|--help)
-            cat <<'USAGE' >&2
-Usage: cdx [profile|shortcut] [codex args...]
-Profiles: dev(d), quick(q), research(r)
-Special: update -> npm install -g @openai/codex@latest
-USAGE
-            return 0 ;;
-        update)
-            npm install -g @openai/codex@latest
-            return 0 ;;
-    esac
-
-    local profile="$default_profile"
-    local search_flag="--search"
-
-    if [[ ${shortcuts[$1]+1} ]]; then profile="${shortcuts[$1]}"; shift; fi
-    if [[ "$1" =~ ^(dev|quick|research)$ ]]; then profile="$1"; shift; fi
-
-    case "$profile" in
-        quick) search_flag="";;
-        research|dev) search_flag="--search";;
-    esac
-
-    codex --profile "$profile" ${search_flag:+$search_flag} "$@"
-}

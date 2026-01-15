@@ -1,0 +1,290 @@
+# gcai - AI-powered git commit message generator
+# Sourced from zsh/ai
+#
+# Dependencies: claude (Claude Code CLI)
+
+gcai() {
+    local context="" conventional=false summary_only=false
+    local no_gpg=false no_verify=false auto_push=false skip_ci=false
+    local add_all=false
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                cat <<'EOF'
+gcai - AI-powered git commit message generator
+
+Usage: gcai [OPTIONS]
+
+Options:
+  -h, --help           Show this help
+  -c, --context        Prompt for additional context
+  --claude             Get context from current Claude session
+  --codex              Get context from current Codex session
+  -s, --summary-only   Only include summary line
+  -C, --conventional   Use conventional commit format
+  -a, --add-all        Run 'git add -A' before generating
+  -p, --push           Auto-commit and push immediately
+  --skip-ci            Add [skip ci] to commit message
+  --no-gpg-sign        Skip GPG signing
+  --no-verify          Skip pre-commit hooks
+EOF
+                return 0 ;;
+            -c|--context) context="prompt" ;;
+            --claude) context="${context:+$context,}claude" ;;
+            --codex) context="${context:+$context,}codex" ;;
+            -s|--summary-only) summary_only=true ;;
+            -C|--conventional) conventional=true ;;
+            -a|--add-all) add_all=true ;;
+            -p|--push) auto_push=true ;;
+            --skip-ci) skip_ci=true ;;
+            --no-gpg-sign) no_gpg=true ;;
+            --no-verify) no_verify=true ;;
+            *) echo "Unknown option: $1"; return 1 ;;
+        esac
+        shift
+    done
+
+    # Check dependencies
+    if ! command -v claude &>/dev/null; then
+        echo "Error: claude not installed"
+        return 1
+    fi
+
+    # Add all if requested
+    $add_all && git add -A
+
+    # Get staged diff
+    local diff
+    diff=$(git diff --cached)
+    if [[ -z "$diff" ]]; then
+        echo "No staged changes to commit"
+        return 1
+    fi
+
+    # Collect context
+    local user_context=""
+    if [[ "$context" == *"prompt"* ]]; then
+        echo "Enter context (Ctrl-D when done):"
+        user_context=$(cat)
+    fi
+    if [[ "$context" == *"claude"* ]]; then
+        local claude_ctx
+        claude_ctx=$(claude --continue --print "Summarize context for a commit message. Focus on WHY, not what files changed." 2>/dev/null)
+        user_context="${user_context:+$user_context\n\n}${claude_ctx}"
+    fi
+    if [[ "$context" == *"codex"* ]]; then
+        local codex_ctx
+        codex_ctx=$(codex exec resume --last "Summarize context for a commit message. Focus on WHY, not what files changed." 2>/dev/null)
+        user_context="${user_context:+$user_context\n\n}${codex_ctx}"
+    fi
+
+    # Build git commit options
+    local -a git_opts=()
+    $no_gpg && git_opts+=(--no-gpg-sign)
+    $no_verify && git_opts+=(--no-verify)
+
+    # Generation loop
+    local reroll_count=0 msg_file
+    while true; do
+        echo "Generating commit message..."
+        msg_file=$(mktemp)
+
+        # Build prompt
+        local prompt
+        prompt=$(_gcai_build_prompt "$conventional" "$user_context" "$reroll_count")
+
+        if ! echo "$diff" | claude --print -p "$prompt" > "$msg_file" 2>&1; then
+            echo "Error: $(cat "$msg_file")"
+            rm -f "$msg_file"
+            return 1
+        fi
+
+        # Clean up output
+        _gcai_clean_message "$msg_file" "$summary_only" "$skip_ci"
+
+        # Validate
+        if ! _gcai_validate "$msg_file" "$conventional"; then
+            rm -f "$msg_file"
+            ((reroll_count++))
+            [[ $reroll_count -gt 5 ]] && { echo "Too many retries"; return 1; }
+            continue
+        fi
+
+        # Display message
+        echo ""
+        echo "─────────────────────────────────────────"
+        cat "$msg_file"
+        echo "─────────────────────────────────────────"
+        echo ""
+
+        # Auto-push mode
+        if $auto_push; then
+            if git commit -F "$msg_file" "${git_opts[@]}"; then
+                rm -f "$msg_file"
+                git push
+                return 0
+            else
+                rm -f "$msg_file"
+                return 1
+            fi
+        fi
+
+        # Interactive menu
+        local action
+        echo "1) Commit  2) Commit & Push  3) Edit  4) Reroll  5) Cancel"
+        read -r "action?> "
+
+        case "$action" in
+            1|commit|c)
+                git commit -F "$msg_file" "${git_opts[@]}"
+                local ret=$?
+                rm -f "$msg_file"
+                return $ret ;;
+            2|push|p)
+                if git commit -F "$msg_file" "${git_opts[@]}"; then
+                    rm -f "$msg_file"
+                    git push
+                    return 0
+                else
+                    rm -f "$msg_file"
+                    return 1
+                fi ;;
+            3|edit|e)
+                ${EDITOR:-nvim} "$msg_file"
+                git commit -F "$msg_file" "${git_opts[@]}"
+                local ret=$?
+                rm -f "$msg_file"
+                return $ret ;;
+            4|reroll|r)
+                rm -f "$msg_file"
+                ((reroll_count++))
+                echo "Rerolling..."
+                continue ;;
+            5|cancel|q|*)
+                echo "Cancelled"
+                rm -f "$msg_file"
+                return 1 ;;
+        esac
+    done
+}
+
+# Build the LLM prompt
+_gcai_build_prompt() {
+    local conventional="$1" user_context="$2" reroll_count="$3"
+    local prompt
+
+    if [[ "$conventional" == "true" ]]; then
+        prompt="Write a git commit message using Conventional Commits format.
+
+Format: <type>[optional scope]: <description>
+
+[optional body]
+
+Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+- Description: under 50 chars, lowercase, no period, imperative mood
+- Body: 1-2 sentences explaining WHY, only if non-obvious
+
+Be direct and technical. No fluff."
+    else
+        prompt="Write a git commit message.
+- First line: 50 chars or less, imperative mood
+- Second line: blank
+- Body (optional): 1-2 sentences explaining WHY, wrapped at 72 chars
+
+Be direct and technical. No fluff. Every word earns its place."
+    fi
+
+    prompt="$prompt
+
+Return only the commit message, no markdown fences or explanation."
+
+    # Add variation hint for rerolls
+    if [[ $reroll_count -gt 0 ]]; then
+        prompt="$prompt
+
+This is attempt $((reroll_count + 1)). Try a different angle or phrasing."
+    fi
+
+    # Add recent commits for style reference
+    local history
+    history=$(git log --pretty=format:"%s" -5 2>/dev/null)
+    if [[ -n "$history" ]]; then
+        prompt="$prompt
+
+Recent commits for style reference:
+$history"
+    fi
+
+    if [[ -n "$user_context" ]]; then
+        prompt="$prompt
+
+Developer context:
+$user_context"
+    fi
+
+    echo "$prompt"
+}
+
+# Clean message output
+_gcai_clean_message() {
+    local file="$1" summary_only="$2" skip_ci="$3"
+    local tmp
+    tmp=$(mktemp)
+
+    # Remove markdown fences, leading dashes, trailing whitespace
+    sed -E '/^```/d; s/^- //; s/[[:space:]]+$//' "$file" |
+        awk 'NF {p=1} p' > "$tmp"
+
+    if [[ "$summary_only" == "true" ]]; then
+        head -n 1 "$tmp" > "$file"
+    else
+        # Wrap body at 72 chars
+        head -n 1 "$tmp" > "$file"
+        echo "" >> "$file"
+        tail -n +3 "$tmp" | fmt -w 72 >> "$file"
+    fi
+
+    # Add skip-ci if requested
+    if [[ "$skip_ci" == "true" ]]; then
+        local summary
+        summary=$(head -n 1 "$file")
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "1s/.*/$summary [skip ci]/" "$file"
+        else
+            sed -i "1s/.*/$summary [skip ci]/" "$file"
+        fi
+    fi
+
+    rm -f "$tmp"
+}
+
+# Validate message format
+_gcai_validate() {
+    local file="$1" conventional="$2"
+    local summary
+    summary=$(head -n 1 "$file")
+    local len=${#summary}
+
+    if [[ "$conventional" == "true" ]]; then
+        if ! echo "$summary" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\([^)]+\))?: .+$'; then
+            echo "Invalid conventional commit format, regenerating..."
+            return 1
+        fi
+        # Check description part length
+        local desc
+        desc=$(echo "$summary" | sed -E 's/^[^:]+: //')
+        if [[ ${#desc} -gt 50 ]]; then
+            echo "Description too long (${#desc} chars), regenerating..."
+            return 1
+        fi
+    else
+        if [[ $len -gt 50 ]]; then
+            echo "Summary too long ($len chars), regenerating..."
+            return 1
+        fi
+    fi
+
+    return 0
+}
