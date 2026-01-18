@@ -156,6 +156,20 @@ serve() {
 }
 
 # ------------------------------------------------------------------------------
+# Ghostty Utilities
+# ------------------------------------------------------------------------------
+
+# Push Ghostty terminfo to remote machine for proper terminal support
+# Without this, SSH sessions show garbage like "[57414u" when pressing numpad Enter
+# Usage: ghostty-terminfo user@host
+ghostty-terminfo() {
+    local host="${1:?Usage: ghostty-terminfo user@host}"
+    echo "Installing xterm-ghostty terminfo on $host..."
+    infocmp -x xterm-ghostty | ssh "$host" 'mkdir -p ~/.terminfo && tic -x -o ~/.terminfo -'
+    echo "Done. Verify with: ssh $host 'ls ~/.terminfo/x/xterm-ghostty'"
+}
+
+# ------------------------------------------------------------------------------
 # Terminal Theming (Ghostty/iTerm2/WezTerm via OSC sequences)
 # ------------------------------------------------------------------------------
 
