@@ -73,3 +73,11 @@ if $install_opencode || command -v opencode &> /dev/null; then
         bunx oh-my-opencode install
     fi
 fi
+
+# Offer CodexBar on macOS if any AI tools were installed
+if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_opencode); then
+    if ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then
+        info "Installing CodexBar..."
+        brew install --cask steipete/tap/codexbar
+    fi
+fi
