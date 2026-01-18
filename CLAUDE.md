@@ -21,6 +21,20 @@ brew bundle --file=~/dotfiles/Brewfile
 
 ## Architecture
 
+**Install Script Structure**: Modular design in `install/` directory:
+```
+install.sh              ← Orchestrator
+install/
+├── lib.sh              ← Utilities (colors, helpers, prompts)
+├── macos.sh            ← Homebrew, fonts, Raycast, LazyVim
+├── linux.sh            ← System packages, fonts
+├── common.sh           ← Oh My Zsh, Atuin, shell setup
+├── ai-tools.sh         ← Claude Code, Codex, OpenCode
+├── symlinks.sh         ← Config symlinks
+└── local-config.sh     ← Template creation
+```
+See `install/AGENTS.md` for module details.
+
 **Cross-Platform Strategy**: OS-specific code uses `$OSTYPE` conditionals:
 ```bash
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -30,7 +44,7 @@ elif [[ "$OSTYPE" == "linux"* ]]; then
 fi
 ```
 
-**Symlink Strategy**: `install.sh` symlinks configs to their expected locations:
+**Symlink Strategy**: `install/symlinks.sh` creates symlinks to expected locations:
 - `zsh/zshrc` → `~/.zshrc`
 - `git/config` → `~/.config/git/config` (XDG style)
 - `ghostty/config` → `~/.config/ghostty/config`
@@ -62,6 +76,8 @@ fi
 
 ## OS-Specific Files
 
-- `zsh/macos` - macOS-only settings (Finder aliases, etc.)
-- `zsh/linux` - Linux-only settings (xclip aliases, xdg-open, etc.)
+- `zsh/macos` - macOS-only shell settings (Finder aliases, etc.)
+- `zsh/linux` - Linux-only shell settings (xclip aliases, xdg-open, etc.)
+- `install/macos.sh` - macOS installation (Homebrew, fonts, LazyVim)
+- `install/linux.sh` - Linux installation (packages, fonts)
 - `Brewfile` - macOS Homebrew packages
