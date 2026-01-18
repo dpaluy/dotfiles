@@ -1,0 +1,103 @@
+# ------------------------------------------------------------------------------
+# Claude Code Skills
+# ------------------------------------------------------------------------------
+
+# Mirror skill directories (containing SKILL.md) from source to destination
+# Usage: mirror-skills [source] <destination> [--dry-run] [--sync]
+#   source: Directory containing skills (default: current directory)
+#   destination: Where to mirror skills to (required)
+#   --dry-run, -n: Preview changes without applying
+#   --sync, -s: Full sync with deletion (creates backup first)
+mirror-skills() {
+    local src=""
+    local dest=""
+    local dry_run=false
+    local sync_mode=false
+    local positional=()
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --dry-run|-n) dry_run=true; shift ;;
+            --sync|-s) sync_mode=true; shift ;;
+            --help|-h)
+                echo "Usage: mirror-skills [source] <destination> [options]"
+                echo ""
+                echo "Mirror skill directories (containing SKILL.md) from source to destination."
+                echo ""
+                echo "Arguments:"
+                echo "  source       Source directory (default: current directory)"
+                echo "  destination  Destination directory (required)"
+                echo ""
+                echo "Options:"
+                echo "  --dry-run, -n  Preview changes without applying"
+                echo "  --sync, -s     Full sync (deletes skills not in source, creates backup)"
+                echo "  --help, -h     Show this help"
+                return 0
+                ;;
+            -*) echo "Unknown option: $1"; return 1 ;;
+            *) positional+=("$1"); shift ;;
+        esac
+    done
+
+    # Handle positional args: [source] <destination>
+    case ${#positional[@]} in
+        0) echo "Error: destination required"; echo "Usage: mirror-skills [source] <destination>"; return 1 ;;
+        1) src="."; dest="${positional[1]}" ;;
+        2) src="${positional[1]}"; dest="${positional[2]}" ;;
+        *) echo "Error: too many arguments"; return 1 ;;
+    esac
+
+    # Expand paths
+    src="${src/#\~/$HOME}"
+    dest="${dest/#\~/$HOME}"
+    src="$(cd "$src" 2>/dev/null && pwd)" || { echo "Error: source '$src' not found"; return 1; }
+
+    # Find skill directories (those containing SKILL.md)
+    local skills=()
+    while IFS= read -r -d '' skill_file; do
+        skills+=("$(dirname "$skill_file")")
+    done < <(find "$src" -name "SKILL.md" -type f -print0 2>/dev/null)
+
+    if [[ ${#skills[@]} -eq 0 ]]; then
+        echo "No skills found in $src"
+        return 0
+    fi
+
+    echo "Found ${#skills[@]} skill(s) in $src"
+
+    # Create destination if needed
+    [[ -d "$dest" ]] || mkdir -p "$dest"
+
+    # Build rsync options
+    local rsync_opts=(-av --relative)
+    $dry_run && rsync_opts+=(-n)
+
+    # Sync mode: backup then delete
+    if $sync_mode; then
+        if [[ -d "$dest" ]] && [[ "$(ls -A "$dest" 2>/dev/null)" ]]; then
+            local backup="${dest}.backup.$(date +%Y%m%d_%H%M%S)"
+            echo "Creating backup: $backup"
+            $dry_run || cp -r "$dest" "$backup"
+        fi
+        rsync_opts+=(--delete)
+    fi
+
+    # Mirror each skill directory
+    local mode_label="additive"
+    $sync_mode && mode_label="sync"
+    $dry_run && mode_label="dry-run ($mode_label)"
+    echo "Mode: $mode_label"
+    echo ""
+
+    for skill_dir in "${skills[@]}"; do
+        local skill_name="$(basename "$skill_dir")"
+        echo "  → $skill_name"
+
+        # Use rsync to copy the skill directory
+        (cd "$src" && rsync "${rsync_opts[@]}" "./${skill_dir#$src/}/" "$dest/$skill_name/")
+    done
+
+    echo ""
+    $dry_run && echo "(dry-run: no changes made)" || echo "Done."
+}

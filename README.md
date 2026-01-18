@@ -127,6 +127,15 @@ EOF
 | `gwa <branch>` | Create git worktree |
 | `gwd` | Remove current worktree |
 
+### AI Tools
+
+| Function | Description |
+|----------|-------------|
+| `mirror-skills [src] <dest>` | Mirror Claude Code skill directories |
+| `cly` | Claude Code with auto-approve |
+
+`mirror-skills` syncs directories containing `SKILL.md` files. Options: `--dry-run` to preview, `--sync` for full sync with backup.
+
 ### macOS Shortcuts
 
 | Alias | Description |
