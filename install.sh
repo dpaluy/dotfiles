@@ -16,20 +16,56 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Check if gum is available
+has_gum() {
+    command -v gum &> /dev/null
+}
+
 info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+    if has_gum; then
+        gum style --foreground 82 "✓ $1"
+    else
+        echo -e "${GREEN}[INFO]${NC} $1"
+    fi
 }
 
 warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+    if has_gum; then
+        gum style --foreground 214 "⚠ $1"
+    else
+        echo -e "${YELLOW}[WARN]${NC} $1"
+    fi
 }
 
 error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    if has_gum; then
+        gum style --foreground 196 "✗ $1"
+    else
+        echo -e "${RED}[ERROR]${NC} $1"
+    fi
 }
 
 header() {
-    echo -e "\n${BLUE}=== $1 ===${NC}\n"
+    if has_gum; then
+        echo ""
+        gum style --border double --padding "0 2" --border-foreground 39 "$1"
+        echo ""
+    else
+        echo -e "\n${BLUE}=== $1 ===${NC}\n"
+    fi
+}
+
+# Run command with spinner (falls back to direct execution)
+spin() {
+    local title="$1"
+    shift
+    if has_gum; then
+        gum spin --spinner dot --title "$title" -- "$@"
+    else
+        echo -n "$title... "
+        "$@"
+        echo "done"
+    fi
 }
 
 # Backup existing file if it exists and is not a symlink
@@ -83,16 +119,24 @@ ask_yes_no() {
     local question="$1"
     local default="${2:-n}"
 
-    if [[ "$default" == "y" ]]; then
-        prompt="[Y/n]"
+    if has_gum; then
+        if [[ "$default" == "y" ]]; then
+            gum confirm "$question" --default=true
+        else
+            gum confirm "$question" --default=false
+        fi
     else
-        prompt="[y/N]"
+        if [[ "$default" == "y" ]]; then
+            prompt="[Y/n]"
+        else
+            prompt="[y/N]"
+        fi
+
+        read -p "$question $prompt " answer
+        answer="${answer:-$default}"
+
+        [[ "$answer" =~ ^[Yy] ]]
     fi
-
-    read -p "$question $prompt " answer
-    answer="${answer:-$default}"
-
-    [[ "$answer" =~ ^[Yy] ]]
 }
 
 # Detect OS
@@ -113,9 +157,13 @@ detect_os() {
 OS=$(detect_os)
 
 echo ""
-echo "=================================="
-echo "  Cross-Platform Dotfiles Setup"
-echo "=================================="
+if has_gum; then
+    gum style --border rounded --padding "1 3" --border-foreground 39 "Cross-Platform Dotfiles Setup"
+else
+    echo "=================================="
+    echo "  Cross-Platform Dotfiles Setup"
+    echo "=================================="
+fi
 echo ""
 info "Detected OS: $OS"
 echo ""
@@ -150,13 +198,11 @@ if [[ "$OS" == "macos" ]]; then
     fi
 
     header "Brew Packages"
-    info "Installing packages from Brewfile..."
-    brew bundle --file="$DOTFILES_DIR/Brewfile"
+    spin "Installing packages from Brewfile" brew bundle --file="$DOTFILES_DIR/Brewfile"
 
     header "Optional Tools"
     if ask_yes_no "Install Raycast?"; then
-        info "Installing Raycast..."
-        brew install --cask raycast
+        spin "Installing Raycast" brew install --cask raycast
     else
         info "Skipping Raycast"
     fi
@@ -185,10 +231,35 @@ if [[ "$OS" != "macos" && "$OS" != "unknown" ]]; then
     # Install common tools
     info "Installing common tools (git, curl, etc.)..."
     case "$OS" in
-        arch)   sudo pacman -S --noconfirm git curl neovim fzf fd ripgrep ;;
+        arch)   sudo pacman -S --noconfirm git curl neovim fzf fd ripgrep gum ;;
         debian) sudo apt install -y git curl neovim fzf fd-find ripgrep ;;
         fedora) sudo dnf install -y git curl neovim fzf fd-find ripgrep ;;
     esac
+
+    # Install gum for better TUI (if not already installed)
+    if ! command -v gum &> /dev/null; then
+        info "Installing gum for better UI..."
+        case "$OS" in
+            arch)
+                # Already installed above
+                ;;
+            debian)
+                sudo mkdir -p /etc/apt/keyrings
+                curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+                echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+                sudo apt update && sudo apt install -y gum
+                ;;
+            fedora)
+                echo '[charm]
+name=Charm
+baseurl=https://repo.charm.sh/yum/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
+                sudo dnf install -y gum
+                ;;
+        esac
+    fi
 fi
 
 # ==============================================================================
@@ -209,13 +280,11 @@ fi
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]]; then
-    info "Installing zsh-autosuggestions..."
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+    spin "Installing zsh-autosuggestions" git clone --quiet https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
 fi
 
 if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
-    info "Installing zsh-syntax-highlighting..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+    spin "Installing zsh-syntax-highlighting" git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
 fi
 
 # ==============================================================================
@@ -236,6 +305,74 @@ if ! command -v atuin &> /dev/null; then
     info "Atuin installed"
 else
     info "Atuin already installed"
+fi
+
+# ==============================================================================
+# AI Coding Assistants (Optional)
+# ==============================================================================
+
+header "AI Coding Assistants"
+
+install_claude=false
+install_codex=false
+install_opencode=false
+
+if has_gum; then
+    ai_choices=$(gum choose --no-limit --header "Select AI coding assistants to install:" \
+        "Claude Code" \
+        "OpenAI Codex CLI" \
+        "OpenCode" || true)
+
+    [[ "$ai_choices" == *"Claude Code"* ]] && install_claude=true
+    [[ "$ai_choices" == *"Codex CLI"* ]] && install_codex=true
+    [[ "$ai_choices" == *"OpenCode"* ]] && install_opencode=true
+else
+    echo "Which AI coding assistants would you like to install?"
+    echo "  1) Claude Code"
+    echo "  2) OpenAI Codex CLI"
+    echo "  3) OpenCode"
+    echo "  4) All"
+    echo "  5) None"
+    echo ""
+    read -p "Enter choices (e.g., 1 3 or 4 for all): " -a ai_choices
+
+    for choice in "${ai_choices[@]}"; do
+        case "$choice" in
+            1) install_claude=true ;;
+            2) install_codex=true ;;
+            3) install_opencode=true ;;
+            4) install_claude=true; install_codex=true; install_opencode=true ;;
+            5) ;;
+            *) warn "Unknown option: $choice" ;;
+        esac
+    done
+fi
+
+if $install_claude; then
+    info "Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
+
+if $install_codex; then
+    if command -v npm &> /dev/null; then
+        info "Installing Codex..."
+        npm i -g @openai/codex
+    else
+        warn "npm not found. Install Node.js first (e.g., via mise)."
+    fi
+fi
+
+if $install_opencode; then
+    info "Installing OpenCode..."
+    curl -fsSL https://opencode.ai/install | bash
+fi
+
+# Offer oh-my-opencode if OpenCode is installed
+if $install_opencode || command -v opencode &> /dev/null; then
+    if ask_yes_no "Install oh-my-opencode (enhanced agent harness)?"; then
+        info "Installing oh-my-opencode..."
+        bunx oh-my-opencode install
+    fi
 fi
 
 # ==============================================================================
@@ -325,8 +462,7 @@ if [[ "$OS" == "macos" ]]; then
 
     if [[ ! -d "$HOME/.config/nvim" ]]; then
         if ask_yes_no "Install LazyVim starter configuration?" "y"; then
-            info "Cloning LazyVim starter..."
-            git clone https://github.com/LazyVim/starter "$HOME/.config/nvim"
+            spin "Cloning LazyVim starter" git clone --quiet https://github.com/LazyVim/starter "$HOME/.config/nvim"
             rm -rf "$HOME/.config/nvim/.git"
             info "LazyVim installed. Run 'nvim' to complete setup."
         fi
@@ -369,9 +505,13 @@ fi
 # ==============================================================================
 
 echo ""
-echo "=================================="
-echo "  Installation Complete!"
-echo "=================================="
+if has_gum; then
+    gum style --border double --padding "1 3" --border-foreground 82 "✓ Installation Complete!"
+else
+    echo "=================================="
+    echo "  Installation Complete!"
+    echo "=================================="
+fi
 echo ""
 info "Public configs: $DOTFILES_DIR"
 info "Local configs:  $DOTFILES_LOCAL"
@@ -382,7 +522,11 @@ else
     info "To apply changes, run: source ~/.zshrc"
 fi
 echo ""
-info "Next steps:"
+if has_gum; then
+    gum style --foreground 39 --bold "Next steps:"
+else
+    info "Next steps:"
+fi
 echo "  1. Edit $DOTFILES_LOCAL/gitconfig.local with your name/email"
 if [[ "$OS" == "macos" ]]; then
     echo "  2. Run 'nvim' to complete LazyVim setup"
