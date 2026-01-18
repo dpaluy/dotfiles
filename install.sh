@@ -200,6 +200,13 @@ if [[ "$OS" == "macos" ]]; then
     header "Brew Packages"
     spin "Installing packages from Brewfile" brew bundle --file="$DOTFILES_DIR/Brewfile"
 
+    header "Fonts"
+    if brew list --cask font-martian-mono-nerd-font &>/dev/null; then
+        info "MartianMono Nerd Font already installed"
+    else
+        spin "Installing MartianMono Nerd Font" brew install --cask font-martian-mono-nerd-font
+    fi
+
     header "Optional Tools"
     if ask_yes_no "Install Raycast?"; then
         spin "Installing Raycast" brew install --cask raycast
@@ -260,6 +267,21 @@ gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
                 ;;
         esac
     fi
+
+    # Install MartianMono Nerd Font
+    header "Fonts"
+    FONT_DIR="$HOME/.local/share/fonts"
+    if fc-list | grep -qi "MartianMono Nerd Font"; then
+        info "MartianMono Nerd Font already installed"
+    else
+        info "Installing MartianMono Nerd Font..."
+        mkdir -p "$FONT_DIR"
+        curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz -o /tmp/MartianMono.tar.xz
+        tar -xf /tmp/MartianMono.tar.xz -C "$FONT_DIR"
+        rm /tmp/MartianMono.tar.xz
+        fc-cache -fv
+        info "MartianMono Nerd Font installed"
+    fi
 fi
 
 # ==============================================================================
@@ -318,7 +340,10 @@ install_codex=false
 install_opencode=false
 
 if has_gum; then
-    ai_choices=$(gum choose --no-limit --header "Select AI coding assistants to install:" \
+    ai_choices=$(gum choose --no-limit \
+        --header "Select AI coding assistants to install (Space to select, Enter to confirm):" \
+        --cursor-prefix "[ ] " \
+        --selected-prefix "[x] " \
         "Claude Code" \
         "OpenAI Codex CLI" \
         "OpenCode" || true)
@@ -326,6 +351,10 @@ if has_gum; then
     [[ "$ai_choices" == *"Claude Code"* ]] && install_claude=true
     [[ "$ai_choices" == *"Codex CLI"* ]] && install_codex=true
     [[ "$ai_choices" == *"OpenCode"* ]] && install_opencode=true
+
+    if [[ -z "$ai_choices" ]]; then
+        info "Skipping AI coding assistants"
+    fi
 else
     echo "Which AI coding assistants would you like to install?"
     echo "  1) Claude Code"
@@ -438,6 +467,7 @@ create_local_template "$DOTFILES_LOCAL/gitconfig.local" "Local git config (name,
 create_local_template "$DOTFILES_LOCAL/ghostty.local" "Local ghostty overrides (font, size, theme)"
 create_local_template "$DOTFILES_LOCAL/ai.local" "Local AI tool settings (API keys, model preferences)"
 create_local_template "$DOTFILES_LOCAL/rails.local" "Local Rails/Ruby settings"
+create_local_template "$DOTFILES_LOCAL/projects.local" "Project-to-theme mappings for terminal theming"
 
 # Add example content to gitconfig.local if empty
 if [[ $(wc -l < "$DOTFILES_LOCAL/gitconfig.local") -le 3 ]]; then
@@ -450,6 +480,23 @@ if [[ $(wc -l < "$DOTFILES_LOCAL/gitconfig.local") -le 3 ]]; then
 #
 # [commit]
 #     gpgsign = true
+EOF
+fi
+
+# Add example content to projects.local if empty
+if [[ $(wc -l < "$DOTFILES_LOCAL/projects.local") -le 3 ]]; then
+    cat >> "$DOTFILES_LOCAL/projects.local" << 'EOF'
+# Format: "path_prefix:theme_name:tab_title"
+# Theme applies to the directory and all subdirectories
+# Available themes: run 'theme --list' to see all options
+#
+# Example:
+# PROJECT_THEMES=(
+#     "$HOME/projects/myapp:ember:MyApp"
+#     "$HOME/work/client:ocean:Client"
+# )
+
+PROJECT_THEMES=()
 EOF
 fi
 

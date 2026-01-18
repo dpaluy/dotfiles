@@ -16,10 +16,9 @@ config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
 # Font (override in ~/.local/dotfiles/ghostty.local)
 # ------------------------------------------------------------------------------
 
-# Default font - override in local config for machine-specific preference
-# macOS default: MartianMono Nerd Font, size 14
-# Linux default: JetBrainsMono Nerd Font, size 9
-font-family = "JetBrainsMono Nerd Font"
+# Default font - override size in local config if needed
+font-family = "MartianMono Nerd Font"
+# font-family = "JetBrainsMono Nerd Font"
 font-size = 12
 
 # ------------------------------------------------------------------------------
@@ -38,32 +37,48 @@ cursor-style = block
 cursor-style-blink = false
 
 # ------------------------------------------------------------------------------
+# Mouse
+# ------------------------------------------------------------------------------
+
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 1.0
+
+# ------------------------------------------------------------------------------
 # Shell Integration
 # ------------------------------------------------------------------------------
 
 shell-integration = zsh
-shell-integration-features = no-cursor,ssh-env
+shell-integration-features = no-cursor,no-title,ssh-env
 
 # ------------------------------------------------------------------------------
-# Keybindings - macOS (Cmd/Super key)
-# Note: Cmd+C/V are Ghostty defaults on macOS - don't override them
-# Comment out this section on Linux
+# Keybindings - macOS
 # ------------------------------------------------------------------------------
 
+# Global hotkey (works even when Ghostty not focused)
+keybind = global:super+,=toggle_visibility
+
+# Tabs
 keybind = super+t=new_tab
 keybind = super+w=close_surface
 keybind = super+n=new_window
-
-# Tab navigation
+keybind = super+left=previous_tab
+keybind = super+right=next_tab
 keybind = super+1=goto_tab:1
 keybind = super+2=goto_tab:2
 keybind = super+3=goto_tab:3
 keybind = super+4=goto_tab:4
 keybind = super+5=goto_tab:5
 
-# Split panes
+# Splits
 keybind = super+d=new_split:right
 keybind = super+shift+d=new_split:down
+
+# Editing
+keybind = shift+enter=text:\n
+keybind = ctrl+shift+t=prompt_surface_title
+
+# macOS-specific
+macos-option-as-alt = true
 
 # ------------------------------------------------------------------------------
 # Keybindings - Linux (uncomment on Linux, comment macOS section above)
@@ -75,12 +90,6 @@ keybind = super+shift+d=new_split:down
 # keybind = super+control+shift+alt+arrow_up=resize_split:up,100
 # keybind = super+control+shift+alt+arrow_left=resize_split:left,100
 # keybind = super+control+shift+alt+arrow_right=resize_split:right,100
-
-# ------------------------------------------------------------------------------
-# Mouse
-# ------------------------------------------------------------------------------
-
-mouse-scroll-multiplier = 1.0
 
 # ------------------------------------------------------------------------------
 # Local overrides (font, size, theme preferences)

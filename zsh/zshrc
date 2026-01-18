@@ -10,6 +10,9 @@ export ZSH="$HOME/.oh-my-zsh"
 # Theme - empty because we use Starship prompt
 ZSH_THEME=""
 
+# Disable Oh My Zsh auto-title (we set titles via OSC sequences in functions)
+DISABLE_AUTO_TITLE="true"
+
 # Plugins
 plugins=(
     1password
@@ -63,6 +66,7 @@ fi
 [[ -f "$DOTFILES_LOCAL/functions.local" ]] && source "$DOTFILES_LOCAL/functions.local"
 [[ -f "$DOTFILES_LOCAL/ai.local" ]] && source "$DOTFILES_LOCAL/ai.local"
 [[ -f "$DOTFILES_LOCAL/rails.local" ]] && source "$DOTFILES_LOCAL/rails.local"
+[[ -f "$DOTFILES_LOCAL/projects.local" ]] && source "$DOTFILES_LOCAL/projects.local"
 
 # ------------------------------------------------------------------------------
 # Mise (tool version manager - replaces asdf)
