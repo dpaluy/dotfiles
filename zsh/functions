@@ -154,3 +154,81 @@ serve() {
     local port="${1:-8000}"
     python3 -m http.server "$port"
 }
+
+# ------------------------------------------------------------------------------
+# Terminal Theming (Ghostty/iTerm2/WezTerm via OSC sequences)
+# ------------------------------------------------------------------------------
+
+# Change terminal color scheme dynamically
+# Usage: theme [name|--list|--reset]
+# No args = random theme
+theme() {
+    # Theme definitions: "name:bg:fg:cursor"
+    local -a themes=(
+        "dracula:#282a36:#f8f8f2:#bd93f9"
+        "monokai:#272822:#f8f8f2:#f92672"
+        "nord:#2e3440:#eceff4:#88c0d0"
+        "gruvbox:#282828:#ebdbb2:#fabd2f"
+        "solarized:#002b36:#839496:#268bd2"
+        "tokyo:#1a1b26:#a9b1d6:#7aa2f7"
+        "catppuccin:#1e1e2e:#cdd6f4:#f5e0dc"
+        "rose-pine:#191724:#e0def4:#ebbcba"
+        "everforest:#2d353b:#d3c6aa:#a7c080"
+        "kanagawa:#1f1f28:#dcd7ba:#c8c093"
+        "cyberpunk:#0d0d0d:#00ff9f:#ff00ff"
+        "ocean:#0a1929:#b2ccd6:#82aaff"
+        "ember:#1a0a0a:#ffb4a2:#ff6b35"
+        "matrix:#0d1a0d:#00ff00:#00ff00"
+        "midnight:#0d0d1a:#c4b5fd:#a78bfa"
+    )
+
+    case "$1" in
+        --list|-l)
+            echo "Available themes:"
+            for t in "${themes[@]}"; do
+                echo "  ${t%%:*}"
+            done
+            return 0
+            ;;
+        --reset|-r)
+            printf '\e]111\a\e]110\a\e]112\a\e]104\a'
+            echo "Colors reset to default"
+            return 0
+            ;;
+        "")
+            # Random theme
+            local idx=$((RANDOM % ${#themes[@]} + 1))
+            local selected="${themes[$idx]}"
+            ;;
+        *)
+            # Find theme by name
+            local selected=""
+            for t in "${themes[@]}"; do
+                if [[ "${t%%:*}" == "$1" ]]; then
+                    selected="$t"
+                    break
+                fi
+            done
+            if [[ -z "$selected" ]]; then
+                echo "Unknown theme: $1"
+                echo "Use 'theme --list' to see available themes"
+                return 1
+            fi
+            ;;
+    esac
+
+    # Parse theme: name:bg:fg:cursor
+    local name="${selected%%:*}"
+    local rest="${selected#*:}"
+    local bg="${rest%%:*}"
+    rest="${rest#*:}"
+    local fg="${rest%%:*}"
+    local cursor="${rest#*:}"
+
+    # Apply via OSC escape sequences
+    printf '\e]11;%s\a' "$bg"      # background
+    printf '\e]10;%s\a' "$fg"      # foreground
+    printf '\e]12;%s\a' "$cursor"  # cursor
+
+    echo "Theme: $name"
+}
