@@ -60,7 +60,7 @@ fi
 if $install_codex; then
     if command -v npm &> /dev/null; then
         info "Installing Codex..."
-        npm i -g @openai/codex
+        npm i -g @openai/codex --force
     else
         warn "npm not found. Install Node.js first (e.g., via mise)."
     fi
@@ -69,7 +69,7 @@ fi
 if $install_gemini; then
     if command -v npm &> /dev/null; then
         info "Installing Gemini CLI..."
-        npm i -g @google/gemini-cli
+        npm i -g @google/gemini-cli --force
     else
         warn "npm not found. Install Node.js first (e.g., via mise)."
     fi
