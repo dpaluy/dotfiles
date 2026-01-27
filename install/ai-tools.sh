@@ -9,6 +9,7 @@ install_claude=false
 install_codex=false
 install_gemini=false
 install_opencode=false
+install_qmd=false
 
 if has_gum; then
     ai_choices=$(gum choose --no-limit \
@@ -18,12 +19,14 @@ if has_gum; then
         "Claude Code" \
         "OpenAI Codex CLI" \
         "Gemini CLI" \
-        "OpenCode" || true)
+        "OpenCode" \
+        "qmd (local markdown search)" || true)
 
     [[ "$ai_choices" == *"Claude Code"* ]] && install_claude=true
     [[ "$ai_choices" == *"Codex CLI"* ]] && install_codex=true
     [[ "$ai_choices" == *"Gemini CLI"* ]] && install_gemini=true
     [[ "$ai_choices" == *"OpenCode"* ]] && install_opencode=true
+    [[ "$ai_choices" == *"qmd"* ]] && install_qmd=true
 
     if [[ -z "$ai_choices" ]]; then
         info "Skipping AI coding assistants"
@@ -34,10 +37,11 @@ else
     echo "  2) OpenAI Codex CLI"
     echo "  3) Gemini CLI"
     echo "  4) OpenCode"
-    echo "  5) All"
-    echo "  6) None"
+    echo "  5) qmd (local markdown search)"
+    echo "  6) All"
+    echo "  7) None"
     echo ""
-    read -p "Enter choices (e.g., 1 3 or 5 for all): " -a ai_choices
+    read -p "Enter choices (e.g., 1 3 or 6 for all): " -a ai_choices
 
     for choice in "${ai_choices[@]}"; do
         case "$choice" in
@@ -45,8 +49,9 @@ else
             2) install_codex=true ;;
             3) install_gemini=true ;;
             4) install_opencode=true ;;
-            5) install_claude=true; install_codex=true; install_gemini=true; install_opencode=true ;;
-            6) ;;
+            5) install_qmd=true ;;
+            6) install_claude=true; install_codex=true; install_gemini=true; install_opencode=true; install_qmd=true ;;
+            7) ;;
             *) warn "Unknown option: $choice" ;;
         esac
     done
@@ -80,6 +85,19 @@ if $install_opencode; then
     curl -fsSL https://opencode.ai/install | bash
 fi
 
+if $install_qmd; then
+    if command -v bun &> /dev/null; then
+        info "Installing qmd (local markdown search)..."
+        # macOS requires Homebrew's SQLite for extension support
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            brew install sqlite 2>/dev/null || true
+        fi
+        bun install -g https://github.com/tobi/qmd
+    else
+        warn "bun not found. Install bun first (e.g., via mise)."
+    fi
+fi
+
 # Offer oh-my-opencode if OpenCode is installed
 if $install_opencode || command -v opencode &> /dev/null; then
     if ask_yes_no "Install oh-my-opencode (enhanced agent harness)?"; then
@@ -89,7 +107,7 @@ if $install_opencode || command -v opencode &> /dev/null; then
 fi
 
 # Offer CodexBar on macOS if any AI tools were installed
-if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode); then
+if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_qmd); then
     if ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then
         info "Installing CodexBar..."
         brew install --cask steipete/tap/codexbar
