@@ -45,13 +45,17 @@ fi
 ```
 
 **Symlink Strategy**: `install/symlinks.sh` creates symlinks to expected locations:
-- `zsh/zshrc` → `~/.zshrc`
 - `git/config` → `~/.config/git/config` (XDG style)
 - `ghostty/config` → `~/.config/ghostty/config`
 - `tmux/tmux.conf` → `~/.tmux.conf`
 - `starship/starship.toml` → `~/.config/starship.toml`
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
 - `codex/config.toml` → `~/.codex/config.toml`
+
+**Special Case - ~/.zshrc**: Uses wrapper pattern instead of symlink.
+- `~/.zshrc` (local file) sources `~/dotfiles/zsh/zshrc`
+- External tools can safely append their initialization lines
+- This prevents tool-added lines from polluting version-controlled files
 
 **Zsh Loading Order** (`zsh/zshrc`):
 1. Oh My Zsh initialization

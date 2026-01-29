@@ -7,8 +7,35 @@ header "Symlinks"
 
 info "Creating symlinks..."
 
-# Zsh
-create_symlink "$DOTFILES_DIR/zsh/zshrc" "$HOME/.zshrc"
+# Zsh - use wrapper pattern (local file sources dotfiles)
+# This allows external tools (mise, atuin, fzf) to safely append their init lines
+create_zshrc_wrapper() {
+    local wrapper="$HOME/.zshrc"
+
+    # Skip if valid wrapper already exists
+    if [[ -f "$wrapper" && ! -L "$wrapper" ]] && grep -q "source.*dotfiles/zsh/zshrc" "$wrapper" 2>/dev/null; then
+        info "Zsh wrapper already configured"
+        return 0
+    fi
+
+    # Backup existing (symlink or file)
+    backup_if_exists "$wrapper"
+
+    # Create wrapper
+    cat > "$wrapper" << 'EOF'
+#!/usr/bin/env zsh
+# ~/.zshrc - Local shell config (not version controlled)
+# Source dotfiles
+source "$HOME/dotfiles/zsh/zshrc"
+
+# Tool additions below (mise, atuin, fzf, etc.)
+# -----------------------------------------------
+EOF
+
+    info "Created ~/.zshrc wrapper"
+}
+
+create_zshrc_wrapper
 
 # Git (XDG style)
 mkdir -p "$HOME/.config/git"

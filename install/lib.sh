@@ -74,7 +74,7 @@ backup_if_exists() {
         warn "Backing up $file to $backup"
         mv "$file" "$backup"
     elif [[ -L "$file" ]]; then
-        rm "$file"
+        rm -f "$file"
     fi
 }
 
