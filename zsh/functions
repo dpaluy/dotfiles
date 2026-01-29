@@ -315,3 +315,7 @@ theme() {
             ;;
     esac
 }
+
+# Set pane "title" via window title (shows in tab or via integration)
+DISABLE_AUTO_TITLE="true"
+set_title() { echo -ne "\033]0;$1\007"; }

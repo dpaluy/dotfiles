@@ -97,3 +97,5 @@ fi
 # ------------------------------------------------------------------------------
 
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+
+alias claude-mem='bun "/Users/david/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'
