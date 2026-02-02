@@ -81,3 +81,5 @@ coverage/
 .nyc_output/
 .coverage
 htmlcov/
+
+**/.claude/settings.local.json
