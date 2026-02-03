@@ -7,6 +7,13 @@
 DOTFILES_DIR="$HOME/dotfiles"
 DOTFILES_LOCAL="$HOME/.local/dotfiles"
 
+# Ensure required directories exist
+mkdir -p "$HOME/.local/bin"
+mkdir -p "$DOTFILES_LOCAL"
+
+# Add ~/.local/bin to PATH for this session (tools like Claude Code install here)
+export PATH="$HOME/.local/bin:$PATH"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'

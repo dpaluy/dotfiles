@@ -5,6 +5,27 @@
 
 header "AI Coding Assistants"
 
+# ------------------------------------------------------------------------------
+# Helper: Ensure Node.js is available via mise
+# ------------------------------------------------------------------------------
+ensure_node() {
+    if command -v npm &> /dev/null; then
+        return 0
+    fi
+
+    if command -v mise &> /dev/null; then
+        info "Installing Node.js via mise..."
+        mise use --global node@lts
+        eval "$(mise activate bash)"
+
+        if command -v npm &> /dev/null; then
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
 install_claude=false
 install_codex=false
 install_gemini=false
@@ -63,20 +84,20 @@ if $install_claude; then
 fi
 
 if $install_codex; then
-    if command -v npm &> /dev/null; then
+    if ensure_node; then
         info "Installing Codex..."
         npm i -g @openai/codex --force
     else
-        warn "npm not found. Install Node.js first (e.g., via mise)."
+        warn "npm not found and mise unavailable. Install Node.js manually."
     fi
 fi
 
 if $install_gemini; then
-    if command -v npm &> /dev/null; then
+    if ensure_node; then
         info "Installing Gemini CLI..."
         npm i -g @google/gemini-cli --force
     else
-        warn "npm not found. Install Node.js first (e.g., via mise)."
+        warn "npm not found and mise unavailable. Install Node.js manually."
     fi
 fi
 
@@ -95,14 +116,6 @@ if $install_qmd; then
         bun install -g https://github.com/tobi/qmd
     else
         warn "bun not found. Install bun first (e.g., via mise)."
-    fi
-fi
-
-# Offer oh-my-opencode if OpenCode is installed
-if $install_opencode || command -v opencode &> /dev/null; then
-    if ask_yes_no "Install oh-my-opencode (enhanced agent harness)?"; then
-        info "Installing oh-my-opencode..."
-        bunx oh-my-opencode install
     fi
 fi
 

@@ -32,6 +32,11 @@ fi
 header "Brew Packages"
 spin "Installing packages from Brewfile" brew bundle --file="$DOTFILES_DIR/Brewfile"
 
+# Activate mise for this session (enables Node.js, Python, etc.)
+if command -v mise &> /dev/null; then
+    eval "$(mise activate bash)"
+fi
+
 # ==============================================================================
 # Fonts
 # ==============================================================================

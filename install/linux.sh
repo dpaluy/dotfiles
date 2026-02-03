@@ -56,6 +56,28 @@ gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
 fi
 
 # ==============================================================================
+# mise (Version Manager)
+# ==============================================================================
+
+header "mise"
+
+if ! command -v mise &> /dev/null; then
+    info "Installing mise..."
+    curl https://mise.run | sh
+
+    # Add to PATH for this session
+    export PATH="$HOME/.local/bin:$PATH"
+    info "mise installed"
+else
+    info "mise already installed"
+fi
+
+# Activate mise for this session (enables Node.js, Python, etc.)
+if command -v mise &> /dev/null; then
+    eval "$(mise activate bash)"
+fi
+
+# ==============================================================================
 # Fonts
 # ==============================================================================
 
