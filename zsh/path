@@ -61,6 +61,10 @@ path_prepend "$HOME/go/bin"
 # Node.js (if using volta or nvm, this may be managed elsewhere)
 path_prepend "$HOME/.npm-global/bin"
 
+# Bun global packages
+path_prepend "$HOME/.cache/.bun/bin"
+path_prepend "$HOME/.bun/bin"
+
 # ------------------------------------------------------------------------------
 # Trusted binstubs (macOS pattern)
 # mkdir .git/safe in the root of repositories you trust

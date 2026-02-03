@@ -6,24 +6,33 @@
 header "AI Coding Assistants"
 
 # ------------------------------------------------------------------------------
-# Helper: Ensure Node.js is available via mise
+# Helper: Ensure Node.js and Bun are available via mise
 # ------------------------------------------------------------------------------
-ensure_node() {
-    if command -v npm &> /dev/null; then
-        return 0
-    fi
-
+ensure_js_runtimes() {
     if command -v mise &> /dev/null; then
-        info "Installing Node.js via mise..."
-        mise use --global node@lts
-        eval "$(mise activate bash)"
-
-        if command -v npm &> /dev/null; then
-            return 0
+        if ! command -v npm &> /dev/null; then
+            info "Installing Node.js via mise..."
+            mise use --global node@lts
         fi
+        if ! command -v bun &> /dev/null; then
+            info "Installing Bun via mise..."
+            mise use --global bun@latest
+        fi
+        eval "$(mise activate bash)"
+        export PATH="$HOME/.cache/.bun/bin:$PATH"
     fi
+}
 
-    return 1
+ensure_node() {
+    command -v npm &> /dev/null && return 0
+    ensure_js_runtimes
+    command -v npm &> /dev/null
+}
+
+ensure_bun() {
+    command -v bun &> /dev/null && return 0
+    ensure_js_runtimes
+    command -v bun &> /dev/null
 }
 
 install_claude=false
@@ -107,7 +116,7 @@ if $install_opencode; then
 fi
 
 if $install_qmd; then
-    if command -v bun &> /dev/null; then
+    if ensure_bun; then
         info "Installing qmd (local markdown search)..."
         # macOS requires Homebrew's SQLite for extension support
         if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -115,7 +124,7 @@ if $install_qmd; then
         fi
         bun install -g https://github.com/tobi/qmd
     else
-        warn "bun not found. Install bun first (e.g., via mise)."
+        warn "bun not found and mise unavailable. Install bun manually."
     fi
 fi
 
