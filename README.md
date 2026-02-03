@@ -136,6 +136,22 @@ EOF
 
 `mirror-skills` syncs directories containing `SKILL.md` files. Options: `--dry-run` to preview, `--sync` for full sync with backup.
 
+### AI Skills Installer
+
+Install custom skills to AI CLI tools:
+
+```bash
+./install/skills.sh
+```
+
+| Target | Path |
+|--------|------|
+| Codex | `~/.codex/skills/` |
+| Claude | `~/.claude/skills/` |
+| Custom | User-specified path |
+
+Add new skills by creating a folder in `agents/skills/` with a `SKILL.md` file.
+
 ### macOS Shortcuts
 
 | Alias | Description |
