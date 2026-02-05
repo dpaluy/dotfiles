@@ -34,7 +34,9 @@ fi
 source "$SCRIPT_DIR/install/common.sh"
 
 # Optional: AI coding assistants
-source "$SCRIPT_DIR/install/ai-tools.sh"
+if ask_yes_no "Install AI coding assistants (Claude Code, Codex, OpenCode)?" "n"; then
+    source "$SCRIPT_DIR/install/ai-tools.sh"
+fi
 
 # Configuration symlinks
 source "$SCRIPT_DIR/install/symlinks.sh"

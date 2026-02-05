@@ -135,3 +135,27 @@ if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $instal
         brew install --cask steipete/tap/codexbar
     fi
 fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Agent Skills Setup (shared across AI tools)
+# ─────────────────────────────────────────────────────────────────────────────
+# The Agent Skills standard (agentskills.io) uses ~/.agents/
+# Only set up skills for tools the user chose to install
+
+if [[ -d "$DOTFILES_DIR/agents" ]] && ($install_claude || $install_codex); then
+    info "Setting up Agent Skills..."
+
+    # ~/.agents → dotfiles/agents (canonical location)
+    create_symlink "$DOTFILES_DIR/agents" "$HOME/.agents"
+
+    # Tool-specific skills directories → shared ~/.agents/skills
+    if $install_claude; then
+        mkdir -p "$HOME/.claude"
+        create_symlink "$HOME/.agents/skills" "$HOME/.claude/skills"
+    fi
+
+    if $install_codex; then
+        mkdir -p "$HOME/.codex"
+        create_symlink "$HOME/.agents/skills" "$HOME/.codex/skills"
+    fi
+fi
