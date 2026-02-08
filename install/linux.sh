@@ -83,14 +83,31 @@ fi
 
 header "Fonts"
 FONT_DIR="$HOME/.local/share/fonts"
-if fc-list | grep -qi "MartianMono Nerd Font"; then
-    info "MartianMono Nerd Font already installed"
+
+# Always install JetBrainsMono (default font)
+if fc-list | grep -qi "JetBrainsMono Nerd Font"; then
+    info "JetBrainsMono Nerd Font already installed"
 else
-    info "Installing MartianMono Nerd Font..."
+    info "Installing JetBrainsMono Nerd Font..."
     mkdir -p "$FONT_DIR"
-    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz -o /tmp/MartianMono.tar.xz
-    tar -xf /tmp/MartianMono.tar.xz -C "$FONT_DIR"
-    rm /tmp/MartianMono.tar.xz
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz -o /tmp/JetBrainsMono.tar.xz
+    tar -xf /tmp/JetBrainsMono.tar.xz -C "$FONT_DIR"
+    rm /tmp/JetBrainsMono.tar.xz
     fc-cache -fv
-    info "MartianMono Nerd Font installed"
+    info "JetBrainsMono Nerd Font installed"
+fi
+
+# Ask about MartianMono
+if ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
+    if fc-list | grep -qi "MartianMono Nerd Font"; then
+        info "MartianMono Nerd Font already installed"
+    else
+        info "Installing MartianMono Nerd Font..."
+        mkdir -p "$FONT_DIR"
+        curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz -o /tmp/MartianMono.tar.xz
+        tar -xf /tmp/MartianMono.tar.xz -C "$FONT_DIR"
+        rm /tmp/MartianMono.tar.xz
+        fc-cache -fv
+        info "MartianMono Nerd Font installed"
+    fi
 fi

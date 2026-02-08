@@ -42,10 +42,21 @@ fi
 # ==============================================================================
 
 header "Fonts"
-if brew list --cask font-martian-mono-nerd-font &>/dev/null; then
-    info "MartianMono Nerd Font already installed"
+
+# Always install JetBrainsMono (default font)
+if brew list --cask font-jetbrains-mono-nerd-font &>/dev/null; then
+    info "JetBrainsMono Nerd Font already installed"
 else
-    spin "Installing MartianMono Nerd Font" brew install --cask font-martian-mono-nerd-font
+    spin "Installing JetBrainsMono Nerd Font" brew install --cask font-jetbrains-mono-nerd-font
+fi
+
+# Ask about MartianMono
+if ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
+    if brew list --cask font-martian-mono-nerd-font &>/dev/null; then
+        info "MartianMono Nerd Font already installed"
+    else
+        spin "Installing MartianMono Nerd Font" brew install --cask font-martian-mono-nerd-font
+    fi
 fi
 
 # ==============================================================================

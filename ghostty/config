@@ -17,8 +17,8 @@ config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
 # ------------------------------------------------------------------------------
 
 # Default font - override size in local config if needed
-font-family = "MartianMono Nerd Font"
-# font-family = "JetBrainsMono Nerd Font"
+# font-family = "MartianMono Nerd Font"
+font-family = "JetBrainsMono Nerd Font"
 font-size = 12
 
 # ------------------------------------------------------------------------------
