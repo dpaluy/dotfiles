@@ -21,6 +21,7 @@ cd ~/dotfiles
 - **LazyGit** for terminal-based git UI
 - **Starship** cross-shell prompt
 - **Atuin** for shell history sync
+- **tmux** / **Zellij** terminal multiplexers (both included, pick your preference)
 - **Ghostty** terminal configuration
 - **Delta** for beautiful git diffs
 
@@ -47,6 +48,8 @@ cd ~/dotfiles
 │   └── starship.toml                  # Prompt configuration
 ├── tmux/
 │   └── tmux.conf                      # Tmux configuration
+├── zellij/
+│   └── config.kdl                     # Zellij configuration
 ├── hypr/                              # Hyprland (Linux only)
 │   ├── hyprland.conf
 │   └── bindings.conf
@@ -71,14 +74,14 @@ cd ~/dotfiles
 
 ### macOS (via Homebrew)
 
-- Development: git, neovim, tmux, lazygit, gh
+- Development: git, neovim, tmux, zellij, lazygit, gh
 - Search: fzf, fd, ripgrep
 - Shell: starship, atuin
 - Utilities: jq, gum, git-delta
 
 ### Linux
 
-- Core: zsh, git, curl, neovim
+- Core: zsh, git, curl, neovim, tmux, zellij
 - Search: fzf, fd, ripgrep
 - Shell history: atuin
 

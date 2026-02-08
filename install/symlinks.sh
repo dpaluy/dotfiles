@@ -49,10 +49,14 @@ create_symlink "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
 # Starship
 create_symlink "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
-# Tmux (if exists)
+# Tmux
 if [[ -f "$DOTFILES_DIR/tmux/tmux.conf" ]]; then
     create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
 fi
+
+# Zellij
+mkdir -p "$HOME/.config/zellij"
+create_symlink "$DOTFILES_DIR/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 
 # Claude Code
 mkdir -p "$HOME/.claude"

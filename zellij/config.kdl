@@ -1,0 +1,66 @@
+// Zellij Configuration
+
+// ── General ────────────────────────────────────────────────────────────────
+on_force_close "detach"
+default_layout "compact"
+scroll_buffer_size 50000
+copy_clipboard "system"
+copy_on_select true
+session_serialization true
+pane_frames true
+show_startup_tips false
+
+// ── UI ─────────────────────────────────────────────────────────────────────
+ui {
+    pane_frames {
+        rounded_corners true
+    }
+}
+
+// ── Keybindings ────────────────────────────────────────────────────────────
+// Ctrl+S enters tmux mode (replacing default Ctrl+B).
+// All other mode defaults are preserved.
+keybinds {
+    shared_except "tmux" "locked" {
+        unbind "Ctrl b"
+        bind "Ctrl s" { SwitchToMode "Tmux"; }
+    }
+
+    tmux clear-defaults=true {
+        bind "Esc" "Ctrl s" { SwitchToMode "Normal"; }
+
+        // Pane navigation (vim-style)
+        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+
+        // Splits: | = vertical (right), - = horizontal (down)
+        bind "|" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
+
+        // Tab and pane management
+        bind "c" { NewTab; SwitchToMode "Normal"; }
+        bind "x" { CloseFocus; SwitchToMode "Normal"; }
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        bind "d" { Detach; }
+        bind "f" { ToggleFloatingPanes; SwitchToMode "Normal"; }
+
+        // Go to tab by number
+        bind "1" { GoToTab 1; SwitchToMode "Normal"; }
+        bind "2" { GoToTab 2; SwitchToMode "Normal"; }
+        bind "3" { GoToTab 3; SwitchToMode "Normal"; }
+        bind "4" { GoToTab 4; SwitchToMode "Normal"; }
+        bind "5" { GoToTab 5; SwitchToMode "Normal"; }
+        bind "6" { GoToTab 6; SwitchToMode "Normal"; }
+        bind "7" { GoToTab 7; SwitchToMode "Normal"; }
+        bind "8" { GoToTab 8; SwitchToMode "Normal"; }
+        bind "9" { GoToTab 9; SwitchToMode "Normal"; }
+
+        // Enter sub-modes
+        bind "r" { SwitchToMode "Resize"; }
+        bind "m" { SwitchToMode "Move"; }
+        bind "s" { SwitchToMode "Scroll"; }
+        bind "o" { SwitchToMode "Session"; }
+    }
+}

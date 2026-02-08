@@ -17,6 +17,7 @@ brew "git-lfs"              # Large file storage
 brew "gh"                   # GitHub CLI
 brew "neovim"               # Editor
 brew "tmux"                 # Terminal multiplexer
+brew "zellij"               # Terminal multiplexer (modern alternative)
 brew "mise"                 # Version manager (replaces asdf)
 brew "uv"                   # Fast Python package installer (uses mise Python)
 brew "lazygit"              # Terminal UI for git
