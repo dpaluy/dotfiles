@@ -25,10 +25,29 @@ fi
 # Install common tools
 info "Installing common tools (git, curl, etc.)..."
 case "$OS" in
-    arch)   sudo pacman -S --noconfirm git curl neovim fzf fd ripgrep gum ;;
-    debian) sudo apt install -y git curl neovim fzf fd-find ripgrep ;;
-    fedora) sudo dnf install -y git curl neovim fzf fd-find ripgrep ;;
+    arch)   sudo pacman -S --noconfirm git curl neovim tmux fzf fd ripgrep gum ;;
+    debian) sudo apt install -y git curl neovim tmux fzf fd-find ripgrep ;;
+    fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep ;;
 esac
+
+# Install zellij
+if ! command -v zellij &> /dev/null; then
+    info "Installing zellij..."
+    case "$OS" in
+        arch)   sudo pacman -S --noconfirm zellij ;;
+        debian)
+            ZELLIJ_ARCH=$(uname -m)
+            curl -fsSL "https://github.com/zellij-org/zellij/releases/latest/download/zellij-${ZELLIJ_ARCH}-unknown-linux-musl.tar.gz" -o /tmp/zellij.tar.gz
+            tar -xf /tmp/zellij.tar.gz -C /tmp
+            sudo install /tmp/zellij /usr/local/bin/zellij
+            rm /tmp/zellij.tar.gz /tmp/zellij
+            ;;
+        fedora) sudo dnf install -y zellij ;;
+    esac
+    info "Zellij installed"
+else
+    info "Zellij already installed"
+fi
 
 # Install gum for better TUI (if not already installed)
 if ! command -v gum &> /dev/null; then
