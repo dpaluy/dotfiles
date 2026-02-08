@@ -148,14 +148,9 @@ if [[ -d "$DOTFILES_DIR/agents" ]] && ($install_claude || $install_codex); then
     # ~/.agents → dotfiles/agents (canonical location)
     create_symlink "$DOTFILES_DIR/agents" "$HOME/.agents"
 
-    # Tool-specific skills directories → shared ~/.agents/skills
+    # Claude Code needs skills symlinked into ~/.claude/
     if $install_claude; then
         mkdir -p "$HOME/.claude"
         create_symlink "$HOME/.agents/skills" "$HOME/.claude/skills"
-    fi
-
-    if $install_codex; then
-        mkdir -p "$HOME/.codex"
-        create_symlink "$HOME/.agents/skills" "$HOME/.codex/skills"
     fi
 fi
