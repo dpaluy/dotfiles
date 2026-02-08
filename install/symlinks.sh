@@ -58,13 +58,18 @@ fi
 mkdir -p "$HOME/.claude"
 create_symlink "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 
-# OpenAI Codex (copy, not symlink - codex doesn't support symlinked config)
-mkdir -p "$HOME/.codex"
-if [[ ! -f "$HOME/.codex/config.toml" ]]; then
-    cp "$DOTFILES_DIR/codex/config.toml" "$HOME/.codex/config.toml"
-    info "Copied codex config to ~/.codex/config.toml"
-else
-    info "Codex config already exists at ~/.codex/config.toml"
+# OpenAI Codex
+if command -v codex &> /dev/null; then
+    mkdir -p "$HOME/.codex"
+    # config.toml: copy, not symlink - codex doesn't support symlinked config
+    if [[ ! -f "$HOME/.codex/config.toml" ]]; then
+        cp "$DOTFILES_DIR/codex/config.toml" "$HOME/.codex/config.toml"
+        info "Copied codex config to ~/.codex/config.toml"
+    else
+        info "Codex config already exists at ~/.codex/config.toml"
+    fi
+    # AGENTS.md: symlink for global instructions
+    create_symlink "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 fi
 
 # Linux-only: Hyprland

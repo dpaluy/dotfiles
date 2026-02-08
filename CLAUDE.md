@@ -29,7 +29,7 @@ install/
 ├── macos.sh            ← Homebrew, fonts, Raycast, LazyVim
 ├── linux.sh            ← System packages, fonts
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
-├── ai-tools.sh         ← Claude Code, Codex, OpenCode
+├── ai-tools.sh         ← Claude Code, Codex, Gemini CLI, OpenCode, qmd
 ├── symlinks.sh         ← Config symlinks
 └── local-config.sh     ← Template creation
 ```
@@ -46,11 +46,13 @@ fi
 
 **Symlink Strategy**: `install/symlinks.sh` creates symlinks to expected locations:
 - `git/config` → `~/.config/git/config` (XDG style)
+- `git/ignore` → `~/.config/git/ignore`
 - `ghostty/config` → `~/.config/ghostty/config`
 - `tmux/tmux.conf` → `~/.tmux.conf`
 - `starship/starship.toml` → `~/.config/starship.toml`
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
-- `codex/config.toml` → `~/.codex/config.toml`
+- `codex/config.toml` → `~/.codex/config.toml` (copied, not symlinked)
+- `codex/AGENTS.md` → `~/.codex/AGENTS.md` (if codex installed)
 
 **Special Case - ~/.zshrc**: Uses wrapper pattern instead of symlink.
 - `~/.zshrc` (local file) sources `~/dotfiles/zsh/zshrc`
@@ -58,11 +60,11 @@ fi
 - This prevents tool-added lines from polluting version-controlled files
 
 **Zsh Loading Order** (`zsh/zshrc`):
-1. Oh My Zsh initialization
+1. Oh My Zsh initialization (plugins: gitfast, z, fzf, zsh-autosuggestions, etc.)
 2. Public modules: `zsh/{path,exports,aliases,functions,ai,rails}`
 3. OS-specific: `zsh/macos` (darwin) or `zsh/linux` (linux)
 4. Local overrides: `~/.local/dotfiles/*.local`
-5. Tool initializations: mise, starship, atuin
+5. Tool initializations: mise, starship, atuin, fzf
 
 **Public/Private Split**:
 - Public (this repo): Shareable configurations
