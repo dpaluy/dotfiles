@@ -49,6 +49,43 @@ else
 fi
 
 # ==============================================================================
+# Yazi (Terminal File Manager)
+# ==============================================================================
+
+header "Yazi"
+
+if ask_yes_no "Install Yazi (terminal file manager)?" "n"; then
+    if ! command -v yazi &> /dev/null; then
+        info "Installing Yazi..."
+        case "$OS" in
+            macos)
+                brew install yazi ffmpeg sevenzip poppler zoxide imagemagick
+                ;;
+            arch)
+                sudo pacman -S --noconfirm yazi ffmpeg 7zip poppler fd ripgrep fzf zoxide imagemagick
+                ;;
+            debian)
+                YAZI_ARCH=$(uname -m)
+                YAZI_VERSION=$(curl -fsSL "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+                curl -fsSL "https://github.com/sxyazi/yazi/releases/download/${YAZI_VERSION}/yazi-${YAZI_ARCH}-unknown-linux-gnu.zip" -o /tmp/yazi.zip
+                unzip -o /tmp/yazi.zip -d /tmp/yazi-extract
+                sudo install /tmp/yazi-extract/yazi-${YAZI_ARCH}-unknown-linux-gnu/yazi /usr/local/bin/yazi
+                rm -rf /tmp/yazi.zip /tmp/yazi-extract
+                ;;
+            fedora)
+                sudo dnf copr enable -y lihaohong/yazi
+                sudo dnf install -y yazi
+                ;;
+        esac
+        info "Yazi installed"
+    else
+        info "Yazi already installed"
+    fi
+else
+    info "Skipping Yazi"
+fi
+
+# ==============================================================================
 # Default Shell
 # ==============================================================================
 
