@@ -25,10 +25,34 @@ fi
 # Install common tools
 info "Installing common tools (git, curl, etc.)..."
 case "$OS" in
-    arch)   sudo pacman -S --noconfirm git curl neovim tmux fzf fd ripgrep gum ;;
+    arch)   sudo pacman -S --noconfirm git curl neovim tmux fzf fd ripgrep gum lazygit ;;
     debian) sudo apt install -y git curl neovim tmux fzf fd-find ripgrep ;;
     fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep ;;
 esac
+
+# Install lazygit
+if ! command -v lazygit &> /dev/null; then
+    info "Installing lazygit..."
+    case "$OS" in
+        arch)
+            # Already installed above
+            ;;
+        debian)
+            LAZYGIT_VERSION=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+            curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" -o /tmp/lazygit.tar.gz
+            tar -xf /tmp/lazygit.tar.gz -C /tmp lazygit
+            sudo install /tmp/lazygit /usr/local/bin/lazygit
+            rm /tmp/lazygit.tar.gz /tmp/lazygit
+            ;;
+        fedora)
+            sudo dnf copr enable -y atim/lazygit
+            sudo dnf install -y lazygit
+            ;;
+    esac
+    info "Lazygit installed"
+else
+    info "Lazygit already installed"
+fi
 
 # Install zellij
 if ! command -v zellij &> /dev/null; then
