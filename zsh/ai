@@ -13,8 +13,8 @@
 # Claude Code
 # ------------------------------------------------------------------------------
 
-# Auto-approve for trusted projects (skip permission prompts)
 alias cly="claude --dangerously-skip-permissions"
+alias cldyo="export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 && claude --dangerously-skip-permissions"
 
 # Enable background task execution
 export ENABLE_BACKGROUND_TASKS=true
@@ -30,4 +30,3 @@ export ENABLE_TOOL_SEARCH=true
 
 export MAX_THINKING_TOKENS=31999
 export TEAMMATE_TOOL_ENABLED=true
-
