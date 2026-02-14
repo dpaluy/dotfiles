@@ -14,7 +14,7 @@
 # ------------------------------------------------------------------------------
 
 alias cly="claude --dangerously-skip-permissions"
-alias cldyo="export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 && claude --dangerously-skip-permissions"
+alias cly-team="CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude --dangerously-skip-permissions"
 
 # Enable background task execution
 export ENABLE_BACKGROUND_TASKS=true
