@@ -2,6 +2,7 @@ tool_output_token_limit = 25000
 web_search = "live"
 suppress_unstable_features_warning = true
 personality = "pragmatic"
+responses_websockets_v2 = true
 
 [features]
 unified_exec = true
