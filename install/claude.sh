@@ -37,6 +37,14 @@ if [[ -d "$DOTFILES_DIR/claude/hooks" ]] && ask_yes_no "Install Claude Code hook
                 "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
             info "Registered hook: optimization-hint.sh (UserPromptSubmit)"
         fi
+
+        # UserPromptSubmit: confirm intent on long prompts (>50 words)
+        if ! jq -e '.hooks.UserPromptSubmit // [] | .[] | .hooks[]? | select(.command | contains("clarify-long-prompt.sh"))' "$settings" &>/dev/null; then
+            jq --arg cmd "$HOME/.claude/hooks/clarify-long-prompt.sh" \
+                '.hooks.UserPromptSubmit = (.hooks.UserPromptSubmit // []) + [{"matcher":"","hooks":[{"type":"command","command":$cmd,"timeout":1000}]}]' \
+                "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
+            info "Registered hook: clarify-long-prompt.sh (UserPromptSubmit)"
+        fi
     else
         warn "jq not found — hooks symlinked but not registered in settings.json"
     fi
