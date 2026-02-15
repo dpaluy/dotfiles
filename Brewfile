@@ -44,6 +44,7 @@ brew "atuin"                # Shell history
 brew "jq"                   # JSON processor
 brew "gum"                  # Shell script UI components
 brew "trash"                # Move files to trash (safer rm)
+brew "yt-dlp"               # Video downloader
 
 # ------------------------------------------------------------------------------
 # Languages (dependencies for mise-installed languages)

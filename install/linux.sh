@@ -25,9 +25,9 @@ fi
 # Install common tools
 info "Installing common tools (git, curl, etc.)..."
 case "$OS" in
-    arch)   sudo pacman -S --noconfirm git curl neovim tmux fzf fd ripgrep gum lazygit ;;
-    debian) sudo apt install -y git curl neovim tmux fzf fd-find ripgrep ;;
-    fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep ;;
+    arch)   sudo pacman -S --noconfirm git curl neovim tmux fzf fd ripgrep gum lazygit yt-dlp ;;
+    debian) sudo apt install -y git curl neovim tmux fzf fd-find ripgrep yt-dlp ;;
+    fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep yt-dlp ;;
 esac
 
 # Install lazygit
