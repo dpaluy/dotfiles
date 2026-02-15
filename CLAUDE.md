@@ -31,6 +31,7 @@ install/
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── ai-tools.sh         ← Claude Code, Codex, Gemini CLI, OpenCode, qmd
 ├── claude.sh           ← Claude Code config (CLAUDE.md, hooks, settings.json)
+├── opencode.sh         ← OpenCode config (AGENTS.md, opencode.json)
 ├── symlinks.sh         ← Config symlinks
 └── local-config.sh     ← Template creation
 ```
@@ -56,6 +57,8 @@ fi
 - `claude/hooks/*.sh` → `~/.claude/hooks/*.sh` (optional, registers in settings.json)
 - `codex/config.toml` → `~/.codex/config.toml` (copied, not symlinked)
 - `codex/AGENTS.md` → `~/.codex/AGENTS.md` (if codex installed)
+- `opencode/AGENTS.md` → `~/.config/opencode/AGENTS.md` (if opencode installed)
+- `opencode/opencode.json` → `~/.config/opencode/opencode.json` (if no existing config)
 
 **Special Case - ~/.zshrc**: Uses wrapper pattern instead of symlink.
 - `~/.zshrc` (local file) sources `~/dotfiles/zsh/zshrc`
