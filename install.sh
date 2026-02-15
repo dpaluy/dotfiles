@@ -41,10 +41,9 @@ fi
 # Configuration symlinks
 source "$SCRIPT_DIR/install/symlinks.sh"
 
-# Claude Code configuration
+# AI tool configurations (skipped if tool not installed)
 source "$SCRIPT_DIR/install/claude.sh"
-
-# OpenCode configuration
+source "$SCRIPT_DIR/install/codex.sh"
 source "$SCRIPT_DIR/install/opencode.sh"
 
 # Local configuration templates

@@ -31,6 +31,7 @@ install/
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── ai-tools.sh         ← Claude Code, Codex, Gemini CLI, OpenCode, qmd
 ├── claude.sh           ← Claude Code config (CLAUDE.md, hooks, settings.json)
+├── codex.sh            ← Codex config (AGENTS.md, config.toml)
 ├── opencode.sh         ← OpenCode config (AGENTS.md, opencode.json)
 ├── symlinks.sh         ← Config symlinks
 └── local-config.sh     ← Template creation

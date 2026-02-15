@@ -14,6 +14,7 @@ install/
 ├── ai-tools.sh     ← Optional: Claude Code, Codex CLI, OpenCode
 ├── symlinks.sh     ← Config symlinks (zsh, git, ghostty, etc.)
 ├── claude.sh       ← Claude Code config (CLAUDE.md, hooks, settings.json)
+├── codex.sh        ← Codex config (AGENTS.md, config.toml)
 ├── opencode.sh     ← OpenCode config (AGENTS.md, opencode.json)
 └── local-config.sh ← Template creation in ~/.local/dotfiles/
 ```
@@ -22,7 +23,7 @@ install/
 
 1. `install.sh` sources `lib.sh` first (utilities available to all modules)
 2. OS detection routes to `macos.sh` or `linux.sh`
-3. Remaining modules source in order: common → ai-tools → symlinks → claude → opencode → local-config
+3. Remaining modules source in order: common → ai-tools → symlinks → claude → codex → opencode → local-config
 4. Each module executes on source (not function-based)
 
 ## Adding New Modules

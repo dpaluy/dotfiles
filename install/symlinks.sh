@@ -58,20 +58,6 @@ fi
 mkdir -p "$HOME/.config/zellij"
 create_symlink "$DOTFILES_DIR/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 
-# OpenAI Codex
-if command -v codex &> /dev/null; then
-    mkdir -p "$HOME/.codex"
-    # config.toml: copy, not symlink - codex doesn't support symlinked config
-    if [[ ! -f "$HOME/.codex/config.toml" ]]; then
-        cp "$DOTFILES_DIR/codex/config.toml" "$HOME/.codex/config.toml"
-        info "Copied codex config to ~/.codex/config.toml"
-    else
-        info "Codex config already exists at ~/.codex/config.toml"
-    fi
-    # AGENTS.md: symlink for global instructions
-    create_symlink "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
-fi
-
 # Linux-only: Hyprland
 if [[ "$OS" != "macos" ]]; then
     if [[ -d "$DOTFILES_DIR/hypr" ]]; then

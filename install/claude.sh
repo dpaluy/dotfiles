@@ -5,6 +5,11 @@
 
 header "Claude Code"
 
+if ! command -v claude &> /dev/null; then
+    info "Claude Code not installed, skipping configuration"
+    return 0 2>/dev/null || exit 0
+fi
+
 mkdir -p "$HOME/.claude"
 
 # CLAUDE.md (global instructions)
