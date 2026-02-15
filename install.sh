@@ -41,6 +41,9 @@ fi
 # Configuration symlinks
 source "$SCRIPT_DIR/install/symlinks.sh"
 
+# Claude Code configuration
+source "$SCRIPT_DIR/install/claude.sh"
+
 # Local configuration templates
 source "$SCRIPT_DIR/install/local-config.sh"
 

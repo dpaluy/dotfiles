@@ -58,10 +58,6 @@ fi
 mkdir -p "$HOME/.config/zellij"
 create_symlink "$DOTFILES_DIR/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 
-# Claude Code
-mkdir -p "$HOME/.claude"
-create_symlink "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
-
 # OpenAI Codex
 if command -v codex &> /dev/null; then
     mkdir -p "$HOME/.codex"

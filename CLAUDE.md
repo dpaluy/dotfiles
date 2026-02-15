@@ -30,6 +30,7 @@ install/
 ├── linux.sh            ← System packages, fonts
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── ai-tools.sh         ← Claude Code, Codex, Gemini CLI, OpenCode, qmd
+├── claude.sh           ← Claude Code config (CLAUDE.md, hooks, settings.json)
 ├── symlinks.sh         ← Config symlinks
 └── local-config.sh     ← Template creation
 ```
@@ -51,7 +52,8 @@ fi
 - `tmux/tmux.conf` → `~/.tmux.conf`
 - `zellij/config.kdl` → `~/.config/zellij/config.kdl`
 - `starship/starship.toml` → `~/.config/starship.toml`
-- `claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
+- `claude/CLAUDE.md` → `~/.claude/CLAUDE.md` (via `install/claude.sh`)
+- `claude/hooks/*.sh` → `~/.claude/hooks/*.sh` (optional, registers in settings.json)
 - `codex/config.toml` → `~/.codex/config.toml` (copied, not symlinked)
 - `codex/AGENTS.md` → `~/.codex/AGENTS.md` (if codex installed)
 
