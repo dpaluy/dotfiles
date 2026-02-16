@@ -20,6 +20,7 @@ config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
 # font-family = "MartianMono Nerd Font"
 font-family = "JetBrainsMono Nerd Font"
 font-size = 12
+font-thicken = true
 
 # ------------------------------------------------------------------------------
 # Window
@@ -29,6 +30,7 @@ background-blur-radius = 20
 window-padding-x = 12
 window-padding-y = 12
 confirm-close-surface = false
+window-save-state = always
 
 # ------------------------------------------------------------------------------
 # Cursor
@@ -43,6 +45,13 @@ cursor-style-blink = false
 
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = 1.0
+copy-on-select = clipboard
+
+# ------------------------------------------------------------------------------
+# Security
+# ------------------------------------------------------------------------------
+
+clipboard-paste-protection = true
 
 # ------------------------------------------------------------------------------
 # Shell Integration
@@ -73,6 +82,8 @@ keybind = super+5=goto_tab:5
 # Splits
 keybind = super+d=new_split:right
 keybind = super+shift+d=new_split:down
+keybind = super+shift+e=equalize_splits
+keybind = super+shift+f=toggle_split_zoom
 
 # Editing
 keybind = shift+enter=text:\n
