@@ -7,11 +7,14 @@ responses_websockets_v2 = true
 [features]
 unified_exec = true
 shell_snapshot = true
-collab = true
 collaboration_modes = true
 steer = true
 apply_patch_freeform = true
 skills = true
+agents = true
+
+[agents]
+max_threads = 12
 
 [profiles.dev]
 model = "gpt-5.3-codex"
