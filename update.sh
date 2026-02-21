@@ -95,6 +95,21 @@ if command -v npm &> /dev/null && [[ ${#NPM_GLOBALS[@]} -gt 0 ]]; then
 fi
 
 # ==============================================================================
+# bun Global Packages
+# ==============================================================================
+
+BUN_GLOBALS=(
+    https://github.com/tobi/qmd
+)
+
+if command -v bun &> /dev/null && [[ ${#BUN_GLOBALS[@]} -gt 0 ]]; then
+    header "bun Global Packages"
+    for pkg in "${BUN_GLOBALS[@]}"; do
+        spin "Installing/updating $(basename "$pkg")" bun install -g "$pkg"
+    done
+fi
+
+# ==============================================================================
 # Done
 # ==============================================================================
 
