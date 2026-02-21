@@ -116,15 +116,70 @@ if $install_opencode; then
 fi
 
 if $install_qmd; then
-    if ensure_bun; then
+    if ensure_node; then
         info "Installing qmd (local markdown search)..."
         # macOS requires Homebrew's SQLite for extension support
         if [[ "$OSTYPE" == "darwin"* ]]; then
             brew install sqlite 2>/dev/null || true
         fi
-        bun install -g https://github.com/tobi/qmd
+        npm install -g @tobilu/qmd
     else
-        warn "bun not found and mise unavailable. Install bun manually."
+        warn "npm not found and mise unavailable. Install Node.js manually."
+    fi
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# qmd MCP daemon — register with all installed AI tools
+# ─────────────────────────────────────────────────────────────────────────────
+if command -v qmd &> /dev/null; then
+    QMD_MCP_URL="http://localhost:8181/mcp"
+
+    # Install and start qmd MCP daemon service
+    # Resolve node + qmd dist.js to avoid PATH issues in service managers
+    NODE_BIN="$(command -v node)"
+    QMD_DIST="$(npm root -g)/@tobilu/qmd/dist/qmd.js"
+    if [[ ! -f "$QMD_DIST" ]]; then
+        warn "qmd dist not found at $QMD_DIST — skipping service install"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
+        launchctl bootout "gui/$(id -u)/com.tobilu.qmd" 2>/dev/null || true
+        sed -e "s|__NODE_PATH__|$NODE_BIN|g" -e "s|__QMD_DIST__|$QMD_DIST|g" \
+            "$DOTFILES_DIR/qmd/com.tobilu.qmd.plist" > "$plist"
+        launchctl bootstrap "gui/$(id -u)" "$plist"
+        info "Installed qmd MCP launchd service ($NODE_BIN → $QMD_DIST)"
+    elif [[ "$OSTYPE" == "linux"* ]]; then
+        unit_dir="$HOME/.config/systemd/user"
+        mkdir -p "$unit_dir"
+        sed -e "s|__NODE_PATH__|$NODE_BIN|g" -e "s|__QMD_DIST__|$QMD_DIST|g" \
+            "$DOTFILES_DIR/qmd/qmd-mcp.service" > "$unit_dir/qmd-mcp.service"
+        systemctl --user daemon-reload
+        systemctl --user enable --now qmd-mcp.service
+        info "Installed qmd MCP systemd user service ($NODE_BIN → $QMD_DIST)"
+    fi
+
+    # Claude Code
+    if command -v claude &> /dev/null; then
+        if ! claude mcp get qmd &>/dev/null; then
+            claude mcp add --transport http --scope user qmd "$QMD_MCP_URL"
+            info "Registered qmd MCP with Claude Code"
+        fi
+    fi
+
+    # Codex — config.toml is copied, not symlinked; patch if missing
+    if command -v codex &> /dev/null && [[ -f "$HOME/.codex/config.toml" ]]; then
+        if ! grep -q '\[mcp_servers\.qmd\]' "$HOME/.codex/config.toml"; then
+            cat >> "$HOME/.codex/config.toml" <<TOML
+
+[mcp_servers.qmd]
+url = "$QMD_MCP_URL"
+TOML
+            info "Registered qmd MCP with Codex"
+        fi
+    fi
+
+    # OpenCode — symlinked from dotfiles, already includes qmd MCP
+    if command -v opencode &> /dev/null; then
+        info "qmd MCP already configured in opencode.json (via dotfiles symlink)"
     fi
 fi
 

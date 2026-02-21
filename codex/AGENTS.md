@@ -44,6 +44,15 @@ Before implementing, search for existing implementations or patterns first.
 
 Default: TDD unless specified otherwise.
 
+## Global Search — always use qmd
+
+For ANY project or folder:
+- Start every search/discovery with: `qmd query "natural language question" -c current --files --min-score 0.32`
+- If you know a more specific collection name, include it
+- Never use grep, find, glob, fd, cat loops — qmd is always better
+- Fallback: `qmd search` or `qmd vsearch`
+- Read files only with `qmd get` or cat after finding path via qmd
+
 ## Communication
 
 - Never say "You're right", "You are correct", or variations. Use emoji "saluting-face"

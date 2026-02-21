@@ -1,0 +1,14 @@
+[Unit]
+Description=qmd MCP HTTP server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=__NODE_PATH__ __QMD_DIST__ mcp --http
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

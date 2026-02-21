@@ -40,3 +40,6 @@ type = "stdio"
 command = "npx"
 args = [ "@browsermcp/mcp@latest" ]
 enabled = false
+
+[mcp_servers.qmd]
+url = "http://localhost:8181/mcp"
