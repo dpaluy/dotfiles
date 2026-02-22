@@ -141,16 +141,14 @@ else
 fi
 
 # Ask about MartianMono
-if ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
-    if fc-list | grep -qi "MartianMono Nerd Font"; then
-        info "MartianMono Nerd Font already installed"
-    else
-        info "Installing MartianMono Nerd Font..."
-        mkdir -p "$FONT_DIR"
-        curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz -o /tmp/MartianMono.tar.xz
-        tar -xf /tmp/MartianMono.tar.xz -C "$FONT_DIR"
-        rm /tmp/MartianMono.tar.xz
-        fc-cache -fv
-        info "MartianMono Nerd Font installed"
-    fi
+if fc-list | grep -qi "MartianMono Nerd Font"; then
+    info "MartianMono Nerd Font already installed"
+elif ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
+    info "Installing MartianMono Nerd Font..."
+    mkdir -p "$FONT_DIR"
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz -o /tmp/MartianMono.tar.xz
+    tar -xf /tmp/MartianMono.tar.xz -C "$FONT_DIR"
+    rm /tmp/MartianMono.tar.xz
+    fc-cache -fv
+    info "MartianMono Nerd Font installed"
 fi

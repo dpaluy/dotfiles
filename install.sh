@@ -34,7 +34,14 @@ fi
 source "$SCRIPT_DIR/install/common.sh"
 
 # Optional: AI coding assistants
-if ask_yes_no "Install AI coding assistants (Claude Code, Codex, OpenCode)?" "n"; then
+ai_all_installed=true
+for ai_cmd in claude codex gemini opencode qmd; do
+    command -v "$ai_cmd" &>/dev/null || { ai_all_installed=false; break; }
+done
+
+if $ai_all_installed; then
+    info "All AI coding assistants already installed"
+elif ask_yes_no "Install AI coding assistants (Claude Code, Codex, OpenCode)?" "n"; then
     source "$SCRIPT_DIR/install/ai-tools.sh"
 fi
 

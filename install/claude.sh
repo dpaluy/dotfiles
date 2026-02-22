@@ -16,7 +16,32 @@ mkdir -p "$HOME/.claude"
 create_symlink "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 
 # Hooks (optional)
-if [[ -d "$DOTFILES_DIR/claude/hooks" ]] && ask_yes_no "Install Claude Code hooks?"; then
+hooks_installed=true
+if [[ -d "$DOTFILES_DIR/claude/hooks" ]]; then
+    # Check symlinks
+    for hook in "$DOTFILES_DIR/claude/hooks/"*.sh; do
+        [[ -f "$hook" ]] || continue
+        dest="$HOME/.claude/hooks/$(basename "$hook")"
+        if [[ ! -L "$dest" ]] || [[ "$(readlink "$dest")" != "$hook" ]]; then
+            hooks_installed=false
+            break
+        fi
+    done
+    # Check settings.json registration
+    if $hooks_installed && command -v jq &>/dev/null; then
+        settings="$HOME/.claude/settings.json"
+        if [[ ! -f "$settings" ]] \
+            || ! jq -e '.hooks.PostToolUse // [] | .[] | .hooks[]? | select(.command | contains("count-tools.sh"))' "$settings" &>/dev/null \
+            || ! jq -e '.hooks.UserPromptSubmit // [] | .[] | .hooks[]? | select(.command | contains("optimization-hint.sh"))' "$settings" &>/dev/null \
+            || ! jq -e '.hooks.UserPromptSubmit // [] | .[] | .hooks[]? | select(.command | contains("clarify-long-prompt.sh"))' "$settings" &>/dev/null; then
+            hooks_installed=false
+        fi
+    fi
+fi
+
+if [[ -d "$DOTFILES_DIR/claude/hooks" ]] && $hooks_installed; then
+    info "Claude Code hooks already installed"
+elif [[ -d "$DOTFILES_DIR/claude/hooks" ]] && ask_yes_no "Install Claude Code hooks?"; then
     mkdir -p "$HOME/.claude/hooks"
     for hook in "$DOTFILES_DIR/claude/hooks/"*.sh; do
         [[ -f "$hook" ]] && create_symlink "$hook" "$HOME/.claude/hooks/$(basename "$hook")"

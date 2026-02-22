@@ -41,16 +41,22 @@ install_gemini=false
 install_opencode=false
 install_qmd=false
 
-if has_gum; then
+# Detect which tools are already installed
+missing_tools=()
+command -v claude &>/dev/null && info "Claude Code already installed" || missing_tools+=("Claude Code")
+command -v codex &>/dev/null && info "OpenAI Codex CLI already installed" || missing_tools+=("OpenAI Codex CLI")
+command -v gemini &>/dev/null && info "Gemini CLI already installed" || missing_tools+=("Gemini CLI")
+command -v opencode &>/dev/null && info "OpenCode already installed" || missing_tools+=("OpenCode")
+command -v qmd &>/dev/null && info "qmd already installed" || missing_tools+=("qmd (local markdown search)")
+
+if [[ ${#missing_tools[@]} -eq 0 ]]; then
+    info "All AI coding assistants already installed"
+elif has_gum; then
     ai_choices=$(gum choose --no-limit \
         --header "Select AI coding assistants to install (Space to select, Enter to confirm):" \
         --cursor-prefix "[ ] " \
         --selected-prefix "[x] " \
-        "Claude Code" \
-        "OpenAI Codex CLI" \
-        "Gemini CLI" \
-        "OpenCode" \
-        "qmd (local markdown search)" || true)
+        "${missing_tools[@]}" || true)
 
     [[ "$ai_choices" == *"Claude Code"* ]] && install_claude=true
     [[ "$ai_choices" == *"Codex CLI"* ]] && install_codex=true
@@ -63,25 +69,38 @@ if has_gum; then
     fi
 else
     echo "Which AI coding assistants would you like to install?"
-    echo "  1) Claude Code"
-    echo "  2) OpenAI Codex CLI"
-    echo "  3) Gemini CLI"
-    echo "  4) OpenCode"
-    echo "  5) qmd (local markdown search)"
-    echo "  6) All"
-    echo "  7) None"
+    for i in "${!missing_tools[@]}"; do
+        echo "  $((i + 1))) ${missing_tools[$i]}"
+    done
+    echo "  A) All"
+    echo "  N) None"
     echo ""
-    read -p "Enter choices (e.g., 1 3 or 6 for all): " -a ai_choices
+    read -p "Enter choices (e.g., 1 3 or A for all): " -a ai_choices
 
     for choice in "${ai_choices[@]}"; do
         case "$choice" in
-            1) install_claude=true ;;
-            2) install_codex=true ;;
-            3) install_gemini=true ;;
-            4) install_opencode=true ;;
-            5) install_qmd=true ;;
-            6) install_claude=true; install_codex=true; install_gemini=true; install_opencode=true; install_qmd=true ;;
-            7) ;;
+            [Aa])
+                for tool in "${missing_tools[@]}"; do
+                    [[ "$tool" == "Claude Code" ]] && install_claude=true
+                    [[ "$tool" == *"Codex"* ]] && install_codex=true
+                    [[ "$tool" == *"Gemini"* ]] && install_gemini=true
+                    [[ "$tool" == "OpenCode" ]] && install_opencode=true
+                    [[ "$tool" == *"qmd"* ]] && install_qmd=true
+                done
+                ;;
+            [Nn]) ;;
+            [1-9])
+                selected="${missing_tools[$((choice - 1))]:-}"
+                if [[ -n "$selected" ]]; then
+                    [[ "$selected" == "Claude Code" ]] && install_claude=true
+                    [[ "$selected" == *"Codex"* ]] && install_codex=true
+                    [[ "$selected" == *"Gemini"* ]] && install_gemini=true
+                    [[ "$selected" == "OpenCode" ]] && install_opencode=true
+                    [[ "$selected" == *"qmd"* ]] && install_qmd=true
+                else
+                    warn "Unknown option: $choice"
+                fi
+                ;;
             *) warn "Unknown option: $choice" ;;
         esac
     done
@@ -185,7 +204,9 @@ fi
 
 # Offer CodexBar on macOS if any AI tools were installed
 if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_qmd); then
-    if ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then
+    if brew list --cask steipete/tap/codexbar &>/dev/null; then
+        info "CodexBar already installed"
+    elif ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then
         info "Installing CodexBar..."
         brew install --cask steipete/tap/codexbar
     fi

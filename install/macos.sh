@@ -51,12 +51,10 @@ else
 fi
 
 # Ask about MartianMono
-if ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
-    if brew list --cask font-martian-mono-nerd-font &>/dev/null; then
-        info "MartianMono Nerd Font already installed"
-    else
-        spin "Installing MartianMono Nerd Font" brew install --cask font-martian-mono-nerd-font
-    fi
+if brew list --cask font-martian-mono-nerd-font &>/dev/null; then
+    info "MartianMono Nerd Font already installed"
+elif ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
+    spin "Installing MartianMono Nerd Font" brew install --cask font-martian-mono-nerd-font
 fi
 
 # ==============================================================================
@@ -64,7 +62,9 @@ fi
 # ==============================================================================
 
 header "Optional Tools"
-if ask_yes_no "Install Raycast?"; then
+if brew list --cask raycast &>/dev/null || [[ -d "/Applications/Raycast.app" ]]; then
+    info "Raycast already installed"
+elif ask_yes_no "Install Raycast?"; then
     spin "Installing Raycast" brew install --cask raycast
 else
     info "Skipping Raycast"
