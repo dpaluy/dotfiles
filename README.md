@@ -153,7 +153,7 @@ Install custom skills to AI CLI tools:
 | Claude | `~/.claude/skills/` |
 | Custom | User-specified path |
 
-Add new skills by creating a folder in `agents/skills/` with a `SKILL.md` file.
+Add public skills by creating a folder in `agents/skills/` with a `SKILL.md` file. Private/local skills can be added directly to `~/.agents/skills/`.
 
 ### macOS Shortcuts
 

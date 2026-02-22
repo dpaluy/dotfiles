@@ -197,13 +197,46 @@ fi
 # The Agent Skills standard (agentskills.io) uses ~/.agents/
 # Only set up skills for tools the user chose to install
 
-if [[ -d "$DOTFILES_DIR/agents" ]] && ($install_claude || $install_codex); then
+if [[ -d "$DOTFILES_DIR/agents/skills" ]] && ($install_claude || $install_codex); then
     info "Setting up Agent Skills..."
 
-    # ~/.agents → dotfiles/agents (canonical location)
-    create_symlink "$DOTFILES_DIR/agents" "$HOME/.agents"
+    # Transition: replace old whole-directory symlink with real dir
+    if [[ -L "$HOME/.agents" ]]; then
+        user_skills=()
+        if [[ -d "$HOME/.agents/skills" ]]; then
+            for item in "$HOME/.agents/skills"/*; do
+                [[ -L "$item" ]] || continue
+                target="$(readlink "$item")"
+                [[ "$target" == "$DOTFILES_DIR"* ]] && continue
+                user_skills+=("$(basename "$item")|$target")
+            done
+        fi
+        rm -f "$HOME/.agents"
+        info "Replaced old ~/.agents symlink with real directory"
+    fi
 
-    # Claude Code needs skills symlinked into ~/.claude/
+    mkdir -p "$HOME/.agents/skills"
+
+    # Symlink each public skill from dotfiles
+    for skill_dir in "$DOTFILES_DIR/agents/skills"/*/; do
+        [[ -d "$skill_dir" ]] || continue
+        skill_name="$(basename "$skill_dir")"
+        create_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
+    done
+
+    # Restore preserved user skills (from transition)
+    if [[ ${#user_skills[@]:-0} -gt 0 ]]; then
+        for entry in "${user_skills[@]}"; do
+            skill_name="${entry%%|*}"
+            skill_target="${entry#*|}"
+            if [[ ! -e "$HOME/.agents/skills/$skill_name" ]]; then
+                ln -s "$skill_target" "$HOME/.agents/skills/$skill_name"
+                info "Preserved user skill: $skill_name -> $skill_target"
+            fi
+        done
+    fi
+
+    # Claude Code needs skills accessible at ~/.claude/skills
     if $install_claude; then
         mkdir -p "$HOME/.claude"
         create_symlink "$HOME/.agents/skills" "$HOME/.claude/skills"
