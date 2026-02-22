@@ -27,11 +27,21 @@ font-thicken = true
 # ------------------------------------------------------------------------------
 
 background-blur-radius = 20
+confirm-close-surface = false
+unfocused-split-opacity = 0.5
+window-save-state = always
 window-colorspace = display-p3
 window-padding-x = 12
 window-padding-y = 12
-confirm-close-surface = false
-window-save-state = always
+
+# ------------------------------------------------------------------------------
+# Quick Terminal (quake-style dropdown)
+# ------------------------------------------------------------------------------
+
+quick-terminal-position = top
+quick-terminal-screen = mouse
+quick-terminal-autohide = true
+quick-terminal-animation-duration = 0.15
 
 # ------------------------------------------------------------------------------
 # Cursor
@@ -66,8 +76,9 @@ shell-integration-features = no-cursor,no-title,ssh-env
 # Keybindings - macOS
 # ------------------------------------------------------------------------------
 
-# Global hotkey (works even when Ghostty not focused)
+# Global hotkeys (work even when Ghostty not focused)
 keybind = global:super+,=toggle_visibility
+keybind = global:ctrl+grave_accent=toggle_quick_terminal
 
 # Tabs
 keybind = super+t=new_tab
