@@ -195,9 +195,9 @@ fi
 # Agent Skills Setup (shared across AI tools)
 # ─────────────────────────────────────────────────────────────────────────────
 # The Agent Skills standard (agentskills.io) uses ~/.agents/
-# Only set up skills for tools the user chose to install
+# Always set up skills if the directory exists — tools may already be installed
 
-if [[ -d "$DOTFILES_DIR/agents/skills" ]] && ($install_claude || $install_codex); then
+if [[ -d "$DOTFILES_DIR/agents/skills" ]]; then
     info "Setting up Agent Skills..."
 
     # Transition: replace old whole-directory symlink with real dir
@@ -237,7 +237,7 @@ if [[ -d "$DOTFILES_DIR/agents/skills" ]] && ($install_claude || $install_codex)
     fi
 
     # Claude Code needs skills accessible at ~/.claude/skills
-    if $install_claude; then
+    if $install_claude || command -v claude &> /dev/null; then
         mkdir -p "$HOME/.claude"
         create_symlink "$HOME/.agents/skills" "$HOME/.claude/skills"
     fi
