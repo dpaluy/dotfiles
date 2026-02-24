@@ -176,11 +176,11 @@ if command -v qmd &> /dev/null; then
         info "Installed qmd MCP systemd user service ($NODE_BIN → $QMD_DIST)"
     fi
 
-    # Claude Code
+    # Claude Code — use stdio transport (no auth required)
     if command -v claude &> /dev/null; then
         if ! claude mcp get qmd &>/dev/null; then
-            claude mcp add --transport http --scope user qmd "$QMD_MCP_URL"
-            info "Registered qmd MCP with Claude Code"
+            claude mcp add --transport stdio --scope user qmd -- qmd mcp
+            info "Registered qmd MCP with Claude Code (stdio)"
         fi
     fi
 
