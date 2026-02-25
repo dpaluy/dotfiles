@@ -39,6 +39,7 @@ install_claude=false
 install_codex=false
 install_gemini=false
 install_opencode=false
+install_pi=false
 install_qmd=false
 
 # Detect which tools are already installed
@@ -47,6 +48,7 @@ command -v claude &>/dev/null && info "Claude Code already installed" || missing
 command -v codex &>/dev/null && info "OpenAI Codex CLI already installed" || missing_tools+=("OpenAI Codex CLI")
 command -v gemini &>/dev/null && info "Gemini CLI already installed" || missing_tools+=("Gemini CLI")
 command -v opencode &>/dev/null && info "OpenCode already installed" || missing_tools+=("OpenCode")
+command -v pi &>/dev/null && info "pi already installed" || missing_tools+=("pi (coding agent)")
 command -v qmd &>/dev/null && info "qmd already installed" || missing_tools+=("qmd (local markdown search)")
 
 if [[ ${#missing_tools[@]} -eq 0 ]]; then
@@ -62,6 +64,7 @@ elif has_gum; then
     [[ "$ai_choices" == *"Codex CLI"* ]] && install_codex=true
     [[ "$ai_choices" == *"Gemini CLI"* ]] && install_gemini=true
     [[ "$ai_choices" == *"OpenCode"* ]] && install_opencode=true
+    [[ "$ai_choices" == *"pi"* ]] && install_pi=true
     [[ "$ai_choices" == *"qmd"* ]] && install_qmd=true
 
     if [[ -z "$ai_choices" ]]; then
@@ -85,6 +88,7 @@ else
                     [[ "$tool" == *"Codex"* ]] && install_codex=true
                     [[ "$tool" == *"Gemini"* ]] && install_gemini=true
                     [[ "$tool" == "OpenCode" ]] && install_opencode=true
+                    [[ "$tool" == *"pi"* ]] && install_pi=true
                     [[ "$tool" == *"qmd"* ]] && install_qmd=true
                 done
                 ;;
@@ -96,6 +100,7 @@ else
                     [[ "$selected" == *"Codex"* ]] && install_codex=true
                     [[ "$selected" == *"Gemini"* ]] && install_gemini=true
                     [[ "$selected" == "OpenCode" ]] && install_opencode=true
+                    [[ "$selected" == *"pi"* ]] && install_pi=true
                     [[ "$selected" == *"qmd"* ]] && install_qmd=true
                 else
                     warn "Unknown option: $choice"
@@ -132,6 +137,15 @@ fi
 if $install_opencode; then
     info "Installing OpenCode..."
     curl -fsSL https://opencode.ai/install | bash
+fi
+
+if $install_pi; then
+    if ensure_node; then
+        info "Installing pi..."
+        npm install -g @mariozechner/pi-coding-agent
+    else
+        warn "npm not found and mise unavailable. Install Node.js manually."
+    fi
 fi
 
 if $install_qmd; then
@@ -203,7 +217,7 @@ TOML
 fi
 
 # Offer CodexBar on macOS if any AI tools were installed
-if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_qmd); then
+if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_pi || $install_qmd); then
     if brew list --cask steipete/tap/codexbar &>/dev/null; then
         info "CodexBar already installed"
     elif ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then

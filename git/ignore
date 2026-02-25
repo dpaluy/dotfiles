@@ -83,3 +83,4 @@ coverage/
 htmlcov/
 
 **/.claude/settings.local.json
+.rollbar.yaml
