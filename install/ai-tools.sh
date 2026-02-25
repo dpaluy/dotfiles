@@ -219,47 +219,23 @@ fi
 # Always set up skills if the directory exists — tools may already be installed
 
 if [[ -d "$DOTFILES_DIR/agents/skills" ]]; then
-    info "Setting up Agent Skills..."
-
-    # Transition: replace old whole-directory symlink with real dir
-    if [[ -L "$HOME/.agents" ]]; then
-        user_skills=()
-        if [[ -d "$HOME/.agents/skills" ]]; then
-            for item in "$HOME/.agents/skills"/*; do
-                [[ -L "$item" ]] || continue
-                target="$(readlink "$item")"
-                [[ "$target" == "$DOTFILES_DIR"* ]] && continue
-                user_skills+=("$(basename "$item")|$target")
-            done
-        fi
-        rm -f "$HOME/.agents"
-        info "Replaced old ~/.agents symlink with real directory"
-    fi
-
-    mkdir -p "$HOME/.agents/skills"
-
-    # Symlink each public skill from dotfiles
-    for skill_dir in "$DOTFILES_DIR/agents/skills"/*/; do
-        [[ -d "$skill_dir" ]] || continue
-        skill_name="$(basename "$skill_dir")"
-        create_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
-    done
-
-    # Restore preserved user skills (from transition)
-    if [[ ${#user_skills[@]:-0} -gt 0 ]]; then
-        for entry in "${user_skills[@]}"; do
-            skill_name="${entry%%|*}"
-            skill_target="${entry#*|}"
-            if [[ ! -e "$HOME/.agents/skills/$skill_name" ]]; then
-                ln -s "$skill_target" "$HOME/.agents/skills/$skill_name"
-                info "Preserved user skill: $skill_name -> $skill_target"
-            fi
+    # ~/.agents/skills: shared Agent Skills standard (agentskills.io)
+    if ask_yes_no "Symlink dotfiles skills into ~/.agents/skills?"; then
+        mkdir -p "$HOME/.agents/skills"
+        for skill_dir in "$DOTFILES_DIR/agents/skills"/*/; do
+            [[ -d "$skill_dir" ]] || continue
+            skill_name="$(basename "$skill_dir")"
+            create_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
         done
     fi
 
-    # Claude Code needs skills accessible at ~/.claude/skills
-    if $install_claude || command -v claude &> /dev/null; then
-        mkdir -p "$HOME/.claude"
-        create_symlink "$HOME/.agents/skills" "$HOME/.claude/skills"
+    # ~/.claude/skills: Claude Code skills
+    if ($install_claude || command -v claude &> /dev/null) && ask_yes_no "Symlink dotfiles skills into ~/.claude/skills?"; then
+        mkdir -p "$HOME/.claude/skills"
+        for skill_dir in "$DOTFILES_DIR/agents/skills"/*/; do
+            [[ -d "$skill_dir" ]] || continue
+            skill_name="$(basename "$skill_dir")"
+            create_symlink "$skill_dir" "$HOME/.claude/skills/$skill_name"
+        done
     fi
 fi
