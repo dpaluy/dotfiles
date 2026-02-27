@@ -75,6 +75,83 @@ EOF
 
 setup_git_config
 
+# ------------------------------------------------------------------------------
+# GPG Commit Signing
+# ------------------------------------------------------------------------------
+
+setup_gpg_signing() {
+    local gitconfig_file="$DOTFILES_LOCAL/gitconfig.local"
+
+    if ! ask_yes_no "Set up GPG commit signing?" "n"; then
+        return
+    fi
+
+    if ! command -v gpg &>/dev/null; then
+        warn "gpg not found. Install gnupg first, then re-run."
+        return
+    fi
+
+    local key_output
+    key_output=$(gpg --list-secret-keys --keyid-format long 2>/dev/null)
+
+    if [[ -z "$key_output" ]]; then
+        warn "No GPG secret keys found."
+        GPG_NEEDS_SETUP=true
+        return
+    fi
+
+    info "Available GPG secret keys:"
+    echo "$key_output"
+    echo ""
+
+    # Extract key IDs (long format after sec rsa.../KEY_ID)
+    local key_ids=()
+    while IFS= read -r line; do
+        key_ids+=("$line")
+    done < <(echo "$key_output" | grep -E '^\s+[A-F0-9]{16,}' | sed 's/^[[:space:]]*//')
+
+    if [[ ${#key_ids[@]} -eq 0 ]]; then
+        # Fallback: try parsing from sec line (sec rsa4096/KEY_ID date)
+        while IFS= read -r line; do
+            key_ids+=("$line")
+        done < <(echo "$key_output" | grep '^sec' | sed 's|.*/\([A-F0-9]*\).*|\1|')
+    fi
+
+    if [[ ${#key_ids[@]} -eq 0 ]]; then
+        warn "Could not parse key IDs. Set manually in $gitconfig_file"
+        return
+    fi
+
+    local selected_key
+    if [[ ${#key_ids[@]} -eq 1 ]]; then
+        selected_key="${key_ids[0]}"
+        info "Using key: $selected_key"
+    elif has_gum; then
+        selected_key=$(printf '%s\n' "${key_ids[@]}" | gum choose --header "Select a GPG key:")
+    else
+        echo "Select a GPG key:"
+        local i=1
+        for kid in "${key_ids[@]}"; do
+            echo "  $i) $kid"
+            ((i++))
+        done
+        local choice
+        read -p "Enter number: " choice
+        selected_key="${key_ids[$((choice - 1))]}"
+    fi
+
+    if [[ -z "$selected_key" ]]; then
+        warn "No key selected."
+        return
+    fi
+
+    git config --file "$gitconfig_file" user.signingkey "$selected_key"
+    git config --file "$gitconfig_file" commit.gpgsign true
+    info "GPG signing configured with key $selected_key"
+}
+
+setup_gpg_signing
+
 # Add example content to projects.local if empty
 if [[ $(wc -l < "$DOTFILES_LOCAL/projects.local") -le 3 ]]; then
     cat >> "$DOTFILES_LOCAL/projects.local" << 'EOF'

@@ -41,6 +41,7 @@ brew "atuin"                # Shell history
 # Utilities
 # ------------------------------------------------------------------------------
 
+brew "gnupg"                # GPG signing
 brew "jq"                   # JSON processor
 brew "gum"                  # Shell script UI components
 brew "trash"                # Move files to trash (safer rm)

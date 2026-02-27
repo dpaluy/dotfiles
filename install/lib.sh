@@ -200,12 +200,19 @@ show_completion() {
         info "Next steps:"
     fi
     echo "  1. Edit $DOTFILES_LOCAL/gitconfig.local with your name/email"
+    local step=2
+    if [[ "${GPG_NEEDS_SETUP:-}" == "true" ]]; then
+        echo "  $step. Run 'gpg --full-generate-key' then re-run installer for commit signing"
+        ((step++))
+    fi
     if [[ "$OS" == "macos" ]]; then
-        echo "  2. Run 'nvim' to complete LazyVim setup"
-        echo "  3. Run 'atuin login' or 'atuin register' for shell history sync"
+        echo "  $step. Run 'nvim' to complete LazyVim setup"
+        ((step++))
+        echo "  $step. Run 'atuin login' or 'atuin register' for shell history sync"
     else
-        echo "  2. Run 'atuin login' or 'atuin register' for shell history sync"
-        echo "  3. Edit ghostty config keybindings (comment macOS, uncomment Linux)"
+        echo "  $step. Run 'atuin login' or 'atuin register' for shell history sync"
+        ((step++))
+        echo "  $step. Edit ghostty config keybindings (comment macOS, uncomment Linux)"
     fi
     echo ""
 }
