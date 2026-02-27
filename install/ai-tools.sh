@@ -226,30 +226,3 @@ if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $instal
     fi
 fi
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Agent Skills Setup (shared across AI tools)
-# ─────────────────────────────────────────────────────────────────────────────
-# The Agent Skills standard (agentskills.io) uses ~/.agents/
-# Always set up skills if the directory exists — tools may already be installed
-
-if [[ -d "$DOTFILES_DIR/agents/skills" ]]; then
-    # ~/.agents/skills: shared Agent Skills standard (agentskills.io)
-    if ask_yes_no "Symlink dotfiles skills into ~/.agents/skills?"; then
-        mkdir -p "$HOME/.agents/skills"
-        for skill_dir in "$DOTFILES_DIR/agents/skills"/*/; do
-            [[ -d "$skill_dir" ]] || continue
-            skill_name="$(basename "$skill_dir")"
-            create_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
-        done
-    fi
-
-    # ~/.claude/skills: Claude Code skills
-    if ($install_claude || command -v claude &> /dev/null) && ask_yes_no "Symlink dotfiles skills into ~/.claude/skills?"; then
-        mkdir -p "$HOME/.claude/skills"
-        for skill_dir in "$DOTFILES_DIR/agents/skills"/*/; do
-            [[ -d "$skill_dir" ]] || continue
-            skill_name="$(basename "$skill_dir")"
-            create_symlink "$skill_dir" "$HOME/.claude/skills/$skill_name"
-        done
-    fi
-fi
