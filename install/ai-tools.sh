@@ -161,6 +161,20 @@ if $install_qmd; then
     fi
 fi
 
+# Agent Browser — headless browser automation for AI agents (separate prompt)
+if command -v agent-browser &>/dev/null; then
+    info "agent-browser already installed"
+elif ask_yes_no "Install agent-browser (headless browser automation CLI for AI agents)?"; then
+    if ensure_node; then
+        info "Installing agent-browser..."
+        npm install -g agent-browser
+        info "Downloading Chromium for agent-browser..."
+        agent-browser install
+    else
+        warn "npm not found and mise unavailable. Install Node.js manually."
+    fi
+fi
+
 # ─────────────────────────────────────────────────────────────────────────────
 # qmd MCP daemon — register with all installed AI tools
 # ─────────────────────────────────────────────────────────────────────────────
