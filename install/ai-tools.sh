@@ -230,6 +230,139 @@ TOML
     fi
 fi
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Perplexity MCP — AI-powered web search for coding assistants
+# ─────────────────────────────────────────────────────────────────────────────
+perplexity_targets=()
+command -v claude &>/dev/null && perplexity_targets+=("Claude Code")
+command -v codex &>/dev/null && perplexity_targets+=("Codex")
+command -v opencode &>/dev/null && perplexity_targets+=("OpenCode")
+command -v pi &>/dev/null && perplexity_targets+=("pi")
+
+if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (AI-powered web search)?"; then
+    if ! ensure_node; then
+        warn "npm not found — cannot install Perplexity MCP"
+    else
+        # Warn if API key is missing
+        if [[ -z "${PERPLEXITY_API_KEY:-}" ]]; then
+            warn "PERPLEXITY_API_KEY not set — add it to ~/.local/dotfiles/exports.local"
+        fi
+
+        # Ask which tools to register with
+        if has_gum; then
+            perplexity_choices=$(gum choose --no-limit \
+                --header "Register Perplexity MCP with (Space to select, Enter to confirm):" \
+                --cursor-prefix "[ ] " \
+                --selected-prefix "[x] " \
+                "${perplexity_targets[@]}" || true)
+        else
+            echo "Register Perplexity MCP with which tools?"
+            for i in "${!perplexity_targets[@]}"; do
+                echo "  $((i + 1))) ${perplexity_targets[$i]}"
+            done
+            echo "  A) All"
+            echo "  N) None"
+            echo ""
+            read -p "Enter choices (e.g., 1 3 or A for all): " -a perplexity_input
+            perplexity_choices=""
+            for choice in "${perplexity_input[@]}"; do
+                case "$choice" in
+                    [Aa]) perplexity_choices="${perplexity_targets[*]}" ;;
+                    [Nn]) ;;
+                    [1-9])
+                        idx=$((choice - 1))
+                        [[ -n "${perplexity_targets[$idx]:-}" ]] && perplexity_choices="$perplexity_choices ${perplexity_targets[$idx]}"
+                        ;;
+                    *) warn "Unknown option: $choice" ;;
+                esac
+            done
+        fi
+
+        # Claude Code — stdio transport (inherits PERPLEXITY_API_KEY from env)
+        if [[ "${perplexity_choices:-}" == *"Claude"* ]]; then
+            if claude mcp get perplexity &>/dev/null; then
+                info "Perplexity MCP already registered with Claude Code"
+            else
+                claude mcp add --transport stdio --scope user perplexity -- npx -y @perplexity-ai/mcp-server
+                info "Registered Perplexity MCP with Claude Code"
+            fi
+        fi
+
+        # Codex — append to config.toml (copied, not symlinked)
+        if [[ "${perplexity_choices:-}" == *"Codex"* ]]; then
+            if [[ -f "$HOME/.codex/config.toml" ]] && grep -q '\[mcp_servers\.perplexity\]' "$HOME/.codex/config.toml"; then
+                info "Perplexity MCP already registered with Codex"
+            elif [[ -f "$HOME/.codex/config.toml" ]]; then
+                cat >> "$HOME/.codex/config.toml" <<'TOML'
+
+[mcp_servers.perplexity]
+type = "stdio"
+command = "npx"
+args = ["-y", "@perplexity-ai/mcp-server"]
+TOML
+                info "Registered Perplexity MCP with Codex"
+            else
+                warn "Codex config not found at ~/.codex/config.toml"
+            fi
+        fi
+
+        # OpenCode — patch opencode.json with jq
+        if [[ "${perplexity_choices:-}" == *"OpenCode"* ]]; then
+            oc_config="$HOME/.config/opencode/opencode.json"
+            if [[ -f "$oc_config" ]] && command -v jq &>/dev/null; then
+                if jq -e '.mcp.perplexity' "$oc_config" &>/dev/null; then
+                    info "Perplexity MCP already registered with OpenCode"
+                else
+                    # De-symlink if needed (opencode.json may be symlinked from dotfiles)
+                    if [[ -L "$oc_config" ]]; then
+                        tmp="$(mktemp)"
+                        cat "$oc_config" > "$tmp"
+                        rm "$oc_config"
+                        mv "$tmp" "$oc_config"
+                    fi
+                    jq '.mcp.perplexity = {"type":"stdio","command":"npx","args":["-y","@perplexity-ai/mcp-server"],"enabled":true}' \
+                        "$oc_config" > "$oc_config.tmp" && mv "$oc_config.tmp" "$oc_config"
+                    info "Registered Perplexity MCP with OpenCode"
+                fi
+            else
+                warn "OpenCode config not found or jq unavailable"
+            fi
+        fi
+
+        # pi — requires pi-mcp-adapter for MCP support
+        if [[ "${perplexity_choices:-}" == *"pi"* ]]; then
+            pi_mcp="$HOME/.config/pi/mcp.json"
+            if [[ -f "$pi_mcp" ]] && command -v jq &>/dev/null && jq -e '.servers.perplexity' "$pi_mcp" &>/dev/null; then
+                info "Perplexity MCP already registered with pi"
+            elif command -v jq &>/dev/null; then
+                mkdir -p "$HOME/.config/pi"
+                if [[ -f "$pi_mcp" ]]; then
+                    jq '.servers.perplexity = {"command":"npx","args":["-y","@perplexity-ai/mcp-server"]}' \
+                        "$pi_mcp" > "$pi_mcp.tmp" && mv "$pi_mcp.tmp" "$pi_mcp"
+                else
+                    cat > "$pi_mcp" <<'JSON'
+{
+  "servers": {
+    "perplexity": {
+      "command": "npx",
+      "args": ["-y", "@perplexity-ai/mcp-server"]
+    }
+  }
+}
+JSON
+                fi
+                info "Registered Perplexity MCP with pi (requires pi-mcp-adapter)"
+            else
+                warn "jq not found — cannot register Perplexity MCP with pi"
+            fi
+        fi
+
+        if [[ -n "${perplexity_choices:-}" ]]; then
+            info "Perplexity MCP uses PERPLEXITY_API_KEY from your shell environment"
+        fi
+    fi
+fi
+
 # Offer CodexBar on macOS if any AI tools were installed
 if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_pi || $install_qmd); then
     if brew list --cask steipete/tap/codexbar &>/dev/null; then
