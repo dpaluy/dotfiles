@@ -175,6 +175,16 @@ elif ask_yes_no "Install agent-browser (headless browser automation CLI for AI a
     fi
 fi
 
+# pi-mcp-adapter — MCP support for pi coding agent (separate prompt)
+if command -v pi &>/dev/null; then
+    if pi list 2>/dev/null | grep -q 'pi-mcp-adapter'; then
+        info "pi-mcp-adapter already installed"
+    elif ask_yes_no "Install pi-mcp-adapter (MCP support for pi)?"; then
+        info "Installing pi-mcp-adapter..."
+        pi install npm:pi-mcp-adapter
+    fi
+fi
+
 # ─────────────────────────────────────────────────────────────────────────────
 # qmd MCP daemon — register with all installed AI tools
 # ─────────────────────────────────────────────────────────────────────────────
@@ -331,18 +341,18 @@ TOML
 
         # pi — requires pi-mcp-adapter for MCP support
         if [[ "${perplexity_choices:-}" == *"pi"* ]]; then
-            pi_mcp="$HOME/.config/pi/mcp.json"
-            if [[ -f "$pi_mcp" ]] && command -v jq &>/dev/null && jq -e '.servers.perplexity' "$pi_mcp" &>/dev/null; then
+            pi_mcp="$HOME/.pi/agent/mcp.json"
+            if [[ -f "$pi_mcp" ]] && command -v jq &>/dev/null && jq -e '.mcpServers.perplexity' "$pi_mcp" &>/dev/null; then
                 info "Perplexity MCP already registered with pi"
             elif command -v jq &>/dev/null; then
-                mkdir -p "$HOME/.config/pi"
+                mkdir -p "$HOME/.pi/agent"
                 if [[ -f "$pi_mcp" ]]; then
-                    jq '.servers.perplexity = {"command":"npx","args":["-y","@perplexity-ai/mcp-server"]}' \
+                    jq '.mcpServers.perplexity = {"command":"npx","args":["-y","@perplexity-ai/mcp-server"]}' \
                         "$pi_mcp" > "$pi_mcp.tmp" && mv "$pi_mcp.tmp" "$pi_mcp"
                 else
                     cat > "$pi_mcp" <<'JSON'
 {
-  "servers": {
+  "mcpServers": {
     "perplexity": {
       "command": "npx",
       "args": ["-y", "@perplexity-ai/mcp-server"]
