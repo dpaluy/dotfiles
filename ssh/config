@@ -1,0 +1,5 @@
+# Shared SSH config (version controlled)
+# Host-specific settings go in ~/.ssh/config directly
+
+Host *
+  SetEnv TERM=xterm-256color

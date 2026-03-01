@@ -58,6 +58,37 @@ fi
 mkdir -p "$HOME/.config/zellij"
 create_symlink "$DOTFILES_DIR/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 
+# SSH - use Include pattern (preserves local host-specific config)
+ensure_ssh_include() {
+    local ssh_dir="$HOME/.ssh"
+    local ssh_config="$ssh_dir/config"
+    local include_line="Include ~/dotfiles/ssh/config"
+
+    mkdir -p "$ssh_dir"
+    chmod 700 "$ssh_dir"
+
+    if [[ -f "$ssh_config" ]] && grep -qF "$include_line" "$ssh_config" 2>/dev/null; then
+        info "SSH include already configured"
+        return 0
+    fi
+
+    # Prepend Include (must be before Host blocks)
+    if [[ -f "$ssh_config" ]]; then
+        local tmp=$(mktemp)
+        echo "$include_line" > "$tmp"
+        echo "" >> "$tmp"
+        cat "$ssh_config" >> "$tmp"
+        command mv -f "$tmp" "$ssh_config"
+    else
+        echo "$include_line" > "$ssh_config"
+    fi
+
+    chmod 600 "$ssh_config"
+    info "Added SSH include for dotfiles"
+}
+
+ensure_ssh_include
+
 # Linux-only: Hyprland
 if [[ "$OS" != "macos" ]]; then
     if [[ -d "$DOTFILES_DIR/hypr" ]]; then

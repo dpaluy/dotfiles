@@ -54,6 +54,7 @@ fi
 - `tmux/tmux.conf` → `~/.tmux.conf`
 - `zellij/config.kdl` → `~/.config/zellij/config.kdl`
 - `starship/starship.toml` → `~/.config/starship.toml`
+- `ssh/config` → included in `~/.ssh/config` via `Include` (preserves local hosts)
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md` (via `install/claude.sh`)
 - `claude/hooks/*.sh` → `~/.claude/hooks/*.sh` (optional, registers in settings.json)
 - `codex/config.toml` → `~/.codex/config.toml` (copied, not symlinked)
