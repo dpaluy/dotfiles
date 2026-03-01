@@ -25,7 +25,6 @@ export FORCE_AUTO_BACKGROUND_TASKS=true
 # Keep bash commands in project directory
 export CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR=true
 
-export ENABLE_LSP_TOOL=1
 export ENABLE_TOOL_SEARCH=true
 
 export MAX_THINKING_TOKENS=31999
