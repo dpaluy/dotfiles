@@ -129,6 +129,8 @@ EOF
 | `myip` | Show public IP |
 | `gwa <branch>` | Create git worktree |
 | `gwd` | Remove current worktree |
+| `gwl` | List git worktrees |
+| `gwo [branch]` | Navigate to worktree (fzf picker if no arg) |
 
 ### AI Tools
 
