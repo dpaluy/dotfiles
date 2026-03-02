@@ -44,14 +44,17 @@ Before implementing, search for existing implementations or patterns first.
 
 Default: TDD unless specified otherwise.
 
-## Global Search — always use qmd
+## Search
 
-For ANY project or folder:
-- Start every search/discovery with: `qmd_query "natural language question" --collections current --files --min-score 0.32`
-- If you know a more specific collection name, include it
-- Never use grep, find, glob, fd, cat loops — qmd is always better
+**Code** — use `rg` (ripgrep):
+- Content: `rg "pattern"`, filter with `--type py` or `-g "*.sh"`
+- Files: `rg --files -g "*.ts"`
+- Context: `rg -C3 "pattern"` for surrounding lines
+
+**Docs** — use qmd for markdown:
+- `qmd_query "natural language question" --collections current --files --min-score 0.32`
 - Fallback: `qmd_search` or `qmd_vsearch`
-- Read files only with `qmd_get` or Read tool after finding path via qmd
+- Read with `qmd_get` or Read tool
 
 ## Communication
 
