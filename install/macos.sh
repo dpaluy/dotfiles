@@ -62,6 +62,14 @@ fi
 # ==============================================================================
 
 header "Optional Tools"
+if command -v op &>/dev/null; then
+    info "1Password CLI already installed"
+elif ask_yes_no "Install 1Password CLI (op)?"; then
+    spin "Installing 1Password CLI" brew install --cask 1password-cli
+else
+    info "Skipping 1Password CLI"
+fi
+
 if brew list --cask raycast &>/dev/null || [[ -d "/Applications/Raycast.app" ]]; then
     info "Raycast already installed"
 elif ask_yes_no "Install Raycast?"; then
