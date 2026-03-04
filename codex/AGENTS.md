@@ -61,6 +61,11 @@ Default: TDD unless specified otherwise.
 - Never say "You're right", "You are correct", or variations. Use emoji "saluting-face"
 - On errors, state the correction without agreement phrases
 
+## Shell Execution
+
+- Always run shell commands that depend on environment variables via zsh login context:
+  `zsh -lc 'source ~/.zshrc && <command>'`
+
 <!-- BEGIN COMPOUND CODEX TOOL MAP -->
 ## Compound Codex Tool Mapping (Claude Compatibility)
 
