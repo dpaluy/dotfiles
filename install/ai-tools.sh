@@ -169,9 +169,12 @@ if command -v qmd &> /dev/null; then
         warn "qmd dist not found at $QMD_DIST — skipping service install"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
-        launchctl bootout "gui/$(id -u)/com.tobilu.qmd" 2>/dev/null || true
         sed -e "s|__NODE_PATH__|$NODE_BIN|g" -e "s|__QMD_DIST__|$QMD_DIST|g" \
             "$DOTFILES_DIR/qmd/com.tobilu.qmd.plist" > "$plist"
+        # bootout + bootstrap to reload; if not loaded yet, just bootstrap
+        if launchctl bootout "gui/$(id -u)/com.tobilu.qmd" 2>/dev/null; then
+            while launchctl print "gui/$(id -u)/com.tobilu.qmd" &>/dev/null; do sleep 0.1; done
+        fi
         launchctl bootstrap "gui/$(id -u)" "$plist"
         info "Installed qmd MCP launchd service ($NODE_BIN → $QMD_DIST)"
     elif [[ "$OSTYPE" == "linux"* ]]; then
