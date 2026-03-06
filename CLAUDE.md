@@ -29,6 +29,7 @@ install/
 ├── macos.sh            ← Homebrew, fonts, Raycast, LazyVim
 ├── linux.sh            ← System packages, fonts
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
+├── cli-tools.sh        ← Optional CLI tools (Google CLI, etc.)
 ├── ai-tools.sh         ← Claude Code, Codex, Gemini CLI, OpenCode, qmd, Perplexity MCP
 ├── claude.sh           ← Claude Code config (CLAUDE.md, hooks, settings.json)
 ├── codex.sh            ← Codex config (AGENTS.md, config.toml)

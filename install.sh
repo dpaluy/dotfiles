@@ -33,6 +33,9 @@ fi
 # Cross-platform tools (Oh My Zsh, Atuin, shell setup)
 source "$SCRIPT_DIR/install/common.sh"
 
+# CLI tools (optional)
+source "$SCRIPT_DIR/install/cli-tools.sh"
+
 # AI coding assistants + agent skills
 source "$SCRIPT_DIR/install/ai-tools.sh"
 

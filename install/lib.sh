@@ -144,6 +144,34 @@ ask_yes_no() {
     fi
 }
 
+# Ensure Node.js and Bun are available via mise
+ensure_js_runtimes() {
+    if command -v mise &> /dev/null; then
+        if ! command -v npm &> /dev/null; then
+            info "Installing Node.js via mise..."
+            mise use --global node@lts
+        fi
+        if ! command -v bun &> /dev/null; then
+            info "Installing Bun via mise..."
+            mise use --global bun@latest
+        fi
+        eval "$(mise activate bash)"
+        export PATH="$HOME/.cache/.bun/bin:$PATH"
+    fi
+}
+
+ensure_node() {
+    command -v npm &> /dev/null && return 0
+    ensure_js_runtimes
+    command -v npm &> /dev/null
+}
+
+ensure_bun() {
+    command -v bun &> /dev/null && return 0
+    ensure_js_runtimes
+    command -v bun &> /dev/null
+}
+
 # Detect OS
 detect_os() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
