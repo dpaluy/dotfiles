@@ -24,6 +24,7 @@
 
 [core]
 	excludesfile = ~/.config/git/ignore
+	pager = delta
 
 # ------------------------------------------------------------------------------
 # Aliases
@@ -71,7 +72,7 @@
 
 [diff]
 	algorithm = histogram
-	colorMoved = plain
+	colorMoved = default
 	mnemonicPrefix = true
 
 # ------------------------------------------------------------------------------
@@ -103,7 +104,7 @@
 	autoupdate = true
 
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 
 [rebase]
 	autoStash = true
@@ -115,6 +116,22 @@
 
 [help]
 	autocorrect = 1
+
+# ------------------------------------------------------------------------------
+# Pager
+# ------------------------------------------------------------------------------
+
+[interactive]
+	diffFilter = delta --color-only
+
+# ------------------------------------------------------------------------------
+# Delta
+# ------------------------------------------------------------------------------
+
+[delta]
+	navigate = true
+	dark = true
+	line-numbers = true
 
 # ------------------------------------------------------------------------------
 # Pager

@@ -30,6 +30,27 @@ case "$OS" in
     fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep gnupg2 yt-dlp direnv ;;
 esac
 
+# Install git-delta
+if ! command -v delta &> /dev/null; then
+    info "Installing git-delta..."
+    case "$OS" in
+        arch)   sudo pacman -S --noconfirm git-delta ;;
+        debian)
+            DELTA_VERSION=$(curl -fsSL "https://api.github.com/repos/dandavison/delta/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+            DELTA_ARCH=$(dpkg --print-architecture)
+            curl -fsSL "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/git-delta_${DELTA_VERSION}_${DELTA_ARCH}.deb" -o /tmp/git-delta.deb
+            sudo dpkg -i /tmp/git-delta.deb
+            rm /tmp/git-delta.deb
+            ;;
+        fedora)
+            sudo dnf install -y git-delta
+            ;;
+    esac
+    info "git-delta installed"
+else
+    info "git-delta already installed"
+fi
+
 # Install lazygit
 if ! command -v lazygit &> /dev/null; then
     info "Installing lazygit..."
