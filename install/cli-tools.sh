@@ -6,10 +6,12 @@
 header "CLI Tools"
 
 install_google_cli=false
+install_gh_dash=false
 
 # Detect which tools are already installed
 missing_tools=()
 command -v google &>/dev/null && info "Google CLI already installed" || missing_tools+=("Google CLI")
+gh extension list 2>/dev/null | grep -q "dlvhdr/gh-dash" && info "gh-dash already installed" || missing_tools+=("gh-dash")
 
 if [[ ${#missing_tools[@]} -eq 0 ]]; then
     info "All CLI tools already installed"
@@ -21,6 +23,7 @@ elif has_gum; then
         "${missing_tools[@]}" || true)
 
     [[ "$cli_choices" == *"Google CLI"* ]] && install_google_cli=true
+    [[ "$cli_choices" == *"gh-dash"* ]] && install_gh_dash=true
 
     if [[ -z "$cli_choices" ]]; then
         info "Skipping CLI tools"
@@ -40,6 +43,7 @@ else
             [Aa])
                 for tool in "${missing_tools[@]}"; do
                     [[ "$tool" == "Google CLI" ]] && install_google_cli=true
+                    [[ "$tool" == "gh-dash" ]] && install_gh_dash=true
                 done
                 ;;
             [Nn]) ;;
@@ -47,6 +51,7 @@ else
                 selected="${missing_tools[$((choice - 1))]:-}"
                 if [[ -n "$selected" ]]; then
                     [[ "$selected" == "Google CLI" ]] && install_google_cli=true
+                    [[ "$selected" == "gh-dash" ]] && install_gh_dash=true
                 else
                     warn "Unknown option: $choice"
                 fi
@@ -62,5 +67,15 @@ if $install_google_cli; then
         npm install -g @googleworkspace/cli
     else
         warn "npm not found and mise unavailable. Install Node.js manually."
+    fi
+fi
+
+if $install_gh_dash; then
+    if command -v gh &>/dev/null; then
+        info "Installing gh-dash..."
+        gh extension install dlvhdr/gh-dash
+        info "gh-dash installed — run 'gh dash' to launch"
+    else
+        warn "gh (GitHub CLI) not found. Install it first."
     fi
 fi

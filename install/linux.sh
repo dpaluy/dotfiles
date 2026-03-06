@@ -30,6 +30,26 @@ case "$OS" in
     fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep gnupg2 yt-dlp direnv ;;
 esac
 
+# Install GitHub CLI
+if ! command -v gh &> /dev/null; then
+    info "Installing GitHub CLI..."
+    case "$OS" in
+        arch)   sudo pacman -S --noconfirm github-cli ;;
+        debian)
+            sudo mkdir -p /etc/apt/keyrings
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update && sudo apt install -y gh
+            ;;
+        fedora)
+            sudo dnf install -y gh
+            ;;
+    esac
+    info "GitHub CLI installed"
+else
+    info "GitHub CLI already installed"
+fi
+
 # Install git-delta
 if ! command -v delta &> /dev/null; then
     info "Installing git-delta..."

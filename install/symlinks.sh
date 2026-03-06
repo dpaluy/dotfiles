@@ -89,6 +89,12 @@ ensure_ssh_include() {
 
 ensure_ssh_include
 
+# gh-dash
+if gh extension list 2>/dev/null | grep -q "dlvhdr/gh-dash"; then
+    mkdir -p "$HOME/.config/gh-dash"
+    create_symlink "$DOTFILES_DIR/gh-dash/config.yml" "$HOME/.config/gh-dash/config.yml"
+fi
+
 # Worktrunk (git worktree manager)
 if command -v wt &>/dev/null; then
     mkdir -p "$HOME/.config/worktrunk"
