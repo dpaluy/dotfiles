@@ -24,6 +24,7 @@ cd ~/dotfiles
 - **tmux** / **Zellij** terminal multiplexers (both included, pick your preference)
 - **Ghostty** terminal configuration
 - **Delta** for beautiful git diffs
+- **Worktrunk** for git worktree management (AI agent workflows)
 
 ## Structure
 
@@ -53,6 +54,8 @@ cd ~/dotfiles
 ├── hypr/                              # Hyprland (Linux only)
 │   ├── hyprland.conf
 │   └── bindings.conf
+├── worktrunk/
+│   └── config.toml                    # Worktrunk worktree manager config
 ├── claude/                            # Claude Code config
 ├── codex/                             # OpenAI Codex config
 ├── raycast/                           # Raycast scripts (macOS only)
@@ -74,7 +77,7 @@ cd ~/dotfiles
 
 ### macOS (via Homebrew)
 
-- Development: git, neovim, tmux, zellij, lazygit, gh
+- Development: git, neovim, tmux, zellij, lazygit, gh, worktrunk
 - Search: fzf, fd, ripgrep
 - Shell: starship, atuin
 - Utilities: jq, gum, git-delta
@@ -127,10 +130,21 @@ EOF
 | `extract <file>` | Universal archive extractor |
 | `killport <port>` | Kill process on port |
 | `myip` | Show public IP |
-| `gwa <branch>` | Create git worktree |
-| `gwd` | Remove current worktree |
-| `gwl` | List git worktrees |
-| `gwo [branch]` | Navigate to worktree (fzf picker if no arg) |
+
+### Worktrunk (Git Worktrees)
+
+| Alias | Command |
+|-------|---------|
+| `wts` | `wt switch` — switch to worktree |
+| `wtc` | `wt switch --create` — create worktree + branch |
+| `wtl` | `wt list` — list worktrees |
+| `wtm` | `wt merge` — squash, rebase, merge |
+| `wtr` | `wt remove` — remove worktree |
+
+Launch Claude Code in a new worktree:
+```bash
+wt switch -x claude --create feature-name -- 'Implement the feature'
+```
 
 ### AI Tools
 

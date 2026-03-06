@@ -57,6 +57,13 @@ alias gwc='git whatchanged -p --abbrev-commit --pretty=medium'
 alias ghistory='git log --follow -p'
 alias lg='lazygit'
 
+# Worktrunk (git worktree manager)
+alias wts='wt switch'
+alias wtc='wt switch --create'
+alias wtl='wt list'
+alias wtm='wt merge'
+alias wtr='wt remove'
+
 # ------------------------------------------------------------------------------
 # Safety
 # ------------------------------------------------------------------------------

@@ -89,6 +89,12 @@ ensure_ssh_include() {
 
 ensure_ssh_include
 
+# Worktrunk (git worktree manager)
+if command -v wt &>/dev/null; then
+    mkdir -p "$HOME/.config/worktrunk"
+    create_symlink "$DOTFILES_DIR/worktrunk/config.toml" "$HOME/.config/worktrunk/config.toml"
+fi
+
 # Linux-only: Hyprland
 if [[ "$OS" != "macos" ]]; then
     if [[ -d "$DOTFILES_DIR/hypr" ]]; then

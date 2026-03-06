@@ -53,7 +53,6 @@ DOTFILES_LOCAL="$HOME/.local/dotfiles"
 [[ -f "$DOTFILES_DIR/zsh/exports" ]] && source "$DOTFILES_DIR/zsh/exports"
 [[ -f "$DOTFILES_DIR/zsh/aliases" ]] && source "$DOTFILES_DIR/zsh/aliases"
 [[ -f "$DOTFILES_DIR/zsh/functions" ]] && source "$DOTFILES_DIR/zsh/functions"
-[[ -f "$DOTFILES_DIR/zsh/worktree" ]] && source "$DOTFILES_DIR/zsh/worktree"
 [[ -f "$DOTFILES_DIR/zsh/ai" ]] && source "$DOTFILES_DIR/zsh/ai"
 [[ -f "$DOTFILES_DIR/zsh/rails" ]] && source "$DOTFILES_DIR/zsh/rails"
 
@@ -106,6 +105,14 @@ fi
 
 if command -v direnv &> /dev/null; then
     eval "$(direnv hook zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+# Worktrunk (git worktree manager)
+# ------------------------------------------------------------------------------
+
+if command -v wt &> /dev/null; then
+    eval "$(wt config shell init zsh)"
 fi
 
 # ------------------------------------------------------------------------------

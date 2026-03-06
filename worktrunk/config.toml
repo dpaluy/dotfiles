@@ -1,0 +1,30 @@
+# Worktrunk User Configuration
+# Symlinked to: ~/.config/worktrunk/config.toml
+
+# Worktree path template — sibling directories (default)
+# worktree-path = "{{ repo_path }}/../{{ repo }}.{{ branch | sanitize }}"
+
+# ------------------------------------------------------------------------------
+# Hooks — run for all repositories
+# ------------------------------------------------------------------------------
+
+# Rename tmux window to branch name on switch
+[post-switch]
+tmux = "[ -n \"$TMUX\" ] && tmux rename-window {{ branch | sanitize }}"
+
+# Fetch if last fetch was more than 6 hours ago
+[pre-switch]
+fetch = """
+FETCH_HEAD="$(git rev-parse --git-common-dir)/FETCH_HEAD"
+if [ "$(find "$FETCH_HEAD" -mmin +360 2>/dev/null)" ] || [ ! -f "$FETCH_HEAD" ]; then
+    git fetch
+fi
+"""
+
+# ------------------------------------------------------------------------------
+# List display
+# ------------------------------------------------------------------------------
+
+[list]
+# full = false
+# branches = false

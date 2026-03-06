@@ -22,6 +22,7 @@ brew "mise"                 # Version manager (replaces asdf)
 brew "direnv"               # Per-directory environment variables
 brew "uv"                   # Fast Python package installer (uses mise Python)
 brew "lazygit"              # Terminal UI for git
+brew "worktrunk"            # Git worktree manager for AI agents
 
 # ------------------------------------------------------------------------------
 # Search & Navigation

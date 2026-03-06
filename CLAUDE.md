@@ -62,6 +62,7 @@ fi
 - `codex/AGENTS.md` → `~/.codex/AGENTS.md` (if codex installed)
 - `opencode/AGENTS.md` → `~/.config/opencode/AGENTS.md` (if opencode installed)
 - `opencode/opencode.json` → `~/.config/opencode/opencode.json` (if no existing config)
+- `worktrunk/config.toml` → `~/.config/worktrunk/config.toml` (if wt installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/ai-tools.sh`)
 
 **Special Case - ~/.zshrc**: Uses wrapper pattern instead of symlink.
