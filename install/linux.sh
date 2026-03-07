@@ -71,6 +71,32 @@ else
     info "git-delta already installed"
 fi
 
+# Install diffnav
+if ! command -v diffnav &> /dev/null; then
+    info "Installing diffnav..."
+    case "$OS" in
+        arch)   sudo pacman -S --noconfirm diffnav ;;
+        debian)
+            DIFFNAV_VERSION=$(curl -fsSL "https://api.github.com/repos/dlvhdr/diffnav/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+            DIFFNAV_ARCH=$(dpkg --print-architecture)
+            curl -fsSL "https://github.com/dlvhdr/diffnav/releases/download/v${DIFFNAV_VERSION}/diffnav_${DIFFNAV_VERSION}_linux_${DIFFNAV_ARCH}.tar.gz" -o /tmp/diffnav.tar.gz
+            tar -xf /tmp/diffnav.tar.gz -C /tmp diffnav
+            sudo install /tmp/diffnav /usr/local/bin/diffnav
+            rm /tmp/diffnav.tar.gz /tmp/diffnav
+            ;;
+        fedora)
+            DIFFNAV_VERSION=$(curl -fsSL "https://api.github.com/repos/dlvhdr/diffnav/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+            curl -fsSL "https://github.com/dlvhdr/diffnav/releases/download/v${DIFFNAV_VERSION}/diffnav_${DIFFNAV_VERSION}_linux_amd64.tar.gz" -o /tmp/diffnav.tar.gz
+            tar -xf /tmp/diffnav.tar.gz -C /tmp diffnav
+            sudo install /tmp/diffnav /usr/local/bin/diffnav
+            rm /tmp/diffnav.tar.gz /tmp/diffnav
+            ;;
+    esac
+    info "diffnav installed"
+else
+    info "diffnav already installed"
+fi
+
 # Install lazygit
 if ! command -v lazygit &> /dev/null; then
     info "Installing lazygit..."

@@ -13,6 +13,7 @@ cask "ghostty"
 
 brew "git"
 brew "git-delta"            # Better git diffs
+brew "diffnav"              # TUI file navigator for diffs
 brew "git-lfs"              # Large file storage
 brew "gh"                   # GitHub CLI
 brew "neovim"               # Editor
