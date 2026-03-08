@@ -75,7 +75,14 @@ fi
 if ! command -v diffnav &> /dev/null; then
     info "Installing diffnav..."
     case "$OS" in
-        arch)   sudo pacman -S --noconfirm diffnav ;;
+        arch)
+            DIFFNAV_VERSION=$(curl -fsSL "https://api.github.com/repos/dlvhdr/diffnav/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+            DIFFNAV_ARCH=$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/')
+            curl -fsSL "https://github.com/dlvhdr/diffnav/releases/download/v${DIFFNAV_VERSION}/diffnav_${DIFFNAV_VERSION}_linux_${DIFFNAV_ARCH}.tar.gz" -o /tmp/diffnav.tar.gz
+            tar -xf /tmp/diffnav.tar.gz -C /tmp diffnav
+            sudo install /tmp/diffnav /usr/local/bin/diffnav
+            rm /tmp/diffnav.tar.gz /tmp/diffnav
+            ;;
         debian)
             DIFFNAV_VERSION=$(curl -fsSL "https://api.github.com/repos/dlvhdr/diffnav/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
             DIFFNAV_ARCH=$(dpkg --print-architecture)

@@ -121,3 +121,6 @@ macos-option-as-alt = true
 # ------------------------------------------------------------------------------
 
 config-file = ?"~/.local/dotfiles/ghostty.local"
+
+# Fix general slowness on hyprland (https://github.com/ghostty-org/ghostty/discussions/3224)
+async-backend = epoll
