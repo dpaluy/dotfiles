@@ -119,15 +119,15 @@ if $install_pi; then
 fi
 
 if $install_qmd; then
-    if ensure_node; then
+    if command -v bun &>/dev/null; then
         info "Installing qmd (local markdown search)..."
         # macOS requires Homebrew's SQLite for extension support
         if [[ "$OSTYPE" == "darwin"* ]]; then
             brew install sqlite 2>/dev/null || true
         fi
-        npm install -g @tobilu/qmd
+        bun install -g qmd
     else
-        warn "npm not found and mise unavailable. Install Node.js manually."
+        warn "bun not found. Install bun first (qmd requires bun runtime)."
     fi
 fi
 
@@ -162,29 +162,29 @@ if command -v qmd &> /dev/null; then
     QMD_MCP_URL="http://localhost:8181/mcp"
 
     # Install and start qmd MCP daemon service
-    # Resolve node + qmd dist.js to avoid PATH issues in service managers
-    NODE_BIN="$(command -v node)"
-    QMD_DIST="$(npm root -g)/@tobilu/qmd/dist/qmd.js"
-    if [[ ! -f "$QMD_DIST" ]]; then
-        warn "qmd dist not found at $QMD_DIST — skipping service install"
+    # Resolve bun + qmd src/qmd.ts to avoid PATH issues in service managers
+    BUN_BIN="$(command -v bun)"
+    QMD_SRC="$(dirname "$(readlink -f "$(command -v qmd)")")/src/qmd.ts"
+    if [[ ! -f "$QMD_SRC" ]]; then
+        warn "qmd src not found at $QMD_SRC — skipping service install"
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
-        sed -e "s|__NODE_PATH__|$NODE_BIN|g" -e "s|__QMD_DIST__|$QMD_DIST|g" \
+        sed -e "s|__BUN_PATH__|$BUN_BIN|g" -e "s|__QMD_SRC__|$QMD_SRC|g" \
             "$DOTFILES_DIR/qmd/com.tobilu.qmd.plist" > "$plist"
         # bootout + bootstrap to reload; if not loaded yet, just bootstrap
         if launchctl bootout "gui/$(id -u)/com.tobilu.qmd" 2>/dev/null; then
             while launchctl print "gui/$(id -u)/com.tobilu.qmd" &>/dev/null; do sleep 0.1; done
         fi
         launchctl bootstrap "gui/$(id -u)" "$plist"
-        info "Installed qmd MCP launchd service ($NODE_BIN → $QMD_DIST)"
+        info "Installed qmd MCP launchd service ($BUN_BIN → $QMD_SRC)"
     elif [[ "$OSTYPE" == "linux"* ]]; then
         unit_dir="$HOME/.config/systemd/user"
         mkdir -p "$unit_dir"
-        sed -e "s|__NODE_PATH__|$NODE_BIN|g" -e "s|__QMD_DIST__|$QMD_DIST|g" \
+        sed -e "s|__BUN_PATH__|$BUN_BIN|g" -e "s|__QMD_SRC__|$QMD_SRC|g" \
             "$DOTFILES_DIR/qmd/qmd-mcp.service" > "$unit_dir/qmd-mcp.service"
         systemctl --user daemon-reload
         systemctl --user enable --now qmd-mcp.service
-        info "Installed qmd MCP systemd user service ($NODE_BIN → $QMD_DIST)"
+        info "Installed qmd MCP systemd user service ($BUN_BIN → $QMD_SRC)"
     fi
 
     # Claude Code — use stdio transport (no auth required)

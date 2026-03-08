@@ -6,8 +6,8 @@
     <string>com.tobilu.qmd</string>
     <key>ProgramArguments</key>
     <array>
-        <string>__NODE_PATH__</string>
-        <string>__QMD_DIST__</string>
+        <string>__BUN_PATH__</string>
+        <string>__QMD_SRC__</string>
         <string>mcp</string>
         <string>--http</string>
     </array>

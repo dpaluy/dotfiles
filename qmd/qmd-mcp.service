@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=__NODE_PATH__ __QMD_DIST__ mcp --http
+ExecStart=__BUN_PATH__ __QMD_SRC__ mcp --http
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
