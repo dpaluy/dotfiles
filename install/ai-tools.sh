@@ -266,22 +266,32 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
             if claude mcp get perplexity &>/dev/null; then
                 info "Perplexity MCP already registered with Claude Code"
             else
-                claude mcp add --transport stdio --scope user perplexity -- npx -y @perplexity-ai/mcp-server
+                claude mcp add perplexity --transport stdio --scope user -e PERPLEXITY_API_KEY="${PERPLEXITY_API_KEY:-}" -- npx -yq @perplexity-ai/mcp-server
                 info "Registered Perplexity MCP with Claude Code"
             fi
         fi
 
-        # Codex — append to config.toml (copied, not symlinked)
+        # Codex — de-symlink if needed, then append MCP config
         if [[ "${perplexity_choices:-}" == *"Codex"* ]]; then
-            if [[ -f "$HOME/.codex/config.toml" ]] && grep -q '\[mcp_servers\.perplexity\]' "$HOME/.codex/config.toml"; then
+            codex_config="$HOME/.codex/config.toml"
+            if [[ -f "$codex_config" ]] && grep -q '\[mcp_servers\.perplexity\]' "$codex_config"; then
                 info "Perplexity MCP already registered with Codex"
-            elif [[ -f "$HOME/.codex/config.toml" ]]; then
-                cat >> "$HOME/.codex/config.toml" <<'TOML'
+            elif [[ -f "$codex_config" ]]; then
+                # De-symlink if needed (config.toml may be symlinked from dotfiles)
+                if [[ -L "$codex_config" ]]; then
+                    tmp="$(mktemp)"
+                    cat "$codex_config" > "$tmp"
+                    rm "$codex_config"
+                    mv "$tmp" "$codex_config"
+                fi
+                cat >> "$codex_config" <<TOML
 
 [mcp_servers.perplexity]
-type = "stdio"
 command = "npx"
-args = ["-y", "@perplexity-ai/mcp-server"]
+args = ["-yq", "@perplexity-ai/mcp-server"]
+
+[mcp_servers.perplexity.env]
+PERPLEXITY_API_KEY = "${PERPLEXITY_API_KEY:-}"
 TOML
                 info "Registered Perplexity MCP with Codex"
             else
@@ -303,7 +313,7 @@ TOML
                         rm "$oc_config"
                         mv "$tmp" "$oc_config"
                     fi
-                    jq '.mcp.perplexity = {"type":"stdio","command":"npx","args":["-y","@perplexity-ai/mcp-server"],"enabled":true}' \
+                    jq --arg key "${PERPLEXITY_API_KEY:-}" '.mcp.perplexity = {"type":"local","command":["npx","-yq","@perplexity-ai/mcp-server"],"env":{"PERPLEXITY_API_KEY":$key},"enabled":true}' \
                         "$oc_config" > "$oc_config.tmp" && mv "$oc_config.tmp" "$oc_config"
                     info "Registered Perplexity MCP with OpenCode"
                 fi
@@ -315,12 +325,10 @@ TOML
         # pi — requires pi-mcp-adapter for MCP support
         if [[ "${perplexity_choices:-}" == *"pi"* ]]; then
             pi_mcp="$HOME/.pi/agent/mcp.json"
-            if [[ -f "$pi_mcp" ]] && command -v jq &>/dev/null && jq -e '.mcpServers.perplexity' "$pi_mcp" &>/dev/null; then
-                info "Perplexity MCP already registered with pi"
-            elif command -v jq &>/dev/null; then
+            if command -v jq &>/dev/null; then
                 mkdir -p "$HOME/.pi/agent"
                 if [[ -f "$pi_mcp" ]]; then
-                    jq '.mcpServers.perplexity = {"command":"npx","args":["-y","@perplexity-ai/mcp-server"]}' \
+                    jq '.mcpServers.perplexity = {"command":"npx","args":["-yq","@perplexity-ai/mcp-server"],"env":{"PERPLEXITY_API_KEY":"${PERPLEXITY_API_KEY}"},"directTools":true}' \
                         "$pi_mcp" > "$pi_mcp.tmp" && mv "$pi_mcp.tmp" "$pi_mcp"
                 else
                     cat > "$pi_mcp" <<'JSON'
@@ -328,20 +336,24 @@ TOML
   "mcpServers": {
     "perplexity": {
       "command": "npx",
-      "args": ["-y", "@perplexity-ai/mcp-server"]
+      "args": ["-yq", "@perplexity-ai/mcp-server"],
+      "env": {
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
+      },
+      "directTools": true
     }
   }
 }
 JSON
                 fi
-                info "Registered Perplexity MCP with pi (requires pi-mcp-adapter)"
+                info "Configured Perplexity MCP for pi using PERPLEXITY_API_KEY from the shell environment"
             else
                 warn "jq not found — cannot register Perplexity MCP with pi"
             fi
         fi
 
         if [[ -n "${perplexity_choices:-}" ]]; then
-            info "Perplexity MCP uses PERPLEXITY_API_KEY from your shell environment"
+            info "Make sure PERPLEXITY_API_KEY is exported before launching tools that use Perplexity MCP"
         fi
     fi
 fi
