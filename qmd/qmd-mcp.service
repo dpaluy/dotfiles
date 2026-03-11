@@ -5,6 +5,7 @@ After=network.target
 [Service]
 Type=simple
 Environment="PATH=__BUN_DIR__:/usr/bin:/bin:/usr/sbin:/sbin"
+Environment="BUN_INSTALL=__BUN_DIR__/.."
 ExecStart=__QMD_BIN__ mcp --http
 Restart=on-failure
 RestartSec=5
