@@ -1,6 +1,8 @@
-# Git Local Configuration Example
-# Copy this to ~/.local/dotfiles/gitconfig.local and fill in your details
-# This file is NOT version controlled
+# ~/.config/git/config example
+# This file is local to each machine and includes the shared dotfiles config
+
+[include]
+    path = ~/dotfiles/git/config
 
 [user]
     name = Your Name

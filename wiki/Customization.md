@@ -14,12 +14,12 @@ Every public config file has a `.local` counterpart in `~/.local/dotfiles/`:
 | `zsh/path` | `~/.local/dotfiles/path.local` |
 | `zsh/ai` | `~/.local/dotfiles/ai.local` |
 | `zsh/rails` | `~/.local/dotfiles/rails.local` |
-| `git/config` | `~/.local/dotfiles/gitconfig.local` |
-
 Local files are:
 - **Sourced after** public configs (can override)
 - **Not version controlled** (keep secrets safe)
 - **Created as templates** by `install.sh`
+
+`~/.config/git/config` is the local live Git config on each machine. It includes the shared `~/dotfiles/git/config`, and machine-specific or tool-managed settings live directly in `~/.config/git/config`.
 
 ## Adding Aliases
 
@@ -103,7 +103,7 @@ path_prepend "$HOME/.nvm/versions/node/v20/bin"
 
 ## Git Configuration
 
-Edit `~/.local/dotfiles/gitconfig.local`:
+Edit `~/.config/git/config`:
 
 ```ini
 # Identity
@@ -210,6 +210,5 @@ After customization, your setup might look like:
 ├── path.local         # Custom PATH entries
 ├── ai.local          # AI tool configs
 ├── rails.local       # Rails overrides
-├── gitconfig.local   # Git identity, signing
 └── zshrc.local       # Plugin extensions
 ```

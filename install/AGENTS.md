@@ -12,7 +12,7 @@ install/
 ├── linux.sh        ← Linux: packages, gum, fonts (Debian/Fedora/Arch)
 ├── common.sh       ← Cross-platform: Oh My Zsh, plugins, Atuin, shell
 ├── ai-tools.sh     ← Optional: Claude Code, Codex CLI, OpenCode
-├── symlinks.sh     ← Config symlinks (zsh, git, ghostty, etc.)
+├── symlinks.sh     ← Config links/wrappers (zsh, git, ghostty, etc.)
 ├── claude.sh       ← Claude Code config (CLAUDE.md, hooks, settings.json)
 ├── codex.sh        ← Codex config (AGENTS.md, config.toml)
 ├── opencode.sh     ← OpenCode config (AGENTS.md, opencode.json)

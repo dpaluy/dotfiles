@@ -1,6 +1,6 @@
 # Git Configuration
 
-Git aliases and settings defined in `git/config`.
+Git aliases and shared settings live in `git/config`. Each machine keeps a local `~/.config/git/config` that includes the shared dotfiles config and can hold machine-specific settings directly.
 
 ## Git Aliases
 
@@ -157,7 +157,7 @@ Runs suggested command after typo (e.g., `git stauts` runs `git status`).
 
 ## Local Git Configuration
 
-Add machine-specific settings to `~/.local/dotfiles/gitconfig.local`:
+Add machine-specific settings to `~/.config/git/config`:
 
 ```ini
 # User info
@@ -191,7 +191,7 @@ To sign your commits:
    gpg --list-secret-keys --keyid-format=long
    ```
 
-3. Add to `~/.local/dotfiles/gitconfig.local`:
+3. Add to `~/.config/git/config`:
    ```ini
    [user]
        signingkey = YOUR_KEY_ID

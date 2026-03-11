@@ -67,7 +67,6 @@ cd ~/dotfiles
 ├── functions.local                    # Machine-specific functions
 ├── exports.local                      # API keys, tokens
 ├── path.local                         # Machine-specific PATH
-├── gitconfig.local                    # Git name, email, signing
 ├── ghostty.local                      # Terminal overrides
 ├── ai.local                           # AI API keys
 └── rails.local                        # Rails settings
@@ -100,12 +99,13 @@ echo "alias work='cd ~/work/projects'" >> ~/.local/dotfiles/aliases.local
 echo "export GITHUB_TOKEN=xxx" >> ~/.local/dotfiles/exports.local
 
 # Work git email
-cat >> ~/.local/dotfiles/gitconfig.local << 'EOF'
+cat >> ~/.config/git/config << 'EOF'
 [user]
     name = Your Name
     email = your.email@example.com
 EOF
 ```
+`~/.config/git/config` is the local live Git config on each machine. It includes the shared [`git/config`](/Users/clawbot/dotfiles/git/config) from dotfiles, and machine-specific or tool-managed settings live directly in `~/.config/git/config`.
 
 ## Key Features
 
@@ -234,7 +234,7 @@ gsettings set org.gnome.desktop.interface text-scaling-factor 1.25
    gpg --full-generate-key
    ```
 
-5. Get your key ID and add to `~/.local/dotfiles/gitconfig.local`:
+5. Get your key ID and add to `~/.config/git/config`:
    ```bash
    gpg --list-secret-keys --keyid-format=long
    ```

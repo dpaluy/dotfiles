@@ -48,8 +48,8 @@ elif [[ "$OSTYPE" == "linux"* ]]; then
 fi
 ```
 
-**Symlink Strategy**: `install/symlinks.sh` creates symlinks to expected locations:
-- `git/config` → `~/.config/git/config` (XDG style)
+**Symlink Strategy**: `install/symlinks.sh` creates symlinks to expected locations, except where a local wrapper is needed:
+- `git/config` → included from `~/.config/git/config` (local wrapper, not symlinked)
 - `git/ignore` → `~/.config/git/ignore`
 - `ghostty/config` → `~/.config/ghostty/config`
 - `tmux/tmux.conf` → `~/.tmux.conf`
@@ -71,6 +71,12 @@ fi
 - External tools can safely append their initialization lines
 - This prevents tool-added lines from polluting version-controlled files
 
+**Special Case - Git Config**: Uses a local wrapper instead of a symlink.
+- `~/.config/git/config` is the live machine-owned file
+- It includes `~/dotfiles/git/config` for shared settings
+- Tool-managed auth and machine-local settings live directly in `~/.config/git/config`
+- This prevents `gh auth setup-git` and similar commands from dirtying the repo
+
 **Zsh Loading Order** (`zsh/zshrc`):
 1. Oh My Zsh initialization (plugins: gitfast, z, fzf, zsh-autosuggestions, etc.)
 2. Public modules: `zsh/{path,exports,aliases,functions,ai,rails}`
@@ -80,7 +86,7 @@ fi
 
 **Public/Private Split**:
 - Public (this repo): Shareable configurations
-- Private (`~/.local/dotfiles/`): `gitconfig.local`, `exports.local`, `ai.local`, etc.
+- Private (`~/.local/dotfiles/`): `exports.local`, `ai.local`, etc.
 
 **PATH Management** (`zsh/path`): Uses `path_prepend()` and `path_append()` helpers to avoid duplicates. Never hardcode version-specific paths—mise handles language versions.
 

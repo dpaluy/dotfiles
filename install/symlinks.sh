@@ -38,8 +38,36 @@ EOF
 create_zshrc_wrapper
 
 # Git (XDG style)
-mkdir -p "$HOME/.config/git"
-create_symlink "$DOTFILES_DIR/git/config" "$HOME/.config/git/config"
+# Use a local wrapper file as the live config and include the shared dotfiles
+# config from there. That keeps the shared config tracked and the live file
+# machine-owned.
+create_git_config_wrapper() {
+    local wrapper="$HOME/.config/git/config"
+    local include_path="~/dotfiles/git/config"
+
+    mkdir -p "$HOME/.config/git"
+
+    if [[ -f "$wrapper" && ! -L "$wrapper" ]] && grep -qF "path = $include_path" "$wrapper" 2>/dev/null; then
+        info "Git wrapper already configured"
+        return 0
+    fi
+
+    backup_if_exists "$wrapper"
+
+    cat > "$wrapper" << EOF
+# ~/.config/git/config - Local machine Git config
+# Shared settings are pulled from dotfiles; machine-specific settings belong here.
+
+[include]
+    path = $include_path
+
+# Machine-specific settings below
+EOF
+
+    info "Created ~/.config/git/config wrapper"
+}
+
+create_git_config_wrapper
 create_symlink "$DOTFILES_DIR/git/ignore" "$HOME/.config/git/ignore"
 
 # Ghostty

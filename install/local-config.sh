@@ -23,7 +23,7 @@ create_local_template "$DOTFILES_LOCAL/projects.local" "Project-to-theme mapping
 # ------------------------------------------------------------------------------
 
 setup_git_config() {
-    local gitconfig_file="$DOTFILES_LOCAL/gitconfig.local"
+    local gitconfig_file="$HOME/.config/git/config"
 
     # Check if git user is already configured
     if git config --get user.name &>/dev/null && git config --get user.email &>/dev/null; then
@@ -31,10 +31,10 @@ setup_git_config() {
         return
     fi
 
-    # Check if gitconfig.local already has [user] section with actual values
+    # Check if ~/.config/git/config already has [user] section with actual values
     if [[ -f "$gitconfig_file" ]] && grep -q "^\[user\]" "$gitconfig_file" && \
        grep -q "^[[:space:]]*name = [^#]" "$gitconfig_file"; then
-        info "Git config already set in gitconfig.local"
+        info "Git config already set in ~/.config/git/config"
         return
     fi
 
@@ -51,24 +51,10 @@ setup_git_config() {
     fi
 
     if [[ -n "$git_name" && -n "$git_email" ]]; then
-        # Create or overwrite gitconfig.local with actual values
-        cat > "$gitconfig_file" << EOF
-# Local git config (name, email, signing keys)
-# This file is not version controlled - add machine-specific settings here
-
-[user]
-    name = $git_name
-    email = $git_email
-
-# Optional: GPG signing
-# [user]
-#     signingkey = YOUR_GPG_KEY_ID
-# [commit]
-#     gpgsign = true
-EOF
+        git config --file "$gitconfig_file" user.name "$git_name"
+        git config --file "$gitconfig_file" user.email "$git_email"
         info "Git identity configured: $git_name <$git_email>"
     else
-        create_local_template "$gitconfig_file" "Local git config (name, email, signing keys)"
         warn "Git identity not set. Edit $gitconfig_file manually."
     fi
 }
@@ -80,7 +66,7 @@ setup_git_config
 # ------------------------------------------------------------------------------
 
 setup_gpg_signing() {
-    local gitconfig_file="$DOTFILES_LOCAL/gitconfig.local"
+    local gitconfig_file="$HOME/.config/git/config"
 
     if ! ask_yes_no "Set up GPG commit signing?" "n"; then
         return

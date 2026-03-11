@@ -55,7 +55,7 @@ source ~/.zshrc
 
 ~/.local/dotfiles/                 # Private (not tracked)
 ├── *.local                        # Machine-specific overrides
-└── gitconfig.local                # Private git settings
+└── *.local                        # Private shell/tool overrides
 ```
 
 ## Loading Order

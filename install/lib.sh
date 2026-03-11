@@ -227,7 +227,7 @@ show_completion() {
     else
         info "Next steps:"
     fi
-    echo "  1. Edit $DOTFILES_LOCAL/gitconfig.local with your name/email"
+    echo "  1. Edit $HOME/.config/git/config with your name/email"
     local step=2
     if [[ "${GPG_NEEDS_SETUP:-}" == "true" ]]; then
         echo "  $step. Run 'gpg --full-generate-key' then re-run installer for commit signing"

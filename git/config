@@ -1,19 +1,6 @@
-# Git Configuration - Public settings
-# Machine-specific settings go in ~/.local/dotfiles/gitconfig.local
+# Git Configuration - Shared settings
+# This file is included by ~/.config/git/config on each machine.
 # See https://git-scm.com/docs/git-config
-
-# ------------------------------------------------------------------------------
-# Include local config (for work email, signing keys, etc.)
-# ------------------------------------------------------------------------------
-
-[include]
-	path = ~/.local/dotfiles/gitconfig.local
-
-# ------------------------------------------------------------------------------
-# User (override in local config if needed)
-# ------------------------------------------------------------------------------
-
-# [user] name and email configured in ~/.local/dotfiles/gitconfig.local
 
 # ------------------------------------------------------------------------------
 # Core
