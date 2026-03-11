@@ -161,10 +161,11 @@ fi
 if command -v qmd &> /dev/null; then
     QMD_MCP_URL="http://localhost:8181/mcp"
 
-    # Install and start qmd MCP daemon service
-    # Use the qmd bin wrapper directly — v2.0+ detects bun vs node automatically
-    # Resolve symlinks portably (macOS ships BSD readlink without -f)
-    QMD_BIN="$(python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$(command -v qmd)")"
+    # Install and start qmd MCP daemon service.
+    # Use the discovered qmd executable directly; service managers can execute
+    # symlinks, and this avoids introducing a python3 dependency just to
+    # canonicalize the path.
+    QMD_BIN="$(command -v qmd)"
     BUN_DIR="$(dirname "$(command -v bun)")"
     if [[ "$OSTYPE" == "darwin"* ]]; then
         plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
