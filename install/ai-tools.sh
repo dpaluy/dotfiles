@@ -163,7 +163,8 @@ if command -v qmd &> /dev/null; then
 
     # Install and start qmd MCP daemon service
     # Use the qmd bin wrapper directly — v2.0+ detects bun vs node automatically
-    QMD_BIN="$(readlink -f "$(command -v qmd)")"
+    # Resolve symlinks portably (macOS ships BSD readlink without -f)
+    QMD_BIN="$(python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$(command -v qmd)")"
     BUN_DIR="$(dirname "$(command -v bun)")"
     if [[ "$OSTYPE" == "darwin"* ]]; then
         plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
@@ -186,19 +187,27 @@ if command -v qmd &> /dev/null; then
     fi
 
     # Claude Code — skip if qmd plugin is installed (plugin manages its own MCP);
-    # otherwise register HTTP transport to use the shared daemon
+    # otherwise ensure HTTP transport registration (replace stale stdio if present)
     if command -v claude &> /dev/null; then
         if [[ -d "$HOME/.claude/plugins/marketplaces/qmd" ]]; then
-            info "qmd plugin installed — skipping MCP registration (plugin manages its own)"
-        elif ! claude mcp get qmd &>/dev/null; then
+            # Plugin manages its own MCP; remove manual registration if it exists
+            claude mcp remove qmd 2>/dev/null && info "Removed manual qmd MCP (plugin manages its own)"
+        else
+            # Re-register unconditionally to fix stale stdio registrations
+            claude mcp remove qmd 2>/dev/null
             claude mcp add --transport http --scope user qmd "$QMD_MCP_URL"
             info "Registered qmd MCP with Claude Code (http)"
         fi
     fi
 
-    # Codex — config.toml is copied, not symlinked; patch if missing
+    # Codex — config.toml is copied, not symlinked; ensure correct URL
     if command -v codex &> /dev/null && [[ -f "$HOME/.codex/config.toml" ]]; then
-        if ! grep -q '\[mcp_servers\.qmd\]' "$HOME/.codex/config.toml"; then
+        if grep -q '\[mcp_servers\.qmd\]' "$HOME/.codex/config.toml"; then
+            # Update existing entry to correct URL
+            sed -i.bak '/\[mcp_servers\.qmd\]/,/^$\|^\[/{s|url = .*|url = "'"$QMD_MCP_URL"'"|;}' \
+                "$HOME/.codex/config.toml" && rm -f "$HOME/.codex/config.toml.bak"
+            info "Updated qmd MCP URL in Codex config"
+        else
             cat >> "$HOME/.codex/config.toml" <<TOML
 
 [mcp_servers.qmd]
