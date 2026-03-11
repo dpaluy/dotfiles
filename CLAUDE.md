@@ -61,7 +61,7 @@ fi
 - `codex/config.toml` → `~/.codex/config.toml` (copied, not symlinked)
 - `codex/AGENTS.md` → `~/.codex/AGENTS.md` (if codex installed)
 - `opencode/AGENTS.md` → `~/.config/opencode/AGENTS.md` (if opencode installed)
-- `opencode/opencode.json` → `~/.config/opencode/opencode.json` (if no existing config)
+- `opencode/opencode.json` → merged into `~/.config/opencode/opencode.json` (local file, shared defaults preserved)
 - `gh-dash/config.yml` → `~/.config/gh-dash/config.yml`
 - `worktrunk/config.toml` → `~/.config/worktrunk/config.toml` (if wt installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/ai-tools.sh`)

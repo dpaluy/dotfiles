@@ -217,9 +217,9 @@ TOML
         fi
     fi
 
-    # OpenCode — symlinked from dotfiles, already includes qmd MCP
+    # OpenCode — installer merges shared config into the live local config
     if command -v opencode &> /dev/null; then
-        info "qmd MCP already configured in opencode.json (via dotfiles symlink)"
+        info "qmd MCP already configured in opencode.json via shared OpenCode config"
     fi
 fi
 
@@ -412,4 +412,3 @@ if [[ -d "$DOTFILES_DIR/agents/skills" ]]; then
         done
     fi
 fi
-
