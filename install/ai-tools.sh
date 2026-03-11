@@ -125,7 +125,7 @@ if $install_qmd; then
         if [[ "$OSTYPE" == "darwin"* ]]; then
             brew install sqlite 2>/dev/null || true
         fi
-        bun install -g qmd
+        bun install -g @tobilu/qmd
     else
         warn "bun not found. Install bun first (qmd requires bun runtime)."
     fi
@@ -162,36 +162,37 @@ if command -v qmd &> /dev/null; then
     QMD_MCP_URL="http://localhost:8181/mcp"
 
     # Install and start qmd MCP daemon service
-    # Resolve bun + qmd src/qmd.ts to avoid PATH issues in service managers
-    BUN_BIN="$(command -v bun)"
-    QMD_SRC="$(dirname "$(readlink -f "$(command -v qmd)")")/src/qmd.ts"
-    if [[ ! -f "$QMD_SRC" ]]; then
-        warn "qmd src not found at $QMD_SRC — skipping service install"
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # Use the qmd bin wrapper directly — v2.0+ detects bun vs node automatically
+    QMD_BIN="$(readlink -f "$(command -v qmd)")"
+    BUN_DIR="$(dirname "$(command -v bun)")"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
         plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
-        sed -e "s|__BUN_PATH__|$BUN_BIN|g" -e "s|__QMD_SRC__|$QMD_SRC|g" \
+        sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" \
             "$DOTFILES_DIR/qmd/com.tobilu.qmd.plist" > "$plist"
         # bootout + bootstrap to reload; if not loaded yet, just bootstrap
         if launchctl bootout "gui/$(id -u)/com.tobilu.qmd" 2>/dev/null; then
             while launchctl print "gui/$(id -u)/com.tobilu.qmd" &>/dev/null; do sleep 0.1; done
         fi
         launchctl bootstrap "gui/$(id -u)" "$plist"
-        info "Installed qmd MCP launchd service ($BUN_BIN → $QMD_SRC)"
+        info "Installed qmd MCP launchd service ($QMD_BIN)"
     elif [[ "$OSTYPE" == "linux"* ]]; then
         unit_dir="$HOME/.config/systemd/user"
         mkdir -p "$unit_dir"
-        sed -e "s|__BUN_PATH__|$BUN_BIN|g" -e "s|__QMD_SRC__|$QMD_SRC|g" \
+        sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" \
             "$DOTFILES_DIR/qmd/qmd-mcp.service" > "$unit_dir/qmd-mcp.service"
         systemctl --user daemon-reload
         systemctl --user enable --now qmd-mcp.service
-        info "Installed qmd MCP systemd user service ($BUN_BIN → $QMD_SRC)"
+        info "Installed qmd MCP systemd user service ($QMD_BIN)"
     fi
 
-    # Claude Code — use stdio transport (no auth required)
+    # Claude Code — skip if qmd plugin is installed (plugin manages its own MCP);
+    # otherwise register HTTP transport to use the shared daemon
     if command -v claude &> /dev/null; then
-        if ! claude mcp get qmd &>/dev/null; then
-            claude mcp add --transport stdio --scope user qmd -- qmd mcp
-            info "Registered qmd MCP with Claude Code (stdio)"
+        if [[ -d "$HOME/.claude/plugins/marketplaces/qmd" ]]; then
+            info "qmd plugin installed — skipping MCP registration (plugin manages its own)"
+        elif ! claude mcp get qmd &>/dev/null; then
+            claude mcp add --transport http --scope user qmd "$QMD_MCP_URL"
+            info "Registered qmd MCP with Claude Code (http)"
         fi
     fi
 

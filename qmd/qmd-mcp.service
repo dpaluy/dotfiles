@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=__BUN_PATH__ __QMD_SRC__ mcp --http
+Environment="PATH=__BUN_DIR__:/usr/bin:/bin:/usr/sbin:/sbin"
+ExecStart=__QMD_BIN__ mcp --http
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
