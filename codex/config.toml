@@ -12,6 +12,7 @@ steer = true
 apply_patch_freeform = true
 skills = true
 agents = true
+multi_agent = true
 
 [agents]
 max_threads = 12
