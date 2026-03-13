@@ -85,6 +85,7 @@ fi
 
 NPM_GLOBALS=(
     agent-browser
+    @mariozechner/pi-coding-agent
 )
 
 if command -v npm &> /dev/null && [[ ${#NPM_GLOBALS[@]} -gt 0 ]]; then
