@@ -145,15 +145,8 @@ elif ask_yes_no "Install agent-browser (headless browser automation CLI for AI a
     fi
 fi
 
-# pi-mcp-adapter — MCP support for pi coding agent (separate prompt)
-if command -v pi &>/dev/null; then
-    if pi list 2>/dev/null | grep -q 'pi-mcp-adapter'; then
-        info "pi-mcp-adapter already installed"
-    elif ask_yes_no "Install pi-mcp-adapter (MCP support for pi)?"; then
-        info "Installing pi-mcp-adapter..."
-        pi install npm:pi-mcp-adapter
-    fi
-fi
+# pi extensions
+source "$DOTFILES_DIR/install/pi.sh"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # qmd MCP daemon — register with all installed AI tools
