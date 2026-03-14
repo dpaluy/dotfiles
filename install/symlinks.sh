@@ -82,6 +82,23 @@ if [[ -f "$DOTFILES_DIR/tmux/tmux.conf" ]]; then
     create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
 fi
 
+# gitmux config (git status for tmux status bar)
+if command -v gitmux &>/dev/null; then
+    mkdir -p "$HOME/.config/tmux"
+    create_symlink "$DOTFILES_DIR/tmux/gitmux.yml" "$HOME/.config/tmux/gitmux.yml"
+fi
+
+# sesh config (copied, not symlinked — each machine customizes its own sessions)
+if command -v sesh &>/dev/null; then
+    mkdir -p "$HOME/.config/sesh"
+    if [[ ! -f "$HOME/.config/sesh/sesh.toml" ]]; then
+        cp "$DOTFILES_DIR/sesh/sesh.toml" "$HOME/.config/sesh/sesh.toml"
+        info "Created default sesh config (customize at ~/.config/sesh/sesh.toml)"
+    else
+        info "sesh config already exists, skipping"
+    fi
+fi
+
 # Zellij
 mkdir -p "$HOME/.config/zellij"
 create_symlink "$DOTFILES_DIR/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"

@@ -24,6 +24,8 @@ brew "direnv"               # Per-directory environment variables
 brew "uv"                   # Fast Python package installer (uses mise Python)
 brew "lazygit"              # Terminal UI for git
 brew "worktrunk"            # Git worktree manager for AI agents
+brew "sesh"                 # Tmux session manager with fzf integration
+brew "gitmux"               # Git status in tmux status bar
 
 # ------------------------------------------------------------------------------
 # Search & Navigation

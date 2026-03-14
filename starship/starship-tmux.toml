@@ -1,0 +1,68 @@
+# Starship Prompt - Tmux variant
+# Same as starship.toml but without git modules (gitmux handles it in the status bar)
+
+command_timeout = 500
+add_newline = true
+
+format = """
+$directory\
+$ruby\
+$nodejs\
+$python\
+$golang\
+$rust\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+truncation_length = 2
+truncation_symbol = "…/"
+truncate_to_repo = true
+style = "bold cyan"
+repo_root_style = "bold cyan"
+repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) "
+
+[git_branch]
+disabled = true
+
+[git_status]
+disabled = true
+
+[ruby]
+format = "[$symbol($version)]($style) "
+symbol = " "
+style = "bold red"
+detect_files = ["Gemfile", ".ruby-version", "Rakefile"]
+
+[nodejs]
+format = "[$symbol($version)]($style) "
+symbol = " "
+style = "bold green"
+detect_files = ["package.json", ".nvmrc"]
+detect_folders = []
+
+[python]
+format = "[$symbol($version)]($style) "
+symbol = " "
+style = "bold yellow"
+
+[golang]
+format = "[$symbol($version)]($style) "
+symbol = " "
+style = "bold cyan"
+
+[rust]
+format = "[$symbol($version)]($style) "
+symbol = " "
+style = "bold orange"
+
+[cmd_duration]
+min_time = 2_000
+format = "[$duration]($style) "
+style = "bold yellow"
+
+[character]
+success_symbol = "[❯](bold cyan)"
+error_symbol = "[✗](bold red)"
+vimcmd_symbol = "[❮](bold cyan)"

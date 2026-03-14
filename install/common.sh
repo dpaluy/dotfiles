@@ -84,6 +84,20 @@ else
 fi
 
 # ==============================================================================
+# Tmux Plugin Manager (TPM)
+# ==============================================================================
+
+header "Tmux Plugin Manager"
+
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+if [[ ! -d "$TPM_DIR" ]]; then
+    spin "Installing TPM" git clone --quiet https://github.com/tmux-plugins/tpm "$TPM_DIR"
+    info "TPM installed. Open tmux and press prefix + I to install plugins."
+else
+    info "TPM already installed"
+fi
+
+# ==============================================================================
 # Default Shell
 # ==============================================================================
 

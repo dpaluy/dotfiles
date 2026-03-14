@@ -128,6 +128,38 @@ else
     info "Zellij already installed"
 fi
 
+# Install sesh (tmux session manager)
+if ! command -v sesh &> /dev/null; then
+    info "Installing sesh..."
+    SESH_VERSION=$(curl -fsSL "https://api.github.com/repos/joshmedeski/sesh/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+    SESH_ARCH=$(uname -m)
+    curl -fsSL "https://github.com/joshmedeski/sesh/releases/download/v${SESH_VERSION}/sesh_Linux_${SESH_ARCH}.tar.gz" -o /tmp/sesh.tar.gz
+    tar -xf /tmp/sesh.tar.gz -C /tmp sesh
+    sudo install /tmp/sesh /usr/local/bin/sesh
+    rm /tmp/sesh.tar.gz /tmp/sesh
+    info "sesh installed"
+else
+    info "sesh already installed"
+fi
+
+# Install gitmux (git status for tmux status bar)
+if ! command -v gitmux &> /dev/null; then
+    info "Installing gitmux..."
+    GITMUX_VERSION=$(curl -fsSL "https://api.github.com/repos/arl/gitmux/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+    GITMUX_ARCH=$(uname -m)
+    case "$GITMUX_ARCH" in
+        x86_64)  GITMUX_ARCH="amd64" ;;
+        aarch64) GITMUX_ARCH="arm64" ;;
+    esac
+    curl -fsSL "https://github.com/arl/gitmux/releases/download/v${GITMUX_VERSION}/gitmux_v${GITMUX_VERSION}_linux_${GITMUX_ARCH}.tar.gz" -o /tmp/gitmux.tar.gz
+    tar -xf /tmp/gitmux.tar.gz -C /tmp gitmux
+    sudo install /tmp/gitmux /usr/local/bin/gitmux
+    rm /tmp/gitmux.tar.gz /tmp/gitmux
+    info "gitmux installed"
+else
+    info "gitmux already installed"
+fi
+
 # Install gum for better TUI (if not already installed)
 if ! command -v gum &> /dev/null; then
     info "Installing gum for better UI..."
