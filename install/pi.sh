@@ -5,6 +5,7 @@
 
 PI_EXTENSIONS=(
     https://github.com/davebcn87/pi-autoresearch
+    npm:pi-side-chat
     npm:pi-mcp-adapter
 )
 
