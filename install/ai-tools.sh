@@ -131,17 +131,26 @@ if $install_qmd; then
     fi
 fi
 
-# Agent Browser — headless browser automation for AI agents (separate prompt)
+# Agent Browser — headless browser automation for AI agents (Rust native binary)
 if command -v agent-browser &>/dev/null; then
     info "agent-browser already installed"
 elif ask_yes_no "Install agent-browser (headless browser automation CLI for AI agents)?"; then
-    if ensure_node; then
-        info "Installing agent-browser..."
-        npm install -g agent-browser
-        info "Downloading Chromium for agent-browser..."
-        agent-browser install
+    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew &>/dev/null; then
+        info "Installing agent-browser via Homebrew..."
+        brew install agent-browser
+    elif command -v cargo &>/dev/null; then
+        info "Installing agent-browser via cargo..."
+        cargo install agent-browser
     else
-        warn "npm not found and mise unavailable. Install Node.js manually."
+        warn "cargo not found. Install Rust (https://rustup.rs) first."
+    fi
+    if command -v agent-browser &>/dev/null; then
+        info "Downloading Chromium for agent-browser..."
+        if [[ "$OSTYPE" == "linux"* ]]; then
+            agent-browser install --with-deps
+        else
+            agent-browser install
+        fi
     fi
 fi
 

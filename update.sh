@@ -84,7 +84,6 @@ fi
 #
 
 NPM_GLOBALS=(
-    agent-browser
     @mariozechner/pi-coding-agent
 )
 
