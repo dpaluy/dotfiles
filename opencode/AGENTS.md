@@ -56,6 +56,22 @@ Default: TDD unless specified otherwise.
 - Fallback: `qmd_search` or `qmd_vsearch`
 - Read with `qmd_get` or Read tool
 
+## Shell Execution
+
+- **ALWAYS** prefix shell commands with `rtk` to compress output and save tokens. This is mandatory for every command:
+  - `rtk git status` not `git status`
+  - `rtk git diff` not `git diff`
+  - `rtk git log` not `git log`
+  - `rtk ls .` not `ls`
+  - `rtk find "*.ts" .` not `find . -name "*.ts"`
+  - `rtk grep "pattern" .` not `rg "pattern"`
+  - `rtk read file.rs` not `cat file.rs`
+  - `rtk test cargo test` not `cargo test`
+  - `rtk err npm run build` not `npm run build`
+  - `rtk cargo clippy` not `cargo clippy`
+  - `rtk docker ps` not `docker ps`
+  - For any command not listed: `rtk proxy <command>`
+
 ## Communication
 
 - Never say "You're right", "You are correct", or variations. Use emoji "saluting-face"
