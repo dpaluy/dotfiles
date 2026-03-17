@@ -140,6 +140,12 @@ if gh extension list 2>/dev/null | grep -q "dlvhdr/gh-dash"; then
     create_symlink "$DOTFILES_DIR/gh-dash/config.yml" "$HOME/.config/gh-dash/config.yml"
 fi
 
+# RTK (token compression proxy)
+if command -v rtk &>/dev/null; then
+    mkdir -p "$HOME/.config/rtk"
+    create_symlink "$DOTFILES_DIR/rtk/config.toml" "$HOME/.config/rtk/config.toml"
+fi
+
 # Worktrunk (git worktree manager)
 if command -v wt &>/dev/null; then
     mkdir -p "$HOME/.config/worktrunk"
