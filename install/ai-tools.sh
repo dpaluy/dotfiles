@@ -167,16 +167,16 @@ elif ask_yes_no "Install rtk (token compression proxy — saves 60-90% tokens in
     else
         warn "Neither brew nor cargo found. Install rtk manually: https://github.com/rtk-ai/rtk"
     fi
-    if command -v rtk &>/dev/null; then
-        # Ensure telemetry is off before init
-        mkdir -p "$HOME/.config/rtk"
-        cp "$DOTFILES_DIR/rtk/config.toml" "$HOME/.config/rtk/config.toml"
-        export RTK_TELEMETRY_DISABLED=1
-        # Set up Claude Code hook integration
-        if command -v claude &>/dev/null; then
-            info "Setting up rtk hooks for Claude Code..."
-            rtk init -g --auto-patch
-        fi
+fi
+
+# Configure rtk hooks (runs for both fresh and existing installs)
+if command -v rtk &>/dev/null; then
+    mkdir -p "$HOME/.config/rtk"
+    cp "$DOTFILES_DIR/rtk/config.toml" "$HOME/.config/rtk/config.toml"
+    export RTK_TELEMETRY_DISABLED=1
+    if command -v claude &>/dev/null; then
+        info "Setting up rtk hooks for Claude Code..."
+        rtk init -g --auto-patch
     fi
 fi
 

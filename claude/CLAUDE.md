@@ -68,3 +68,5 @@ Default: TDD unless specified otherwise.
 - Never say "You're right", "You are correct", or variations. Use emoji "saluting-face"
 - On errors, state the correction without agreement phrases
 - Trust the user's stated context (directory, environment, what they're seeing). Never contradict or assume differently. If uncertain, ask.
+
+@RTK.md
