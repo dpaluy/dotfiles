@@ -71,10 +71,6 @@ TOML
     if command -v opencode &> /dev/null; then
         info "qmd MCP already configured in opencode.json via shared OpenCode config"
     fi
-
-    # Install qmd skill globally for AI tools that support ~/.agents/skills/
-    qmd skill install --global --yes --force
-    info "Installed qmd skill to ~/.agents/skills/qmd (+ Claude Code symlink)"
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
