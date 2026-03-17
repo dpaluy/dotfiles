@@ -30,7 +30,9 @@ install/
 ├── linux.sh            ← System packages, fonts
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── cli-tools.sh        ← Optional CLI tools (Google CLI, etc.)
-├── ai-tools.sh         ← Claude Code, Codex, Gemini CLI, OpenCode, qmd, Perplexity MCP
+├── ai-tools.sh         ← AI tool selection + installation orchestrator
+├── mcp.sh              ← MCP server registration (qmd, Perplexity)
+├── skills.sh           ← Agent skills setup (dotfiles + external repos)
 ├── claude.sh           ← Claude Code config (CLAUDE.md, hooks, settings.json)
 ├── codex.sh            ← Codex config (AGENTS.md, config.toml)
 ├── opencode.sh         ← OpenCode config (AGENTS.md, opencode.json)
@@ -64,7 +66,8 @@ fi
 - `opencode/opencode.json` → merged into `~/.config/opencode/opencode.json` (local file, shared defaults preserved)
 - `gh-dash/config.yml` → `~/.config/gh-dash/config.yml`
 - `worktrunk/config.toml` → `~/.config/worktrunk/config.toml` (if wt installed)
-- `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/ai-tools.sh`)
+- `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
+- `~/.local/share/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)
 
 **Special Case - ~/.zshrc**: Uses wrapper pattern instead of symlink.
 - `~/.zshrc` (local file) sources `~/dotfiles/zsh/zshrc`
