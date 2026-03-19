@@ -7,6 +7,7 @@ PI_EXTENSIONS=(
     https://github.com/davebcn87/pi-autoresearch
     npm:pi-side-chat
     npm:pi-mcp-adapter
+    npm:pi-subagents
 )
 
 if command -v pi &>/dev/null && ask_yes_no "Install pi extensions?"; then
