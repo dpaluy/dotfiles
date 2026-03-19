@@ -22,3 +22,12 @@ fi
 
 # AGENTS.md: symlink for global instructions
 create_symlink "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
+
+# Skills: symlink each skill directory from dotfiles into ~/.codex/skills/
+if [[ -d "$DOTFILES_DIR/codex/skills" ]]; then
+    mkdir -p "$HOME/.codex/skills"
+    for skill_dir in "$DOTFILES_DIR/codex/skills"/*/; do
+        skill_name="$(basename "$skill_dir")"
+        create_symlink "$skill_dir" "$HOME/.codex/skills/$skill_name"
+    done
+fi
