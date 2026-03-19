@@ -94,6 +94,10 @@ fi
 
 **PATH Management** (`zsh/path`): Uses `path_prepend()` and `path_append()` helpers to avoid duplicates. Never hardcode version-specific paths—mise handles language versions.
 
+## Intent Interpretation
+
+This is a declarative repo. "Add X" (a tool, extension, package) means editing the relevant config or install list — not running the install command. Changes should be reproducible across machines via `install.sh`.
+
 ## Key Design Decisions
 
 - **Single repo** for both macOS and Linux (OS conditionals, not separate repos)
