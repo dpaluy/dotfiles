@@ -110,7 +110,9 @@ else
 fi
 
 # Install zellij
-if ! command -v zellij &> /dev/null; then
+if command -v zellij &> /dev/null; then
+    info "Zellij already installed"
+elif ask_yes_no "Install zellij (modern terminal multiplexer)?"; then
     info "Installing zellij..."
     case "$OS" in
         arch)   sudo pacman -S --noconfirm zellij ;;
@@ -125,7 +127,7 @@ if ! command -v zellij &> /dev/null; then
     esac
     info "Zellij installed"
 else
-    info "Zellij already installed"
+    info "Skipping zellij"
 fi
 
 # Install sesh (tmux session manager)
