@@ -154,32 +154,6 @@ elif ask_yes_no "Install agent-browser (headless browser automation CLI for AI a
     fi
 fi
 
-# RTK — token compression proxy for AI coding tools (Rust binary)
-if command -v rtk &>/dev/null; then
-    info "rtk already installed"
-elif ask_yes_no "Install rtk (token compression proxy — saves 60-90% tokens in AI coding sessions)?"; then
-    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew &>/dev/null; then
-        info "Installing rtk via Homebrew..."
-        brew install rtk
-    elif command -v cargo &>/dev/null; then
-        info "Installing rtk via cargo..."
-        cargo install --git https://github.com/rtk-ai/rtk
-    else
-        warn "Neither brew nor cargo found. Install rtk manually: https://github.com/rtk-ai/rtk"
-    fi
-fi
-
-# Configure rtk hooks (runs for both fresh and existing installs)
-if command -v rtk &>/dev/null; then
-    mkdir -p "$HOME/.config/rtk"
-    cp "$DOTFILES_DIR/rtk/config.toml" "$HOME/.config/rtk/config.toml"
-    export RTK_TELEMETRY_DISABLED=1
-    if command -v claude &>/dev/null; then
-        info "Setting up rtk hooks for Claude Code..."
-        rtk init -g --auto-patch
-    fi
-fi
-
 # pi extensions
 source "$DOTFILES_DIR/install/pi.sh"
 
