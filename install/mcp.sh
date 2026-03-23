@@ -86,9 +86,11 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
     if ! ensure_node; then
         warn "npm not found — cannot install Perplexity MCP"
     else
+        perplexity_mcp_shell='source ~/.zshrc && exec npx -yq @perplexity-ai/mcp-server'
+
         # Warn if API key is missing
         if [[ -z "${PERPLEXITY_API_KEY:-}" ]]; then
-            warn "PERPLEXITY_API_KEY not set — add it to ~/.local/dotfiles/exports.local"
+            warn "PERPLEXITY_API_KEY not set — add it to ~/.local/dotfiles/ai.local"
         fi
 
         # Ask which tools to register with
@@ -121,22 +123,17 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
             done
         fi
 
-        # Claude Code — stdio transport (inherits PERPLEXITY_API_KEY from env)
+        # Claude Code — re-register with a shell wrapper so it reads the live env
         if [[ "${perplexity_choices:-}" == *"Claude"* ]]; then
-            if claude mcp get perplexity &>/dev/null; then
-                info "Perplexity MCP already registered with Claude Code"
-            else
-                claude mcp add perplexity --transport stdio --scope user -e PERPLEXITY_API_KEY="${PERPLEXITY_API_KEY:-}" -- npx -yq @perplexity-ai/mcp-server
-                info "Registered Perplexity MCP with Claude Code"
-            fi
+            claude mcp remove perplexity 2>/dev/null
+            claude mcp add perplexity --transport stdio --scope user -- zsh -lc "$perplexity_mcp_shell"
+            info "Configured Perplexity MCP for Claude Code"
         fi
 
-        # Codex — de-symlink if needed, then append MCP config
+        # Codex — rewrite the MCP block so it always uses the live shell env
         if [[ "${perplexity_choices:-}" == *"Codex"* ]]; then
             codex_config="$HOME/.codex/config.toml"
-            if [[ -f "$codex_config" ]] && grep -q '\[mcp_servers\.perplexity\]' "$codex_config"; then
-                info "Perplexity MCP already registered with Codex"
-            elif [[ -f "$codex_config" ]]; then
+            if [[ -f "$codex_config" ]]; then
                 # De-symlink if needed (config.toml may be symlinked from dotfiles)
                 if [[ -L "$codex_config" ]]; then
                     tmp="$(mktemp)"
@@ -144,76 +141,79 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
                     rm "$codex_config"
                     mv "$tmp" "$codex_config"
                 fi
+
+                tmp="$(mktemp)"
+                awk '
+                    BEGIN { skip = 0 }
+                    /^\[mcp_servers\.perplexity(\.env)?\]/ { skip = 1; next }
+                    skip && /^\[/ { skip = 0 }
+                    !skip { print }
+                ' "$codex_config" > "$tmp"
+                mv "$tmp" "$codex_config"
+
                 cat >> "$codex_config" <<TOML
 
 [mcp_servers.perplexity]
-command = "npx"
-args = ["-yq", "@perplexity-ai/mcp-server"]
-
-[mcp_servers.perplexity.env]
-PERPLEXITY_API_KEY = "${PERPLEXITY_API_KEY:-}"
+command = "zsh"
+args = ["-lc", "$perplexity_mcp_shell"]
 TOML
-                info "Registered Perplexity MCP with Codex"
+                info "Configured Perplexity MCP for Codex"
             else
                 warn "Codex config not found at ~/.codex/config.toml"
             fi
         fi
 
-        # OpenCode — patch opencode.json with jq
+        # OpenCode — overwrite the MCP block so it always uses the live shell env
         if [[ "${perplexity_choices:-}" == *"OpenCode"* ]]; then
             oc_config="$HOME/.config/opencode/opencode.json"
             if [[ -f "$oc_config" ]] && command -v jq &>/dev/null; then
-                if jq -e '.mcp.perplexity' "$oc_config" &>/dev/null; then
-                    info "Perplexity MCP already registered with OpenCode"
-                else
-                    # De-symlink if needed (opencode.json may be symlinked from dotfiles)
-                    if [[ -L "$oc_config" ]]; then
-                        tmp="$(mktemp)"
-                        cat "$oc_config" > "$tmp"
-                        rm "$oc_config"
-                        mv "$tmp" "$oc_config"
-                    fi
-                    jq --arg key "${PERPLEXITY_API_KEY:-}" '.mcp.perplexity = {"type":"local","command":["npx","-yq","@perplexity-ai/mcp-server"],"env":{"PERPLEXITY_API_KEY":$key},"enabled":true}' \
-                        "$oc_config" > "$oc_config.tmp" && mv "$oc_config.tmp" "$oc_config"
-                    info "Registered Perplexity MCP with OpenCode"
+                # De-symlink if needed (opencode.json may be symlinked from dotfiles)
+                if [[ -L "$oc_config" ]]; then
+                    tmp="$(mktemp)"
+                    cat "$oc_config" > "$tmp"
+                    rm "$oc_config"
+                    mv "$tmp" "$oc_config"
                 fi
+
+                jq --arg shell "$perplexity_mcp_shell" \
+                    '.mcp.perplexity = {"type":"local","command":["zsh","-lc",$shell],"enabled":true}' \
+                    "$oc_config" > "$oc_config.tmp" && mv "$oc_config.tmp" "$oc_config"
+                info "Configured Perplexity MCP for OpenCode"
             else
                 warn "OpenCode config not found or jq unavailable"
             fi
         fi
 
-        # pi — requires pi-mcp-adapter for MCP support
+        # pi — configure a shell wrapper so it reads the live env at launch
         if [[ "${perplexity_choices:-}" == *"pi"* ]]; then
             pi_mcp="$HOME/.pi/agent/mcp.json"
             if command -v jq &>/dev/null; then
                 mkdir -p "$HOME/.pi/agent"
                 if [[ -f "$pi_mcp" ]]; then
-                    jq '.mcpServers.perplexity = {"command":"npx","args":["-yq","@perplexity-ai/mcp-server"],"env":{"PERPLEXITY_API_KEY":"${PERPLEXITY_API_KEY}"},"directTools":true}' \
+                    jq --arg shell "$perplexity_mcp_shell" \
+                        '.mcpServers.perplexity = {"command":"zsh","args":["-lc",$shell],"directTools":true}' \
                         "$pi_mcp" > "$pi_mcp.tmp" && mv "$pi_mcp.tmp" "$pi_mcp"
                 else
-                    cat > "$pi_mcp" <<'JSON'
+                    cat > "$pi_mcp" <<JSON
 {
   "mcpServers": {
     "perplexity": {
-      "command": "npx",
-      "args": ["-yq", "@perplexity-ai/mcp-server"],
-      "env": {
-        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
-      },
+      "command": "zsh",
+      "args": ["-lc", "$perplexity_mcp_shell"],
       "directTools": true
     }
   }
 }
 JSON
                 fi
-                info "Configured Perplexity MCP for pi using PERPLEXITY_API_KEY from the shell environment"
+                info "Configured Perplexity MCP for pi using the live shell environment"
             else
                 warn "jq not found — cannot register Perplexity MCP with pi"
             fi
         fi
 
         if [[ -n "${perplexity_choices:-}" ]]; then
-            info "Make sure PERPLEXITY_API_KEY is exported before launching tools that use Perplexity MCP"
+            info "Make sure PERPLEXITY_API_KEY is exported in ~/.local/dotfiles/ai.local before launching tools that use Perplexity MCP"
         fi
     fi
 fi
