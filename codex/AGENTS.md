@@ -65,19 +65,8 @@ Default: TDD unless specified otherwise.
 
 - Always run shell commands that depend on environment variables via zsh login context:
   `zsh -lc 'source ~/.zshrc && <command>'`
-- **ALWAYS** prefix shell commands with `rtk` to compress output and save tokens. This is mandatory for every command:
-  - `rtk git status` not `git status`
-  - `rtk git diff` not `git diff`
-  - `rtk git log` not `git log`
-  - `rtk ls .` not `ls`
-  - `rtk find "*.ts" .` not `find . -name "*.ts"`
-  - `rtk grep "pattern" .` not `rg "pattern"`
-  - `rtk read file.rs` not `cat file.rs`
-  - `rtk test cargo test` not `cargo test`
-  - `rtk err npm run build` not `npm run build`
-  - `rtk cargo clippy` not `cargo clippy`
-  - `rtk docker ps` not `docker ps`
-  - For any command not listed: `rtk proxy <command>`
+
+@RTK.md
 
 <!-- BEGIN COMPOUND CODEX TOOL MAP -->
 ## Compound Codex Tool Mapping (Claude Compatibility)

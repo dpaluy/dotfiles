@@ -158,15 +158,8 @@ fi
 if command -v rtk &>/dev/null; then
     info "rtk already installed"
 elif ask_yes_no "Install rtk (token compression proxy — saves 60-90% tokens in AI coding sessions)?"; then
-    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew &>/dev/null; then
-        info "Installing rtk via Homebrew..."
-        brew install rtk
-    elif command -v cargo &>/dev/null; then
-        info "Installing rtk via cargo..."
-        cargo install --git https://github.com/rtk-ai/rtk
-    else
-        warn "Neither brew nor cargo found. Install rtk manually: https://github.com/rtk-ai/rtk"
-    fi
+    info "Installing rtk via official installer..."
+    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | bash
 fi
 
 # Configure rtk hooks (runs for both fresh and existing installs)
@@ -177,6 +170,19 @@ if command -v rtk &>/dev/null; then
     if command -v claude &>/dev/null; then
         info "Setting up rtk hooks for Claude Code..."
         rtk init -g --auto-patch
+    fi
+    if command -v codex &>/dev/null; then
+        info "Setting up rtk for Codex CLI..."
+        # Creates ~/.codex/RTK.md (referenced by @RTK.md in AGENTS.md)
+        # Don't use rtk init --codex here — it rewrites AGENTS.md and breaks our symlink
+        mkdir -p "$HOME/.codex"
+        rtk init -g --codex 2>/dev/null || true
+        # Re-establish symlink in case rtk init replaced it
+        create_symlink "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
+    fi
+    if command -v opencode &>/dev/null; then
+        info "Setting up rtk plugin for OpenCode..."
+        rtk init -g --opencode --auto-patch
     fi
 fi
 
