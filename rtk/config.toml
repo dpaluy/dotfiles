@@ -1,0 +1,5 @@
+# RTK configuration
+# https://github.com/rtk-ai/rtk
+
+[telemetry]
+enabled = false
