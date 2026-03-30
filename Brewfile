@@ -35,6 +35,7 @@ brew "fzf"                  # Fuzzy finder
 brew "fd"                   # Fast find alternative
 brew "ripgrep"              # Fast grep alternative
 brew "eza"                  # Modern ls replacement
+brew "glow"                 # Markdown renderer for terminal
 
 # ------------------------------------------------------------------------------
 # Shell & Prompt
