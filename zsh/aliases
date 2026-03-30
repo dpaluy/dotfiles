@@ -16,21 +16,31 @@ alias -- -='cd -'
 # Listing (cross-platform)
 # ------------------------------------------------------------------------------
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if command -v eza &> /dev/null; then
+    alias ls='eza --icons=auto'
+    alias ll='eza -lah --icons=auto --git'
+    alias la='eza -a --icons=auto'
+    alias l='eza -F --icons=auto'
+    alias lt='eza -lah --icons=auto --git --sort=modified'
+    alias tree='eza --tree --icons=auto'
+elif [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS: use -G for color, or GNU ls if installed via brew
     if command -v gls &> /dev/null; then
         alias ls='gls --color=auto'
     else
         alias ls='ls -G'
     fi
+    alias ll='ls -lah'
+    alias la='ls -A'
+    alias l='ls -CF'
+    alias lt='ls -lahtr'
 else
     alias ls='ls --color=auto'
+    alias ll='ls -lah'
+    alias la='ls -A'
+    alias l='ls -CF'
+    alias lt='ls -lahtr'
 fi
-
-alias ll='ls -lah'
-alias la='ls -A'
-alias l='ls -CF'
-alias lt='ls -lahtr'  # Sort by time, newest last
 
 # ------------------------------------------------------------------------------
 # Git

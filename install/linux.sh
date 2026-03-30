@@ -25,9 +25,9 @@ fi
 # Install common tools
 info "Installing common tools (git, curl, etc.)..."
 case "$OS" in
-    arch)   sudo pacman -S --noconfirm git curl neovim tmux fzf fd ripgrep gum lazygit gnupg yt-dlp direnv ;;
-    debian) sudo apt install -y git curl neovim tmux fzf fd-find ripgrep gnupg yt-dlp direnv ;;
-    fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep gnupg2 yt-dlp direnv ;;
+    arch)   sudo pacman -S --noconfirm git curl neovim tmux fzf fd ripgrep eza gum lazygit gnupg yt-dlp direnv ;;
+    debian) sudo apt install -y git curl neovim tmux fzf fd-find ripgrep eza gnupg yt-dlp direnv ;;
+    fedora) sudo dnf install -y git curl neovim tmux fzf fd-find ripgrep eza gnupg2 yt-dlp direnv ;;
 esac
 
 # Install GitHub CLI

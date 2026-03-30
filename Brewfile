@@ -34,6 +34,7 @@ brew "gitmux"               # Git status in tmux status bar
 brew "fzf"                  # Fuzzy finder
 brew "fd"                   # Fast find alternative
 brew "ripgrep"              # Fast grep alternative
+brew "eza"                  # Modern ls replacement
 
 # ------------------------------------------------------------------------------
 # Shell & Prompt
