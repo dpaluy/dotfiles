@@ -17,12 +17,12 @@ alias -- -='cd -'
 # ------------------------------------------------------------------------------
 
 if command -v eza &> /dev/null; then
-    alias ls='eza --icons=auto'
-    alias ll='eza -lah --icons=auto --git'
-    alias la='eza -a --icons=auto'
-    alias l='eza -F --icons=auto'
-    alias lt='eza -lah --icons=auto --git --sort=modified'
-    alias tree='eza --tree --icons=auto'
+    alias ls='eza --icons'
+    alias ll='eza -la --icons --git'
+    alias la='eza -a --icons'
+    alias l='eza -F --icons'
+    alias lt='eza -la --icons --git --sort=modified'
+    alias tree='eza --tree --icons'
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS: use -G for color, or GNU ls if installed via brew
     if command -v gls &> /dev/null; then
@@ -86,9 +86,17 @@ alias cp='cp -i'
 # Utilities
 # ------------------------------------------------------------------------------
 
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
+if command -v rg &> /dev/null; then
+    alias grep='rg'
+else
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+if command -v fd &> /dev/null; then
+    alias find='fd'
+fi
 alias mkdir='mkdir -pv'
 alias df='df -h'
 alias du='du -h'
