@@ -22,7 +22,7 @@ fi
 
 alias rc='bin/rails console'
 alias rs='bin/rails server'
-alias rg='bin/rails generate'
+alias rgen='bin/rails generate'
 alias routes='bin/rails routes | fzf -e'
 
 # ------------------------------------------------------------------------------

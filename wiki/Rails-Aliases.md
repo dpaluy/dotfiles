@@ -16,7 +16,7 @@ Ruby on Rails development shortcuts defined in `zsh/rails`.
 |-------|---------|-------------|
 | `rc` | `bin/rails console` | Rails console |
 | `rs` | `bin/rails server` | Start Rails server |
-| `rg` | `bin/rails generate` | Rails generator |
+| `rgen` | `bin/rails generate` | Rails generator |
 | `routes` | `bin/rails routes \| fzf -e` | Search routes with fzf |
 
 ### Routes with Fuzzy Search
