@@ -152,6 +152,13 @@ if command -v wt &>/dev/null; then
     create_symlink "$DOTFILES_DIR/worktrunk/config.toml" "$HOME/.config/worktrunk/config.toml"
 fi
 
+# npm (supply chain security: delay installing packages < 7 days old)
+create_symlink "$DOTFILES_DIR/npm/npmrc" "$HOME/.npmrc"
+
+# uv (supply chain security: same delay for Python packages)
+mkdir -p "$HOME/.config/uv"
+create_symlink "$DOTFILES_DIR/uv/uv.toml" "$HOME/.config/uv/uv.toml"
+
 # Linux-only: Hyprland
 if [[ "$OS" != "macos" ]]; then
     if [[ -d "$DOTFILES_DIR/hypr" ]]; then

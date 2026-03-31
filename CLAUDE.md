@@ -67,6 +67,8 @@ fi
 - `gh-dash/config.yml` → `~/.config/gh-dash/config.yml`
 - `rtk/config.toml` → `~/.config/rtk/config.toml` (if rtk installed)
 - `worktrunk/config.toml` → `~/.config/worktrunk/config.toml` (if wt installed)
+- `npm/npmrc` → `~/.npmrc`
+- `uv/uv.toml` → `~/.config/uv/uv.toml`
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
 - `~/.local/share/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)
 
