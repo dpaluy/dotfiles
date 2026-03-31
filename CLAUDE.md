@@ -70,7 +70,7 @@ fi
 - `npm/npmrc` → `~/.npmrc`
 - `uv/uv.toml` → `~/.config/uv/uv.toml`
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
-- `~/.local/share/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)
+- `~/.claude/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)
 
 **Special Case - ~/.zshrc**: Uses wrapper pattern instead of symlink.
 - `~/.zshrc` (local file) sources `~/dotfiles/zsh/zshrc`

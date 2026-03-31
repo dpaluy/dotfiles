@@ -37,7 +37,7 @@ fi
 # https://github.com/rjs/shaping-skills
 # ─────────────────────────────────────────────────────────────────────────────
 if ($install_claude || command -v claude &> /dev/null) && ask_yes_no "Install shaping skills (Shape Up methodology for Claude Code)?"; then
-    SHAPING_SKILLS_DIR="$HOME/.local/share/shaping-skills"
+    SHAPING_SKILLS_DIR="$HOME/.claude/shaping-skills"
     if [[ -d "$SHAPING_SKILLS_DIR/.git" ]]; then
         info "Updating shaping-skills..."
         git -C "$SHAPING_SKILLS_DIR" pull --ff-only 2>/dev/null || warn "Could not update shaping-skills (pull failed)"
