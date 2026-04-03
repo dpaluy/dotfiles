@@ -247,7 +247,7 @@ gsettings set org.gnome.desktop.interface text-scaling-factor 1.25
 
 ## Supply Chain Security
 
-npm is configured with a 7-day minimum release age (`min-release-age=7` in `.npmrc`) to avoid installing newly published packages before the community has had time to vet them.
+npm is configured with a 3-day minimum release age (`min-release-age=3` in `.npmrc`) to avoid installing newly published packages before the community has had time to vet them.
 
 To bypass for a specific install:
 

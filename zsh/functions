@@ -292,15 +292,15 @@ theme() {
 }
 
 # ------------------------------------------------------------------------------
-# uv (supply chain security: only resolve packages published 7+ days ago)
+# uv (supply chain security: only resolve packages published 3+ days ago)
 # ------------------------------------------------------------------------------
 
 uv() {
     local exclude_date
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        exclude_date=$(date -u -v-7d +"%Y-%m-%dT%H:%M:%SZ")
+        exclude_date=$(date -u -v-3d +"%Y-%m-%dT%H:%M:%SZ")
     else
-        exclude_date=$(date -u -d "-7 days" +"%Y-%m-%dT%H:%M:%SZ")
+        exclude_date=$(date -u -d "-3 days" +"%Y-%m-%dT%H:%M:%SZ")
     fi
     UV_EXCLUDE_NEWER="$exclude_date" command uv "$@"
 }
