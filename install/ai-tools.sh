@@ -186,6 +186,34 @@ if command -v rtk &>/dev/null; then
     fi
 fi
 
+# Kimi Code — AI coding CLI powered by Kimi K2.5 model
+if command -v kimi-cli &>/dev/null; then
+    info "Kimi Code already installed"
+elif ask_yes_no "Install Kimi Code (AI coding CLI powered by Kimi K2.5)?"; then
+    info "Installing Kimi Code..."
+    curl -fsSL code.kimi.com/install.sh | bash
+fi
+
+# Oh My OpenAgent — agent harness plugin for OpenCode
+if command -v opencode &>/dev/null; then
+    if [[ -f ".oh-my-openagent.json" ]] || [[ -f ".oh-my-opencode.json" ]]; then
+        info "Oh My OpenAgent already configured"
+    elif ask_yes_no "Install Oh My OpenAgent (multi-agent orchestration plugin for OpenCode)?"; then
+        info "Installing Oh My OpenAgent..."
+        bunx oh-my-opencode install
+    fi
+fi
+
+# Oh My Codex — workflow layer for OpenAI Codex CLI
+if command -v omx &>/dev/null; then
+    info "Oh My Codex already installed"
+elif command -v codex &>/dev/null; then
+    if ask_yes_no "Install Oh My Codex (structured workflows and skills for Codex CLI)?"; then
+        info "Installing Oh My Codex..."
+        bunx oh-my-codex install
+    fi
+fi
+
 # pi extensions
 source "$DOTFILES_DIR/install/pi.sh"
 

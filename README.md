@@ -148,6 +148,20 @@ wt switch -x claude --create feature-name -- 'Implement the feature'
 
 ### AI Tools
 
+Optional AI coding assistants (prompted during install):
+
+| Tool | Description |
+|------|-------------|
+| [Claude Code](https://claude.ai/code) | Anthropic coding CLI |
+| [OpenAI Codex CLI](https://github.com/openai/codex) | OpenAI coding CLI |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Google coding CLI |
+| [OpenCode](https://opencode.ai/) | Open-source coding CLI |
+| [Kimi Code](https://www.kimi.com/code) | Kimi K2.5 coding CLI |
+| [Oh My OpenAgent](https://ohmyopenagent.com/) | Multi-agent orchestration plugin for OpenCode |
+| [Oh My Codex](https://github.com/Yeachan-Heo/oh-my-codex) | Structured workflows and skills for Codex CLI |
+| [pi](https://github.com/mariozechner/pi-coding-agent) | Coding agent |
+| [qmd](https://github.com/tobilu/qmd) | Local markdown search |
+
 | Function | Description |
 |----------|-------------|
 | `mirror-skills [src] <dest>` | Mirror Claude Code skill directories |
