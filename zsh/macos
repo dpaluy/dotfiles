@@ -54,9 +54,6 @@ alias safari='open -a Safari'
 # Process Management
 # ------------------------------------------------------------------------------
 
-# What's using port 3000?
-alias wtf3000="lsof -i tcp:3000"
-
 # CPU and memory hogs
 alias cpu='top -o cpu'
 alias mem='top -o mem'

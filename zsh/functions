@@ -68,14 +68,13 @@ fcd() {
     dir=$(find ${1:-.} -type d 2>/dev/null | fzf +m) && cd "$dir"
 }
 
-# Find files by name
+# Find files by name (uses fd if available, falls back to find)
 ff() {
-    find . -type f -iname "*$1*" 2>/dev/null
-}
-
-# Find directories by name
-fd() {
-    find . -type d -iname "*$1*" 2>/dev/null
+    if command -v fd &> /dev/null; then
+        command fd --type f "$1"
+    else
+        command find . -type f -iname "*$1*" 2>/dev/null
+    fi
 }
 
 # ------------------------------------------------------------------------------
@@ -120,7 +119,7 @@ killport() {
 
 # Show my public IP
 myip() {
-    curl -s https://ipinfo.io/ip
+    curl -s --max-time 5 https://ipinfo.io/ip
     echo
 }
 
@@ -289,20 +288,6 @@ theme() {
             fi
             ;;
     esac
-}
-
-# ------------------------------------------------------------------------------
-# uv (supply chain security: only resolve packages published 3+ days ago)
-# ------------------------------------------------------------------------------
-
-uv() {
-    local exclude_date
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        exclude_date=$(date -u -v-3d +"%Y-%m-%dT%H:%M:%SZ")
-    else
-        exclude_date=$(date -u -d "-3 days" +"%Y-%m-%dT%H:%M:%SZ")
-    fi
-    UV_EXCLUDE_NEWER="$exclude_date" command uv "$@"
 }
 
 # Set pane "title" via window title (shows in tab or via integration)
