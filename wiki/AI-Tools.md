@@ -49,9 +49,6 @@ Add machine-specific AI settings to `~/.local/dotfiles/ai.local`:
 export ANTHROPIC_API_KEY="sk-..."
 export OPENAI_API_KEY="sk-..."
 
-# Custom model preferences
-export CLAUDE_MODEL="claude-3-opus-20240229"
-
 # Project-specific aliases
 alias ai-review='claude "Review this code for bugs and improvements"'
 alias ai-test='claude "Write tests for the selected code"'
