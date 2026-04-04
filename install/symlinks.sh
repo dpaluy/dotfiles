@@ -152,10 +152,10 @@ if command -v wt &>/dev/null; then
     create_symlink "$DOTFILES_DIR/worktrunk/config.toml" "$HOME/.config/worktrunk/config.toml"
 fi
 
-# npm (supply chain security: delay installing packages < 3 days old)
+# npm
 create_symlink "$DOTFILES_DIR/npm/npmrc" "$HOME/.npmrc"
 
-# uv (supply chain security: same delay for Python packages)
+# uv
 mkdir -p "$HOME/.config/uv"
 create_symlink "$DOTFILES_DIR/uv/uv.toml" "$HOME/.config/uv/uv.toml"
 
