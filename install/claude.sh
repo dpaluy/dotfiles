@@ -15,6 +15,15 @@ mkdir -p "$HOME/.claude"
 # CLAUDE.md (global instructions)
 create_symlink "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 
+# Output styles
+if [[ -d "$DOTFILES_DIR/claude/styles" ]]; then
+    mkdir -p "$HOME/.claude/output-styles"
+    for style in "$DOTFILES_DIR/claude/styles/"*.md; do
+        [[ -f "$style" ]] || continue
+        create_symlink "$style" "$HOME/.claude/output-styles/$(basename "$style")"
+    done
+fi
+
 # Hooks (optional)
 hooks_installed=true
 if [[ -d "$DOTFILES_DIR/claude/hooks" ]]; then
