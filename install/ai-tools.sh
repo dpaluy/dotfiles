@@ -186,6 +186,14 @@ if command -v rtk &>/dev/null; then
     fi
 fi
 
+# Droid — AI coding agent by Factory
+if command -v droid &>/dev/null; then
+    info "droid already installed"
+elif ask_yes_no "Install droid (AI coding agent by Factory)?"; then
+    info "Installing droid..."
+    curl -fsSL https://app.factory.ai/cli | sh
+fi
+
 # Kimi Code — AI coding CLI powered by Kimi K2.5 model
 if command -v kimi-cli &>/dev/null; then
     info "Kimi Code already installed"
