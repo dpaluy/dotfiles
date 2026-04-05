@@ -16,7 +16,7 @@ cd ~/dotfiles
 ## Features
 
 - **Oh My Zsh** with curated plugins (autosuggestions, syntax-highlighting)
-- **mise** for language version management (Ruby, Node, Go, Python)
+- **mise** for language version management (Ruby, Node, Bun, Go, Python)
 - **Neovim** with LazyVim configuration
 - **LazyGit** for terminal-based git UI
 - **Starship** cross-shell prompt
@@ -69,7 +69,8 @@ cd ~/dotfiles
 ├── path.local                         # Machine-specific PATH
 ├── ghostty.local                      # Terminal overrides
 ├── ai.local                           # AI API keys
-└── rails.local                        # Rails settings
+├── rails.local                        # Rails settings
+└── projects.local                     # Project-to-theme mappings
 ```
 
 ## What Gets Installed
@@ -80,12 +81,14 @@ cd ~/dotfiles
 - Search: fzf, fd, ripgrep
 - Shell: starship, atuin
 - Utilities: jq, gum, git-delta
+- Shared runtime via mise: Bun
 
 ### Linux
 
 - Core: zsh, git, curl, neovim, tmux, zellij
 - Search: fzf, fd, ripgrep
 - Shell history: atuin
+- Shared runtime via mise: Bun
 
 ## Local Customization
 
@@ -160,7 +163,7 @@ Optional AI coding assistants (prompted during install):
 | [Oh My OpenAgent](https://ohmyopenagent.com/) | Multi-agent orchestration plugin for OpenCode |
 | [Oh My Codex](https://github.com/Yeachan-Heo/oh-my-codex) | Structured workflows and skills for Codex CLI |
 | [pi](https://github.com/mariozechner/pi-coding-agent) | Coding agent |
-| [qmd](https://github.com/tobilu/qmd) | Local markdown search |
+| [qmd](https://github.com/tobilu/qmd) | Local markdown search (installed with Bun) |
 
 | Function | Description |
 |----------|-------------|

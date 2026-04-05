@@ -61,7 +61,7 @@ path_prepend "$HOME/go/bin"
 # Node.js (if using volta or nvm, this may be managed elsewhere)
 path_prepend "$HOME/.npm-global/bin"
 
-# Bun global packages
+# Bun runtime and global packages (installed via mise on all machines)
 path_prepend "$HOME/.cache/.bun/bin"
 path_prepend "$HOME/.bun/bin"
 
