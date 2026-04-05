@@ -119,7 +119,7 @@ if $install_pi; then
 fi
 
 if $install_qmd; then
-    if command -v bun &>/dev/null; then
+    if ensure_bun; then
         info "Installing qmd (local markdown search)..."
         # macOS requires Homebrew's SQLite for extension support
         if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -127,7 +127,7 @@ if $install_qmd; then
         fi
         bun install -g @tobilu/qmd
     else
-        warn "bun not found. Install bun first (qmd requires bun runtime)."
+        warn "bun not found after installer setup. Check mise installation before installing qmd."
     fi
 fi
 
@@ -207,8 +207,12 @@ if command -v opencode &>/dev/null; then
     if [[ -f ".oh-my-openagent.json" ]] || [[ -f ".oh-my-opencode.json" ]]; then
         info "Oh My OpenAgent already configured"
     elif ask_yes_no "Install Oh My OpenAgent (multi-agent orchestration plugin for OpenCode)?"; then
-        info "Installing Oh My OpenAgent..."
-        bunx oh-my-opencode install
+        if ensure_bun; then
+            info "Installing Oh My OpenAgent..."
+            bunx oh-my-opencode install
+        else
+            warn "bun not found after installer setup. Check mise installation before installing Oh My OpenAgent."
+        fi
     fi
 fi
 
@@ -217,8 +221,12 @@ if command -v omx &>/dev/null; then
     info "Oh My Codex already installed"
 elif command -v codex &>/dev/null; then
     if ask_yes_no "Install Oh My Codex (structured workflows and skills for Codex CLI)?"; then
-        info "Installing Oh My Codex..."
-        bunx oh-my-codex install
+        if ensure_bun; then
+            info "Installing Oh My Codex..."
+            bunx oh-my-codex install
+        else
+            warn "bun not found after installer setup. Check mise installation before installing Oh My Codex."
+        fi
     fi
 fi
 

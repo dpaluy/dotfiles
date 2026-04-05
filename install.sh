@@ -30,6 +30,11 @@ elif [[ "$OS" != "unknown" ]]; then
     source "$SCRIPT_DIR/install/linux.sh"
 fi
 
+if ! ensure_bun; then
+    error "bun is required but could not be installed via mise. Fix mise setup and rerun ./install.sh"
+    exit 1
+fi
+
 # Cross-platform tools (Oh My Zsh, Atuin, shell setup)
 source "$SCRIPT_DIR/install/common.sh"
 
