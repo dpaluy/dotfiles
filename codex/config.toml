@@ -5,6 +5,7 @@ personality = "pragmatic"
 responses_websockets_v2 = true
 
 [features]
+codex_hooks = true
 unified_exec = true
 shell_snapshot = true
 collaboration_modes = true
