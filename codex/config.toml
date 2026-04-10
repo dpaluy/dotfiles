@@ -8,6 +8,7 @@ codex_hooks = true
 unified_exec = true
 shell_snapshot = true
 collaboration_modes = true
+default_mode_request_user_input = true
 steer = true
 apply_patch_freeform = true
 skills = true
