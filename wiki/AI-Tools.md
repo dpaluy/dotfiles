@@ -48,6 +48,7 @@ Add machine-specific AI settings to `~/.local/dotfiles/ai.local`:
 # API keys (keep private!)
 export ANTHROPIC_API_KEY="sk-..."
 export OPENAI_API_KEY="sk-..."
+export OPENROUTER_API_KEY="sk-or-v1-..."  # pi OpenRouter models
 
 # Project-specific aliases
 alias ai-review='claude "Review this code for bugs and improvements"'

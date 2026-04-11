@@ -18,6 +18,17 @@ create_local_template "$DOTFILES_LOCAL/ai.local" "Local AI tool settings (API ke
 create_local_template "$DOTFILES_LOCAL/rails.local" "Local Rails/Ruby settings"
 create_local_template "$DOTFILES_LOCAL/projects.local" "Project-to-theme mappings for terminal theming"
 
+# Add example AI config if ai.local is still just the template header
+if [[ $(wc -l < "$DOTFILES_LOCAL/ai.local") -le 3 ]]; then
+    cat >> "$DOTFILES_LOCAL/ai.local" << 'EOF'
+# API keys (keep private)
+# pi uses OPENROUTER_API_KEY for OpenRouter models.
+# export OPENROUTER_API_KEY="sk-or-v1-..."
+# export GROQ_API_KEY="gsk_..."
+# export ZAI_API_KEY="..."
+EOF
+fi
+
 # ------------------------------------------------------------------------------
 # Git Configuration (name, email)
 # ------------------------------------------------------------------------------

@@ -56,6 +56,9 @@ cd ~/dotfiles
 │   └── bindings.conf
 ├── worktrunk/
 │   └── config.toml                    # Worktrunk worktree manager config
+├── pi/
+│   ├── models.json                    # pi custom models
+│   └── settings.json                  # pi defaults + enabled model shortlist
 ├── claude/                            # Claude Code config
 ├── codex/                             # OpenAI Codex config
 ├── raycast/                           # Raycast scripts (macOS only)

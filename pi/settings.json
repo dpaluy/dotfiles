@@ -1,0 +1,21 @@
+{
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.4",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "https://github.com/davebcn87/pi-autoresearch",
+    "npm:pi-side-chat",
+    "npm:pi-subagents"
+  ],
+  "enabledModels": [
+    "openai-codex/gpt-5.4",
+    "google-gemini-cli/gemini-2.5-pro",
+    "google-gemini-cli/gemini-3.1-pro-preview",
+    "zai-coding/glm-5.1",
+    "openrouter/google/gemma-4-31b-it",
+    "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+    "groq/llama-3.3-70b-versatile",
+    "groq/openai/gpt-oss-120b"
+  ]
+}

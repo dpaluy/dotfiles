@@ -162,6 +162,7 @@ create_symlink "$DOTFILES_DIR/uv/uv.toml" "$HOME/.config/uv/uv.toml"
 # pi
 mkdir -p "$HOME/.pi/agent"
 create_symlink "$DOTFILES_DIR/pi/models.json" "$HOME/.pi/agent/models.json"
+create_symlink "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
 
 # Linux-only: Hyprland
 if [[ "$OS" != "macos" ]]; then
