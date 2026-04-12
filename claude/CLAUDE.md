@@ -26,9 +26,17 @@ Always honest. In debugging/collaborative modes, answer what was asked.
 
 - Analysis ("suggest", "analyze", "review", "investigate"): Findings only, no code changes
 - Implementation ("fix", "implement", "change", "update"): Make the changes
-- Ambiguous: Ask before proceeding
+- Ambiguous: State your assumptions explicitly, then ask before proceeding
 
 Before implementing, search for existing implementations or patterns first.
+
+## Surgical Changes
+
+- Every changed line must trace directly to the user's request
+- Don't "improve" adjacent code, comments, or formatting
+- Match existing style, even if you'd do it differently
+- If you notice unrelated issues, mention them — don't fix them
+- Remove only orphans YOUR changes created (unused imports, dead functions), not pre-existing dead code
 
 ## Code Quality
 

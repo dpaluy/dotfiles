@@ -1,12 +1,17 @@
 {
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.4",
+  "defaultProvider": "zai-coding",
+  "defaultModel": "glm-5.1",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-side-chat",
-    "npm:pi-subagents"
+    "npm:@oh-my-pi/pi-coding-agent",
+    "git:github.com/majesticlabs-dev/pi-minimax_image",
+    "npm:pi-subagents",
+    "npm:pi-model-switch",
+    "https://github.com/jhochenbaum/pi-autoresearch-studio",
+    "npm:pi-web-access"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.4",
@@ -17,5 +22,7 @@
     "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
     "groq/llama-3.3-70b-versatile",
     "groq/openai/gpt-oss-120b"
-  ]
+  ],
+  "lastChangelogVersion": "0.66.1",
+  "quietStartup": true
 }
