@@ -19,6 +19,7 @@ prevent_idle_sleep = true
 js_repl = true
 guardian_approval = true
 child_agents_md = true
+memories = true
 
 [agents]
 max_threads = 12

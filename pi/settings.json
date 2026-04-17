@@ -11,7 +11,8 @@
     "npm:pi-subagents",
     "npm:pi-model-switch",
     "https://github.com/jhochenbaum/pi-autoresearch-studio",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "git:github.com/SamuelLHuber/pi-fff"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.4",

@@ -69,6 +69,7 @@ fi
 - `uv/uv.toml` → `~/.config/uv/uv.toml`
 - `pi/models.json` → `~/.pi/agent/models.json`
 - `pi/settings.json` → `~/.pi/agent/settings.json`
+- `pi/AGENTS.md` → `~/.pi/agent/AGENTS.md` (if pi installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
 - `~/.claude/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)
 

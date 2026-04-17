@@ -3,6 +3,11 @@
 # pi Extensions
 #
 
+if command -v pi &>/dev/null; then
+    mkdir -p "$HOME/.pi/agent"
+    create_symlink "$DOTFILES_DIR/pi/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
+fi
+
 PI_EXTENSIONS=(
     https://github.com/davebcn87/pi-autoresearch
     npm:pi-side-chat
