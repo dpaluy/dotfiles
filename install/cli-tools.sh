@@ -10,7 +10,7 @@ install_gh_dash=false
 
 # Detect which tools are already installed
 missing_tools=()
-command -v google &>/dev/null && info "Google CLI already installed" || missing_tools+=("Google CLI")
+command -v gws &>/dev/null && info "Google CLI already installed" || missing_tools+=("Google CLI")
 gh extension list 2>/dev/null | grep -q "dlvhdr/gh-dash" && info "gh-dash already installed" || missing_tools+=("gh-dash")
 
 if [[ ${#missing_tools[@]} -eq 0 ]]; then
