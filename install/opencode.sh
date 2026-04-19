@@ -37,7 +37,7 @@ else
     warn "jq not found — skipping OpenCode config merge"
 fi
 
-# oh-my-opencode.json: merge shared defaults into local config
+# oh-my-openagent.json: merge shared defaults into local config
 omo_config="$HOME/.config/opencode/oh-my-openagent.json"
 shared_omo="$DOTFILES_DIR/opencode/oh-my-openagent.json"
 

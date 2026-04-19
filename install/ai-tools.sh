@@ -204,12 +204,12 @@ fi
 
 # Oh My OpenAgent — agent harness plugin for OpenCode
 if command -v opencode &>/dev/null; then
-    if bun pm ls -g 2>/dev/null | grep -q "oh-my-openagent\|oh-my-opencode"; then
+    if bun pm ls -g 2>/dev/null | grep -q "oh-my-openagent"; then
         info "Oh My OpenAgent already installed"
     elif ask_yes_no "Install Oh My OpenAgent (multi-agent orchestration plugin for OpenCode)?"; then
         if ensure_bun; then
             info "Installing Oh My OpenAgent..."
-            bunx oh-my-opencode install
+            bunx oh-my-openagent install
         else
             warn "bun not found after installer setup. Check mise installation before installing Oh My OpenAgent."
         fi

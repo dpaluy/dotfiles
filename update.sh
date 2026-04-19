@@ -112,7 +112,7 @@ BUN_GLOBALS=(
 )
 
 if command -v opencode &>/dev/null; then
-    BUN_GLOBALS+=(oh-my-opencode)
+    BUN_GLOBALS+=(oh-my-openagent)
 fi
 
 if command -v codex &>/dev/null; then
