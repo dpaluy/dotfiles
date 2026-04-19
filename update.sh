@@ -111,6 +111,18 @@ BUN_GLOBALS=(
     https://github.com/tobi/qmd
 )
 
+if command -v opencode &>/dev/null; then
+    BUN_GLOBALS+=(oh-my-opencode)
+fi
+
+if command -v codex &>/dev/null; then
+    BUN_GLOBALS+=(oh-my-codex)
+fi
+
+if command -v pi &>/dev/null; then
+    BUN_GLOBALS+=(https://github.com/can1357/oh-my-pi)
+fi
+
 if command -v bun &> /dev/null && [[ ${#BUN_GLOBALS[@]} -gt 0 ]]; then
     header "bun Global Packages"
     for pkg in "${BUN_GLOBALS[@]}"; do

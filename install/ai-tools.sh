@@ -230,6 +230,20 @@ elif command -v codex &>/dev/null; then
     fi
 fi
 
+# Oh My Pi — agent harness plugin for pi
+if command -v pi &>/dev/null; then
+    if bun pm ls -g 2>/dev/null | grep -q "oh-my-pi"; then
+        info "Oh My Pi already installed"
+    elif ask_yes_no "Install Oh My Pi (optimized tool harness, LSP, subagents for pi)?"; then
+        if ensure_bun; then
+            info "Installing Oh My Pi..."
+            bun install -g https://github.com/can1357/oh-my-pi
+        else
+            warn "bun not found after installer setup. Check mise installation before installing Oh My Pi."
+        fi
+    fi
+fi
+
 # pi extensions
 source "$DOTFILES_DIR/install/pi.sh"
 
