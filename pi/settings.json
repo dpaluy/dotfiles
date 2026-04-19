@@ -12,7 +12,8 @@
     "npm:pi-model-switch",
     "https://github.com/jhochenbaum/pi-autoresearch-studio",
     "npm:pi-web-access",
-    "git:github.com/SamuelLHuber/pi-fff"
+    "git:github.com/SamuelLHuber/pi-fff",
+    "npm:@steel-experiments/pi-steel"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.4",
