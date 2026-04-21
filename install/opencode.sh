@@ -37,23 +37,25 @@ else
     warn "jq not found — skipping OpenCode config merge"
 fi
 
-# oh-my-openagent.json: merge shared defaults into local config
+# oh-my-openagent.json: merge shared defaults + private model routing, then copy to live
 omo_config="$HOME/.config/opencode/oh-my-openagent.json"
 shared_omo="$DOTFILES_DIR/opencode/oh-my-openagent.json"
+local_omo="$HOME/.local/dotfiles/oh-my-openagent.local.json"
 
-if [[ ! -f "$omo_config" ]]; then
-    command cp -f "$shared_omo" "$omo_config"
-    info "Copied oh-my-openagent config to ~/.config/opencode/oh-my-openagent.json"
-elif command -v jq &>/dev/null; then
+if [[ -f "$local_omo" ]] && command -v jq &>/dev/null; then
     tmp="$(mktemp)"
-    if jq -s '.[0] * .[1]' "$shared_omo" "$omo_config" > "$tmp"; then
-        command cp -f "$omo_config" "${omo_config}.bak"
-        command mv -f "$tmp" "$omo_config"
-        info "Merged shared oh-my-openagent config into ~/.config/opencode/oh-my-openagent.json"
+    if jq -s '.[0] * .[1]' "$shared_omo" "$local_omo" > "$tmp"; then
+        command cp -f "$tmp" "$omo_config"
+        rm -f "$tmp"
+        info "Installed oh-my-openagent config (shared + local) to ~/.config/opencode/oh-my-openagent.json"
     else
         rm -f "$tmp"
         warn "Could not merge oh-my-openagent config; leaving ~/.config/opencode/oh-my-openagent.json unchanged"
     fi
+elif [[ -f "$local_omo" ]]; then
+    warn "jq not found — copying local oh-my-openagent config without merging shared defaults"
+    command cp -f "$local_omo" "$omo_config"
 else
-    warn "jq not found — skipping oh-my-openagent config merge"
+    command cp -f "$shared_omo" "$omo_config"
+    info "Copied shared oh-my-openagent config to ~/.config/opencode/oh-my-openagent.json"
 fi
