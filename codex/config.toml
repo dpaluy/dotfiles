@@ -47,7 +47,7 @@ sandbox_mode = "workspace-write"
 approval_policy = "never"
 
 [profiles.research]
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "workspace-write"
 approval_policy = "on-failure"

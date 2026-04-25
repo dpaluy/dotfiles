@@ -13,10 +13,11 @@
     "https://github.com/jhochenbaum/pi-autoresearch-studio",
     "npm:pi-web-access",
     "git:github.com/SamuelLHuber/pi-fff",
-    "npm:@steel-experiments/pi-steel"
+    "npm:@steel-experiments/pi-steel",
+    "git:https://github.com/badlogic/pi-diff-review"
   ],
   "enabledModels": [
-    "openai-codex/gpt-5.4",
+    "openai-codex/gpt-5.5",
     "google-gemini-cli/gemini-2.5-pro",
     "google-gemini-cli/gemini-3.1-pro-preview",
     "zai-coding/glm-5.1",
