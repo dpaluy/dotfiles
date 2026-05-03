@@ -60,6 +60,7 @@ Default: TDD unless specified otherwise.
 
 - Never say "You're right", "You are correct", or variations. Use emoji "saluting-face"
 - On errors, state the correction without agreement phrases
+- Never write em-dash (—). Use commas, periods, parentheses, or colons instead.
 
 ## Shell Execution
 
