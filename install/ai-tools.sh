@@ -165,7 +165,7 @@ fi
 # Configure rtk hooks (runs for both fresh and existing installs)
 if command -v rtk &>/dev/null; then
     mkdir -p "$HOME/.config/rtk"
-    cp "$DOTFILES_DIR/rtk/config.toml" "$HOME/.config/rtk/config.toml"
+    # config.toml is symlinked by install/symlinks.sh — no copy needed
     export RTK_TELEMETRY_DISABLED=1
     if command -v claude &>/dev/null; then
         info "Setting up rtk hooks for Claude Code..."
