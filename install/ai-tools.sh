@@ -223,7 +223,7 @@ elif command -v codex &>/dev/null; then
     if ask_yes_no "Install Oh My Codex (structured workflows and skills for Codex CLI)?"; then
         if ensure_bun; then
             info "Installing Oh My Codex..."
-            bunx oh-my-codex install
+            bunx oh-my-codex setup
         else
             warn "bun not found after installer setup. Check mise installation before installing Oh My Codex."
         fi
