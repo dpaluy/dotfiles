@@ -15,6 +15,38 @@
   },
   "agents": {
     "sisyphus": {
+      "model": "kimi-for-coding/k2p6",
+      "fallback_models": [
+        "zai-coding-plan/glm-5.1",
+        "openai/gpt-5.5",
+        "zai-coding-plan/glm-5"
+      ]
+    },
+    "hephaestus": {
+      "model": "kimi-for-coding/k2p6",
+      "fallback_models": ["zai-coding-plan/glm-5.1", "openai/gpt-5.5"]
+    },
+    "oracle": {
+      "model": "openai/gpt-5.5",
+      "fallback_models": [
+        "zai-coding-plan/glm-5.1",
+        "kimi-for-coding/k2p6",
+        "zai-coding-plan/glm-5"
+      ]
+    },
+    "librarian": {
+      "model": "openai/gpt-5.4-mini-fast",
+      "fallback_models": ["kimi-for-coding/k2p6", "zai-coding-plan/glm-5"]
+    },
+    "explore": {
+      "model": "openai/gpt-5.4-mini-fast",
+      "fallback_models": ["kimi-for-coding/k2p6", "zai-coding-plan/glm-5"]
+    },
+    "multimodal-looker": {
+      "model": "openai/gpt-5.5",
+      "fallback_models": ["zai-coding-plan/glm-4.6v", "kimi-for-coding/k2p6"]
+    },
+    "prometheus": {
       "model": "zai-coding-plan/glm-5.1",
       "fallback_models": [
         "openai/gpt-5.5",
@@ -22,43 +54,11 @@
         "zai-coding-plan/glm-5"
       ]
     },
-    "hephaestus": {
-      "model": "zai-coding-plan/glm-5.1",
-      "fallback_models": ["openai/gpt-5.4", "kimi-for-coding/k2p6"]
-    },
-    "oracle": {
-      "model": "openai/gpt-5.4",
-      "fallback_models": [
-        "zai-coding-plan/glm-5.1",
-        "moonshot/kimi-k2.6",
-        "zai-coding-plan/glm-5"
-      ]
-    },
-    "librarian": {
-      "model": "openai/gpt-5.4-mini-fast",
-      "fallback_models": ["moonshot/kimi-k2.6", "zai-coding-plan/glm-5"]
-    },
-    "explore": {
-      "model": "openai/gpt-5.4-mini-fast",
-      "fallback_models": ["moonshot/kimi-k2.6", "zai-coding-plan/glm-5"]
-    },
-    "multimodal-looker": {
-      "model": "openai/gpt-5.5",
-      "fallback_models": ["zai-coding-plan/glm-4.6v", "moonshot/kimi-k2.6"]
-    },
-    "prometheus": {
-      "model": "zai-coding-plan/glm-5.1",
-      "fallback_models": [
-        "openai/gpt-5.5",
-        "moonshot/kimi-k2.6",
-        "zai-coding-plan/glm-5"
-      ]
-    },
     "metis": {
       "model": "zai-coding-plan/glm-5.1",
       "fallback_models": [
         "openai/gpt-5.5",
-        "moonshot/kimi-k2.6",
+        "kimi-for-coding/k2p6",
         "zai-coding-plan/glm-5"
       ]
     },
@@ -66,7 +66,7 @@
       "model": "openai/gpt-5.5",
       "fallback_models": [
         "zai-coding-plan/glm-5.1",
-        "moonshot/kimi-k2.6",
+        "kimi-for-coding/k2p6",
         "zai-coding-plan/glm-5"
       ]
     },
@@ -81,35 +81,35 @@
   },
   "categories": {
     "visual-engineering": {
-      "model": "moonshot/kimi-k2.6",
+      "model": "kimi-for-coding/k2p6",
       "fallback_models": ["openai/gpt-5.4", "zai-coding-plan/glm-5.1"]
     },
     "ultrabrain": {
       "model": "openai/gpt-5.5",
-      "fallback_models": ["zai-coding-plan/glm-5.1", "moonshot/kimi-k2.6"]
+      "fallback_models": ["zai-coding-plan/glm-5.1", "kimi-for-coding/k2p6"]
     },
     "deep": {
       "model": "zai-coding-plan/glm-5.1",
-      "fallback_models": ["openai/gpt-5.4", "moonshot/kimi-k2.6"]
+      "fallback_models": ["openai/gpt-5.4", "kimi-for-coding/k2p6"]
     },
     "artistry": {
-      "model": "moonshot/kimi-k2.6",
+      "model": "kimi-for-coding/k2p6",
       "fallback_models": ["openai/gpt-5.5", "zai-coding-plan/glm-5.1"]
     },
     "quick": {
       "model": "openai/gpt-5.4-mini-fast",
-      "fallback_models": ["moonshot/kimi-k2.6", "zai-coding-plan/glm-5"]
+      "fallback_models": ["kimi-for-coding/k2p6", "zai-coding-plan/glm-5"]
     },
     "unspecified-low": {
       "model": "openai/gpt-5.4-mini-fast",
-      "fallback_models": ["moonshot/kimi-k2.6", "zai-coding-plan/glm-5"]
+      "fallback_models": ["kimi-for-coding/k2p6", "zai-coding-plan/glm-5"]
     },
     "unspecified-high": {
       "model": "zai-coding-plan/glm-5.1",
-      "fallback_models": ["openai/gpt-5.5", "moonshot/kimi-k2.6"]
+      "fallback_models": ["openai/gpt-5.5", "kimi-for-coding/k2p6"]
     },
     "writing": {
-      "model": "moonshot/kimi-k2.6",
+      "model": "kimi-for-coding/k2p6",
       "fallback_models": ["openai/gpt-5.4-mini-fast", "zai-coding-plan/glm-5"]
     }
   },
