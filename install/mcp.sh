@@ -86,7 +86,9 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
     if ! ensure_node; then
         warn "npm not found — cannot install Perplexity MCP"
     else
-        perplexity_mcp_shell='source ~/.zshrc && exec npx -yq @perplexity-ai/mcp-server'
+        # Keep stdout clean for stdio MCP and do not let optional shell init
+        # checks prevent the server from launching.
+        perplexity_mcp_shell='source ~/.zshrc >/dev/null 2>&1; exec npx -yq @perplexity-ai/mcp-server'
 
         # Warn if API key is missing
         if [[ -z "${PERPLEXITY_API_KEY:-}" ]]; then

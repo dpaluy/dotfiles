@@ -126,3 +126,7 @@ fi
 # ------------------------------------------------------------------------------
 
 [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+
+# Keep `source ~/.zshrc && ...` wrappers from failing when the final optional
+# initialization check is false on a machine.
+true

@@ -30,6 +30,10 @@ source "$HOME/dotfiles/zsh/zshrc"
 
 # Tool additions below (mise, atuin, fzf, etc.)
 # -----------------------------------------------
+
+# Keep non-interactive wrappers like `source ~/.zshrc && ...` from failing when
+# the sourced dotfiles end on an optional missing-file check.
+true
 EOF
 
     info "Created ~/.zshrc wrapper"
