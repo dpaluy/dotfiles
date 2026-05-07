@@ -88,3 +88,33 @@ elif [[ -d "$DOTFILES_DIR/claude/hooks" ]] && ask_yes_no "Install Claude Code ho
         warn "jq not found — hooks symlinked but not registered in settings.json"
     fi
 fi
+
+# Claude Code performance/feature env settings
+if command -v jq &>/dev/null; then
+    settings="$HOME/.claude/settings.json"
+    already_configured=false
+    if [[ -f "$settings" ]] && jq -e '.env.CLAUDE_CODE_EFFORT_LEVEL == "xhigh"' "$settings" &>/dev/null; then
+        already_configured=true
+    fi
+
+    if $already_configured; then
+        info "Claude Code env settings already configured"
+    elif ask_yes_no "Apply recommended Claude Code env settings (effort level, concurrency, compaction, LSP, agent teams)?"; then
+        [[ -f "$settings" ]] || echo '{}' > "$settings"
+        jq '.env = (.env // {}) * {
+            "ENABLE_LSP_TOOL": "1",
+            "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+            "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "true",
+            "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
+            "CLAUDE_CODE_EFFORT_LEVEL": "xhigh",
+            "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "200000",
+            "CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY": "6",
+            "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
+            "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+        } | .model = "claude-sonnet-4-6"' \
+            "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
+        info "Claude Code env settings applied"
+    fi
+else
+    warn "jq not found — skipping Claude Code env settings"
+fi
