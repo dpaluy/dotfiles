@@ -72,6 +72,9 @@ clipboard-paste-protection = true
 shell-integration = zsh
 shell-integration-features = no-cursor,no-title,ssh-env
 
+# Prevents ^[[?2026;2$y leak: xterm-ghostty terminfo advertises mode 2026, triggering a Starship/epoll race condition
+term = xterm-256color
+
 # ------------------------------------------------------------------------------
 # Keybindings - macOS
 # ------------------------------------------------------------------------------
