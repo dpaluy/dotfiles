@@ -4,7 +4,7 @@ suppress_unstable_features_warning = true
 personality = "pragmatic"
 
 [features]
-codex_hooks = true
+hooks = true
 unified_exec = true
 shell_snapshot = true
 collaboration_modes = true
