@@ -1,6 +1,6 @@
 {
-  "defaultProvider": "kimi-coding",
-  "defaultModel": "k2p6",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -20,9 +20,10 @@
     "openai-codex/gpt-5.5",
     "kimi-coding/k2p6",
     "zai-coding/glm-5.1",
-    "openrouter/google/gemma-4-31b-it",
-    "openrouter/nvidia/nemotron-3-super-120b-a12b:free"
+    "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+    "deepseek/deepseek-v4-flash",
+    "deepseek/deepseek-v4-pro"
   ],
-  "lastChangelogVersion": "0.72.1",
+  "lastChangelogVersion": "0.74.0",
   "quietStartup": true
 }

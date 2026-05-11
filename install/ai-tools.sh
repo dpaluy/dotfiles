@@ -11,6 +11,9 @@ install_gemini=false
 install_opencode=false
 install_pi=false
 install_qmd=false
+install_google_cli=false
+install_droid=false
+install_kimi=false
 
 # Detect which tools are already installed
 missing_tools=()
@@ -20,6 +23,9 @@ command -v gemini &>/dev/null && info "Gemini CLI already installed" || missing_
 command -v opencode &>/dev/null && info "OpenCode already installed" || missing_tools+=("OpenCode")
 command -v pi &>/dev/null && info "pi already installed" || missing_tools+=("pi (coding agent)")
 command -v qmd &>/dev/null && info "qmd already installed" || missing_tools+=("qmd (local markdown search)")
+command -v gws &>/dev/null && info "Google CLI already installed" || missing_tools+=("Google CLI")
+command -v droid &>/dev/null && info "droid already installed" || missing_tools+=("Droid")
+command -v kimi-cli &>/dev/null && info "Kimi Code already installed" || missing_tools+=("Kimi Code")
 
 if [[ ${#missing_tools[@]} -eq 0 ]]; then
     info "All AI coding assistants already installed"
@@ -36,6 +42,9 @@ elif has_gum; then
     [[ "$ai_choices" == *"OpenCode"* ]] && install_opencode=true
     [[ "$ai_choices" == *"pi"* ]] && install_pi=true
     [[ "$ai_choices" == *"qmd"* ]] && install_qmd=true
+    [[ "$ai_choices" == *"Google CLI"* ]] && install_google_cli=true
+    [[ "$ai_choices" == *"Droid"* ]] && install_droid=true
+    [[ "$ai_choices" == *"Kimi Code"* ]] && install_kimi=true
 
     if [[ -z "$ai_choices" ]]; then
         info "Skipping AI coding assistants"
@@ -60,6 +69,9 @@ else
                     [[ "$tool" == "OpenCode" ]] && install_opencode=true
                     [[ "$tool" == *"pi"* ]] && install_pi=true
                     [[ "$tool" == *"qmd"* ]] && install_qmd=true
+                    [[ "$tool" == "Google CLI" ]] && install_google_cli=true
+                    [[ "$tool" == "Droid" ]] && install_droid=true
+                    [[ "$tool" == "Kimi Code" ]] && install_kimi=true
                 done
                 ;;
             [Nn]) ;;
@@ -72,6 +84,9 @@ else
                     [[ "$selected" == "OpenCode" ]] && install_opencode=true
                     [[ "$selected" == *"pi"* ]] && install_pi=true
                     [[ "$selected" == *"qmd"* ]] && install_qmd=true
+                    [[ "$selected" == "Google CLI" ]] && install_google_cli=true
+                    [[ "$selected" == "Droid" ]] && install_droid=true
+                    [[ "$selected" == "Kimi Code" ]] && install_kimi=true
                 else
                     warn "Unknown option: $choice"
                 fi
@@ -131,6 +146,25 @@ if $install_qmd; then
     fi
 fi
 
+if $install_google_cli; then
+    if ensure_node; then
+        info "Installing Google CLI..."
+        npm install -g @googleworkspace/cli
+    else
+        warn "npm not found and mise unavailable. Install Node.js manually."
+    fi
+fi
+
+if $install_droid; then
+    info "Installing droid..."
+    curl -fsSL https://app.factory.ai/cli | sh
+fi
+
+if $install_kimi; then
+    info "Installing Kimi Code..."
+    curl -fsSL code.kimi.com/install.sh | bash
+fi
+
 # Agent Browser — headless browser automation for AI agents (Rust native binary)
 if command -v agent-browser &>/dev/null; then
     info "agent-browser already installed"
@@ -186,22 +220,6 @@ if command -v rtk &>/dev/null; then
     fi
 fi
 
-# Droid — AI coding agent by Factory
-if command -v droid &>/dev/null; then
-    info "droid already installed"
-elif ask_yes_no "Install droid (AI coding agent by Factory)?"; then
-    info "Installing droid..."
-    curl -fsSL https://app.factory.ai/cli | sh
-fi
-
-# Kimi Code — AI coding CLI powered by Kimi K2.5 model
-if command -v kimi-cli &>/dev/null; then
-    info "Kimi Code already installed"
-elif ask_yes_no "Install Kimi Code (AI coding CLI powered by Kimi K2.5)?"; then
-    info "Installing Kimi Code..."
-    curl -fsSL code.kimi.com/install.sh | bash
-fi
-
 # Oh My OpenAgent — agent harness plugin for OpenCode
 if command -v opencode &>/dev/null; then
     if bun pm ls -g 2>/dev/null | grep -q "oh-my-openagent"; then
@@ -248,7 +266,7 @@ fi
 source "$DOTFILES_DIR/install/pi.sh"
 
 # Offer CodexBar on macOS if any AI tools were installed
-if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_pi || $install_qmd); then
+if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_pi || $install_qmd || $install_google_cli || $install_droid || $install_kimi); then
     if brew list --cask steipete/tap/codexbar &>/dev/null; then
         info "CodexBar already installed"
     elif ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then

@@ -58,5 +58,8 @@ model_reasoning_effort = "xhigh"
 sandbox_mode = "workspace-write"
 approval_policy = "on-failure"
 
+[shell_environment_policy.set]
+OMX_LORE_COMMIT_GUARD = "0"
+
 [mcp_servers.qmd]
 url = "http://localhost:8181/mcp"
