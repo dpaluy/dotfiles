@@ -24,15 +24,15 @@ if command -v qmd &> /dev/null; then
         if launchctl bootout "gui/$(id -u)/com.tobilu.qmd" 2>/dev/null; then
             while launchctl print "gui/$(id -u)/com.tobilu.qmd" &>/dev/null; do sleep 0.1; done
         fi
-        launchctl bootstrap "gui/$(id -u)" "$plist"
+        launchctl bootstrap "gui/$(id -u)" "$plist" || warn "launchctl bootstrap failed for qmd MCP service"
         info "Installed qmd MCP launchd service ($QMD_BIN)"
     elif [[ "$OSTYPE" == "linux"* ]]; then
         unit_dir="$HOME/.config/systemd/user"
         mkdir -p "$unit_dir"
         sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" \
             "$DOTFILES_DIR/qmd/qmd-mcp.service" > "$unit_dir/qmd-mcp.service"
-        systemctl --user daemon-reload
-        systemctl --user enable --now qmd-mcp.service
+        systemctl --user daemon-reload || warn "systemctl daemon-reload failed"
+        systemctl --user enable --now qmd-mcp.service || warn "Could not enable qmd-mcp.service"
         info "Installed qmd MCP systemd user service ($QMD_BIN)"
     fi
 
@@ -44,7 +44,7 @@ if command -v qmd &> /dev/null; then
             claude mcp remove qmd 2>/dev/null && info "Removed manual qmd MCP (plugin manages its own)"
         else
             # Re-register unconditionally to fix stale stdio registrations
-            claude mcp remove qmd 2>/dev/null
+            claude mcp remove qmd 2>/dev/null || true
             claude mcp add --transport http --scope user qmd "$QMD_MCP_URL"
             info "Registered qmd MCP with Claude Code (http)"
         fi
@@ -127,7 +127,7 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
 
         # Claude Code — re-register with a shell wrapper so it reads the live env
         if [[ "${perplexity_choices:-}" == *"Claude"* ]]; then
-            claude mcp remove perplexity 2>/dev/null
+            claude mcp remove perplexity 2>/dev/null || true
             claude mcp add perplexity --transport stdio --scope user -- zsh -lc "$perplexity_mcp_shell"
             info "Configured Perplexity MCP for Claude Code"
         fi

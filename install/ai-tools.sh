@@ -104,7 +104,7 @@ fi
 if $install_codex; then
     if ensure_node; then
         info "Installing Codex..."
-        npm i -g @openai/codex --force
+        npm i -g @openai/codex --force || warn "Codex installation failed. Try manually: npm i -g @openai/codex --force"
     else
         warn "npm not found and mise unavailable. Install Node.js manually."
     fi
@@ -171,10 +171,10 @@ if command -v agent-browser &>/dev/null; then
 elif ask_yes_no "Install agent-browser (headless browser automation CLI for AI agents)?"; then
     if [[ "$OSTYPE" == "darwin"* ]] && command -v brew &>/dev/null; then
         info "Installing agent-browser via Homebrew..."
-        brew install agent-browser
+        brew install agent-browser || warn "agent-browser installation failed. Try manually: brew install agent-browser"
     elif command -v cargo &>/dev/null; then
         info "Installing agent-browser via cargo..."
-        cargo install agent-browser
+        cargo install agent-browser || warn "agent-browser installation failed. Try manually: cargo install agent-browser"
     else
         warn "cargo not found. Install Rust (https://rustup.rs) first."
     fi
@@ -203,7 +203,7 @@ if command -v rtk &>/dev/null; then
     export RTK_TELEMETRY_DISABLED=1
     if command -v claude &>/dev/null; then
         info "Setting up rtk hooks for Claude Code..."
-        rtk init -g --auto-patch
+        rtk init -g --auto-patch || warn "rtk init for Claude Code failed"
     fi
     if command -v codex &>/dev/null; then
         info "Setting up rtk for Codex CLI..."
@@ -216,7 +216,7 @@ if command -v rtk &>/dev/null; then
     fi
     if command -v opencode &>/dev/null; then
         info "Setting up rtk plugin for OpenCode..."
-        rtk init -g --opencode --auto-patch
+        rtk init -g --opencode --auto-patch || warn "rtk init for OpenCode failed"
     fi
 fi
 
@@ -227,7 +227,7 @@ if command -v opencode &>/dev/null; then
     elif ask_yes_no "Install Oh My OpenAgent (multi-agent orchestration plugin for OpenCode)?"; then
         if ensure_bun; then
             info "Installing Oh My OpenAgent..."
-            bunx oh-my-openagent install
+            bunx oh-my-openagent install || warn "Oh My OpenAgent installation failed"
         else
             warn "bun not found after installer setup. Check mise installation before installing Oh My OpenAgent."
         fi
@@ -241,7 +241,7 @@ elif command -v codex &>/dev/null; then
     if ask_yes_no "Install Oh My Codex (structured workflows and skills for Codex CLI)?"; then
         if ensure_bun; then
             info "Installing Oh My Codex..."
-            bunx oh-my-codex setup
+            bunx oh-my-codex setup || warn "Oh My Codex installation failed"
         else
             warn "bun not found after installer setup. Check mise installation before installing Oh My Codex."
         fi
@@ -257,7 +257,7 @@ if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $instal
         info "CodexBar already installed"
     elif ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then
         info "Installing CodexBar..."
-        brew install --cask steipete/tap/codexbar
+        brew install --cask steipete/tap/codexbar || warn "CodexBar installation failed. Try manually: brew install --cask steipete/tap/codexbar"
     fi
 fi
 
