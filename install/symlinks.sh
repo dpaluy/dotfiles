@@ -168,9 +168,10 @@ mkdir -p "$HOME/.config/ripgrep"
 create_symlink "$DOTFILES_DIR/ripgrep/config" "$HOME/.config/ripgrep/config"
 
 # pi
-mkdir -p "$HOME/.pi/agent"
+mkdir -p "$HOME/.pi/agent/themes"
 create_symlink "$DOTFILES_DIR/pi/models.json" "$HOME/.pi/agent/models.json"
 create_symlink "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
+create_symlink "$DOTFILES_DIR/pi/themes/catppuccin-macchiato.json" "$HOME/.pi/agent/themes/catppuccin-macchiato.json"
 
 # Linux-only: Hyprland
 if [[ "$OS" != "macos" ]]; then
