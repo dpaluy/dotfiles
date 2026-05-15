@@ -169,7 +169,13 @@ create_symlink "$DOTFILES_DIR/ripgrep/config" "$HOME/.config/ripgrep/config"
 
 # pi
 mkdir -p "$HOME/.pi/agent/themes"
-create_symlink "$DOTFILES_DIR/pi/models.json" "$HOME/.pi/agent/models.json"
+# models.json is copied (not symlinked) — pi writes real API keys into it at runtime
+if [[ ! -f "$HOME/.pi/agent/models.json" ]]; then
+    cp "$DOTFILES_DIR/pi/models.json" "$HOME/.pi/agent/models.json"
+    info "Created ~/.pi/agent/models.json (add API keys there, not in dotfiles)"
+else
+    info "~/.pi/agent/models.json already exists, skipping"
+fi
 create_symlink "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
 create_symlink "$DOTFILES_DIR/pi/themes/catppuccin-macchiato.json" "$HOME/.pi/agent/themes/catppuccin-macchiato.json"
 
