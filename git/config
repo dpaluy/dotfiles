@@ -12,6 +12,7 @@
 [core]
 	excludesfile = ~/.config/git/ignore
 	pager = delta
+	fsmonitor = true
 
 # ------------------------------------------------------------------------------
 # Aliases
@@ -52,6 +53,7 @@
 
 [fetch]
 	prune = true
+	writeCommitGraph = true
 
 # ------------------------------------------------------------------------------
 # Diff
@@ -96,6 +98,7 @@
 [rebase]
 	autoStash = true
 	autosquash = true
+	updateRefs = true
 
 # ------------------------------------------------------------------------------
 # Help

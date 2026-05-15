@@ -74,6 +74,9 @@ fi
 # RTK (token compression proxy)
 export RTK_TELEMETRY_DISABLED=1
 
+# Ripgrep
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"
+
 # ------------------------------------------------------------------------------
 # Starship
 # ------------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 # General
 # ------------------------------------------------------------------------------
 
-command_timeout = 500
+command_timeout = 2000
 add_newline = true
 
 # ------------------------------------------------------------------------------
@@ -75,8 +75,9 @@ detect_files = ["Gemfile", ".ruby-version", "Rakefile"]
 format = "[$symbol($version)]($style) "
 symbol = " "
 style = "bold green"
-detect_files = ["package.json", ".nvmrc"]
-detect_folders = []  # Don't trigger on node_modules alone
+detect_extensions = []
+detect_files = ["package.json", ".nvmrc", ".node-version", ".tool-versions"]
+detect_folders = []
 
 [python]
 format = "[$symbol($version)]($style) "

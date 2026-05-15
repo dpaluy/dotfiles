@@ -163,6 +163,10 @@ create_symlink "$DOTFILES_DIR/npm/npmrc" "$HOME/.npmrc"
 mkdir -p "$HOME/.config/uv"
 create_symlink "$DOTFILES_DIR/uv/uv.toml" "$HOME/.config/uv/uv.toml"
 
+# Ripgrep
+mkdir -p "$HOME/.config/ripgrep"
+create_symlink "$DOTFILES_DIR/ripgrep/config" "$HOME/.config/ripgrep/config"
+
 # pi
 mkdir -p "$HOME/.pi/agent"
 create_symlink "$DOTFILES_DIR/pi/models.json" "$HOME/.pi/agent/models.json"
