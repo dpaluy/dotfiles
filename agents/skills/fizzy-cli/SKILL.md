@@ -56,7 +56,21 @@ fizzy boards get BOARD_ID
 fizzy boards create "Board Name"
 fizzy boards update BOARD_ID --name "New Name"
 fizzy boards delete BOARD_ID
+fizzy boards sync                           # Refresh boards cache
 ```
+
+### Project Config (`.fizzy.yml`)
+
+`fizzy init` scaffolds a per-project config in the current directory:
+
+```yaml
+account: 'ACCOUNT_SLUG'
+boards:
+  BOARD_ID_1: Board Name 1
+  BOARD_ID_2: Board Name 2
+```
+
+When a project directory has a `.fizzy.yml`, prefer the boards it declares over picking from `fizzy boards list`. If the user is working inside a project and no `.fizzy.yml` exists, ask before assuming a board; offer to run `fizzy init` to record the mapping.
 
 ## Cards
 
