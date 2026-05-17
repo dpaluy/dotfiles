@@ -220,6 +220,16 @@ if command -v rtk &>/dev/null; then
     fi
 fi
 
+# MLX — Apple Silicon ML framework (macOS only)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    if uv pip show mlx --system &>/dev/null 2>&1; then
+        info "MLX already installed"
+    elif ask_yes_no "Install MLX (Apple Silicon ML framework for local model inference)?"; then
+        info "Installing MLX..."
+        uv pip install --system mlx || warn "MLX installation failed. Try manually: uv pip install --system mlx"
+    fi
+fi
+
 # Oh My OpenAgent — agent harness plugin for OpenCode
 if command -v opencode &>/dev/null; then
     if bun pm ls -g 2>/dev/null | grep -q "oh-my-openagent"; then
