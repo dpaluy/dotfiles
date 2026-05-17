@@ -222,11 +222,11 @@ fi
 
 # MLX — Apple Silicon ML framework (macOS only)
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    if uv pip show mlx --system &>/dev/null 2>&1; then
+    if uv pip show mlx --break-system-packages &>/dev/null 2>&1; then
         info "MLX already installed"
     elif ask_yes_no "Install MLX (Apple Silicon ML framework for local model inference)?"; then
         info "Installing MLX..."
-        uv pip install --system mlx || warn "MLX installation failed. Try manually: uv pip install --system mlx"
+        uv pip install --break-system-packages mlx || warn "MLX installation failed. Try manually: uv pip install --break-system-packages mlx"
     fi
 fi
 
