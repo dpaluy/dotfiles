@@ -16,10 +16,11 @@ if command -v qmd &> /dev/null; then
     # canonicalize the path.
     QMD_BIN="$(command -v qmd)"
     BUN_DIR="$(dirname "$(command -v bun)")"
+    NODE_DIR="$(dirname "$(command -v node 2>/dev/null || echo /usr/bin/node)")"
     if [[ "$OSTYPE" == "darwin"* ]]; then
         plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
         mkdir -p "$HOME/Library/LaunchAgents"
-        sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" \
+        sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" -e "s|__NODE_DIR__|$NODE_DIR|g" \
             "$DOTFILES_DIR/qmd/com.tobilu.qmd.plist" > "$plist"
         # bootout + bootstrap to reload; if not loaded yet, just bootstrap
         if launchctl bootout "gui/$(id -u)/com.tobilu.qmd" 2>/dev/null; then
@@ -30,7 +31,7 @@ if command -v qmd &> /dev/null; then
     elif [[ "$OSTYPE" == "linux"* ]]; then
         unit_dir="$HOME/.config/systemd/user"
         mkdir -p "$unit_dir"
-        sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" \
+        sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" -e "s|__NODE_DIR__|$NODE_DIR|g" \
             "$DOTFILES_DIR/qmd/qmd-mcp.service" > "$unit_dir/qmd-mcp.service"
         systemctl --user daemon-reload || warn "systemctl daemon-reload failed"
         systemctl --user enable --now qmd-mcp.service || warn "Could not enable qmd-mcp.service"

@@ -13,7 +13,7 @@
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
-        <string>__BUN_DIR__:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <string>__NODE_DIR__:__BUN_DIR__:/usr/bin:/bin:/usr/sbin:/sbin</string>
         <key>BUN_INSTALL</key>
         <string>__BUN_DIR__/..</string>
     </dict>
