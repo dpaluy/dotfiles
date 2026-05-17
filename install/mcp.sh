@@ -18,6 +18,7 @@ if command -v qmd &> /dev/null; then
     BUN_DIR="$(dirname "$(command -v bun)")"
     if [[ "$OSTYPE" == "darwin"* ]]; then
         plist="$HOME/Library/LaunchAgents/com.tobilu.qmd.plist"
+        mkdir -p "$HOME/Library/LaunchAgents"
         sed -e "s|__QMD_BIN__|$QMD_BIN|g" -e "s|__BUN_DIR__|$BUN_DIR|g" \
             "$DOTFILES_DIR/qmd/com.tobilu.qmd.plist" > "$plist"
         # bootout + bootstrap to reload; if not loaded yet, just bootstrap
