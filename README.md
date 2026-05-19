@@ -63,7 +63,9 @@ cd ~/dotfiles
 ├── codex/                             # OpenAI Codex config
 ├── raycast/                           # Raycast scripts (macOS only)
 ├── Brewfile                           # Homebrew packages (macOS)
-└── install.sh                         # Cross-platform installer
+├── install.sh                         # Cross-platform installer
+├── update.sh                          # Update packages and tools
+└── harden-mac.sh                      # Interactive macOS security hardening
 
 ~/.local/dotfiles/                     # Private (not version controlled)
 ├── aliases.local                      # Machine-specific aliases
@@ -214,6 +216,27 @@ Add public skills by creating a folder in `agents/skills/` with a `SKILL.md` fil
 ## Platform-Specific
 
 ### macOS
+
+**Security Hardening:**
+
+```bash
+./harden-mac.sh
+```
+
+Interactive script that walks through macOS security settings one by one, showing current status and asking before applying each change.
+
+| Category | Settings |
+|----------|----------|
+| Network | Application Firewall, Stealth Mode, disable SSH, disable Remote Apple Events |
+| Screen Lock | Require password on wake, screensaver timeout, lock message |
+| User Accounts | Disable Guest account, disable auto-login |
+| System Integrity | Gatekeeper, FileVault (enables via `fdesetup`), SIP status check |
+| Software Updates | Auto-checks, security patches, App Store updates |
+| Privacy | Siri analytics, crash report submission |
+
+FileVault is handled inline: if off, the script prompts to enable it and prints the recovery key. Save the recovery key in a password manager immediately.
+
+Settings that cannot be scripted (SIP, firmware password) are flagged with instructions at the end.
 
 **Ghostty keybindings:** Uses `super+` (Cmd) by default. See `ghostty/config`.
 
