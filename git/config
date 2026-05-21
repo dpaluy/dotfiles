@@ -12,7 +12,7 @@
 [core]
 	excludesfile = ~/.config/git/ignore
 	pager = delta
-	fsmonitor = true
+	fsmonitor = false
 
 # ------------------------------------------------------------------------------
 # Aliases
@@ -128,5 +128,5 @@
 # ------------------------------------------------------------------------------
 
 [pager]
-	diff = diffnav
+	diff = delta
 	branch = false
