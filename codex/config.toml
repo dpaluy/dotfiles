@@ -9,7 +9,6 @@ model_context_window = 250000
 model_auto_compact_token_limit = 200000
 
 [features]
-hooks = true
 unified_exec = true
 shell_snapshot = true
 collaboration_modes = true
@@ -30,33 +29,6 @@ goals = true
 [agents]
 max_threads = 12
 max_depth = 2
-
-[profiles.dev]
-model = "gpt-5.5"
-model_reasoning_effort = "medium"
-model_verbosity = "high"
-sandbox_mode = "workspace-write"
-approval_policy = "on-request"
-model_personality = "pragmatic"
-plan_mode_reasoning_effort = "xhigh"
-service_tier = "fast"
-
-[profiles.dev.features]
-js_repl = true
-guardian_approval = true
-prevent_idle_sleep = true
-
-[profiles.quick]
-model = "gpt-5.4"
-model_reasoning_effort = "medium"
-sandbox_mode = "workspace-write"
-approval_policy = "never"
-
-[profiles.research]
-model = "gpt-5.5"
-model_reasoning_effort = "xhigh"
-sandbox_mode = "workspace-write"
-approval_policy = "on-failure"
 
 [shell_environment_policy.set]
 OMX_LORE_COMMIT_GUARD = "0"

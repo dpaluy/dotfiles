@@ -30,5 +30,13 @@ USAGE
         research|dev) search_flag="--search";;
     esac
 
+    local profile_config="$HOME/.codex/${profile}.config.toml"
+    local dotfiles_profile_config="$HOME/dotfiles/codex/${profile}.config.toml"
+    if [[ ! -f "$profile_config" && -f "$dotfiles_profile_config" ]]; then
+        mkdir -p "$HOME/.codex"
+        cp "$dotfiles_profile_config" "$profile_config"
+        chmod 600 "$profile_config"
+    fi
+
     codex --profile "$profile" ${search_flag:+$search_flag} "$@"
 }

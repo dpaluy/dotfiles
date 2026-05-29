@@ -1,0 +1,13 @@
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+model_verbosity = "high"
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+model_personality = "pragmatic"
+plan_mode_reasoning_effort = "xhigh"
+service_tier = "fast"
+
+[features]
+js_repl = true
+guardian_approval = true
+prevent_idle_sleep = true
