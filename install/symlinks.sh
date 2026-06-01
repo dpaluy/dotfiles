@@ -185,5 +185,6 @@ if [[ "$OS" != "macos" ]]; then
         mkdir -p "$HOME/.config/hypr"
         create_symlink "$DOTFILES_DIR/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf"
         create_symlink "$DOTFILES_DIR/hypr/bindings.conf" "$HOME/.config/hypr/bindings.conf"
+        create_symlink "$DOTFILES_DIR/hypr/plugins.conf" "$HOME/.config/hypr/plugins.conf"
     fi
 fi

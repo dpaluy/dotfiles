@@ -188,6 +188,33 @@ gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
 fi
 
 # ==============================================================================
+# Hyprland Plugins (hyprpm)
+# ==============================================================================
+
+if command -v hyprpm &> /dev/null; then
+    header "Hyprland Plugins"
+
+    HYPR_PLUGINS_REPO="https://github.com/hyprwm/hyprland-plugins"
+
+    if hyprpm list 2>/dev/null | grep -q "hyprland-plugins"; then
+        info "hyprland-plugins repo already added"
+    else
+        info "Adding hyprland-plugins repo..."
+        hyprpm update
+        hyprpm add "$HYPR_PLUGINS_REPO"
+    fi
+
+    if hyprpm list 2>/dev/null | grep -A1 "Plugin hyprbars" | grep -q "enabled: true"; then
+        info "hyprbars already enabled"
+    else
+        info "Enabling hyprbars..."
+        hyprpm enable hyprbars
+    fi
+else
+    info "hyprpm not found, skipping Hyprland plugins"
+fi
+
+# ==============================================================================
 # mise (Version Manager)
 # ==============================================================================
 
