@@ -12,6 +12,28 @@ fi
 
 mkdir -p "$HOME/.codex"
 
+clean_legacy_codex_config() {
+    local config_file="$1"
+
+    [[ -f "$config_file" ]] || return 0
+
+    # Current Codex profile configs live in ~/.codex/<profile>.config.toml.
+    # Leaving legacy selectors or [profiles.*] tables in config.toml breaks
+    # `codex --profile <name>`, even when the standalone profile file exists.
+    perl -0pi -e '
+        s/^\s*profile\s*=\s*(?:"[^"]*"|'\''[^'\'']*'\'')\s*\n//mg;
+        s/\n?\[profiles(?:\.[^\]\n]+)*\]\n.*?(?=\n\[(?!profiles(?:\.|\]))|\z)/\n/sg;
+        s/\n{3,}/\n\n/g;
+    ' "$config_file"
+
+    # Remove old native-hook feature flags while preserving other feature keys.
+    perl -0pi -e '
+        s/^\s*codex_hooks\s*=\s*true\s*\n//mg;
+        s/^(\[features\]\n(?:(?!^\[).*\n)*?)\s*hooks\s*=\s*true\s*\n/$1/mg;
+        s/\n{3,}/\n\n/g;
+    ' "$config_file"
+}
+
 # config.toml: copy, not symlink - codex doesn't support symlinked config
 if [[ ! -f "$HOME/.codex/config.toml" ]]; then
     cp "$DOTFILES_DIR/codex/config.toml" "$HOME/.codex/config.toml"
@@ -36,9 +58,7 @@ done
 
 # Remove OMX-managed native Codex hooks and deprecated hook feature flags.
 # Keep MCP, skills, prompts, AGENTS.md, and non-OMX hooks intact.
-if [[ -f "$HOME/.codex/config.toml" ]]; then
-    perl -0pi -e 's/^\s*(?:codex_hooks|hooks)\s*=\s*true\s*\n//mg' "$HOME/.codex/config.toml"
-fi
+clean_legacy_codex_config "$HOME/.codex/config.toml"
 
 for profile_config in "$HOME/.codex/"*.config.toml; do
     [[ -f "$profile_config" ]] || continue
