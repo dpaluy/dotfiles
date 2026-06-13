@@ -159,6 +159,9 @@ fi
 # npm
 create_symlink "$DOTFILES_DIR/npm/npmrc" "$HOME/.npmrc"
 
+# ruby
+create_symlink "$DOTFILES_DIR/ruby/gemrc" "$HOME/.gemrc"
+
 # uv
 mkdir -p "$HOME/.config/uv"
 create_symlink "$DOTFILES_DIR/uv/uv.toml" "$HOME/.config/uv/uv.toml"

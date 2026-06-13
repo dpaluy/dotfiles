@@ -65,6 +65,7 @@ fi
 - `gh-dash/config.yml` → `~/.config/gh-dash/config.yml`
 - `rtk/config.toml` → `~/.config/rtk/config.toml` (if rtk installed)
 - `worktrunk/config.toml` → `~/.config/worktrunk/config.toml` (if wt installed)
+- `ruby/gemrc` → `~/.gemrc`
 - `npm/npmrc` → `~/.npmrc`
 - `uv/uv.toml` → `~/.config/uv/uv.toml`
 - `pi/models.json` → `~/.pi/agent/models.json`
