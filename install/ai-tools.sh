@@ -188,35 +188,31 @@ elif ask_yes_no "Install agent-browser (headless browser automation CLI for AI a
     fi
 fi
 
-# RTK — token compression proxy for AI coding tools (Rust binary)
-if command -v rtk &>/dev/null; then
-    info "rtk already installed"
-elif ask_yes_no "Install rtk (token compression proxy — saves 60-90% tokens in AI coding sessions)?"; then
-    info "Installing rtk via official installer..."
-    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | bash
+# Headroom — AI context optimization proxy (Python CLI, installs durable hooks)
+if command -v headroom &>/dev/null; then
+    info "Headroom already installed"
+elif ask_yes_no "Install Headroom (AI context optimization proxy — saves 60-90% tokens)?"; then
+    if command -v uv &>/dev/null; then
+        info "Installing Headroom via uv tool..."
+        HEADROOM_TELEMETRY=off uv tool install "headroom-ai[all]" || warn "Headroom installation failed. Try manually: uv tool install \"headroom-ai[all]\""
+    else
+        warn "uv not found — cannot install Headroom. Install uv first (Brewfile)."
+    fi
 fi
 
-# Configure rtk hooks (runs for both fresh and existing installs)
-if command -v rtk &>/dev/null; then
-    mkdir -p "$HOME/.config/rtk"
-    # config.toml is symlinked by install/symlinks.sh — no copy needed
-    export RTK_TELEMETRY_DISABLED=1
+# Configure Headroom durable hooks (runs for both fresh and existing installs)
+if command -v headroom &>/dev/null; then
+    export HEADROOM_TELEMETRY=off
     if command -v claude &>/dev/null; then
-        info "Setting up rtk hooks for Claude Code..."
-        rtk init -g --auto-patch || warn "rtk init for Claude Code failed"
+        info "Setting up Headroom hooks for Claude Code..."
+        HEADROOM_TELEMETRY=off headroom init -g claude || warn "headroom init for Claude Code failed"
     fi
     if command -v codex &>/dev/null; then
-        info "Setting up rtk for Codex CLI..."
-        # Creates ~/.codex/RTK.md (referenced by @RTK.md in AGENTS.md)
-        # Don't use rtk init --codex here — it rewrites AGENTS.md and breaks our symlink
+        info "Setting up Headroom hooks for Codex CLI..."
         mkdir -p "$HOME/.codex"
-        rtk init -g --codex 2>/dev/null || true
-        # Re-establish symlink in case rtk init replaced it
+        HEADROOM_TELEMETRY=off headroom init -g codex || warn "headroom init for Codex failed"
+        # Re-establish symlink in case headroom init replaced AGENTS.md
         create_symlink "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
-    fi
-    if command -v opencode &>/dev/null; then
-        info "Setting up rtk plugin for OpenCode..."
-        rtk init -g --opencode --auto-patch || warn "rtk init for OpenCode failed"
     fi
 fi
 

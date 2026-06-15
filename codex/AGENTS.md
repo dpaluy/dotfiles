@@ -77,8 +77,6 @@ Default: TDD unless specified otherwise.
 - Always run shell commands that depend on environment variables via zsh login context:
   `zsh -lc 'source ~/.zshrc && <command>'`
 
-@RTK.md
-
 <!-- BEGIN COMPOUND CODEX TOOL MAP -->
 ## Compound Codex Tool Mapping (Claude Compatibility)
 

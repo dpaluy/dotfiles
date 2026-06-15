@@ -71,8 +71,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     export HOMEBREW_NO_AUTO_UPDATE=1
 fi
 
-# RTK (token compression proxy)
-export RTK_TELEMETRY_DISABLED=1
+# Headroom (AI context optimization proxy)
+export HEADROOM_TELEMETRY=off
 
 # Ripgrep
 export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"

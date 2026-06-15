@@ -87,5 +87,3 @@ Default: TDD unless specified otherwise.
 - State corrections plainly, without fake agreement.
 - Treat user-stated context as a starting point, then verify when correctness depends on it.
 - Never write em dashes. Use commas, periods, parentheses, or colons instead.
-
-@RTK.md
