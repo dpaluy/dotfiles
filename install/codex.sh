@@ -34,10 +34,10 @@ for profile_config in "$DOTFILES_DIR/codex/"*.config.toml; do
     fi
 done
 
-# Remove OMX-managed native Codex hooks and deprecated hook feature flags.
+# Migrate deprecated hook feature flags while preserving native hook support.
 # Keep MCP, skills, prompts, AGENTS.md, and non-OMX hooks intact.
 if [[ -f "$HOME/.codex/config.toml" ]]; then
-    perl -0pi -e 's/^\s*(?:codex_hooks|hooks)\s*=\s*true\s*\n//mg' "$HOME/.codex/config.toml"
+    perl -0pi -e 's/^(\s*)codex_hooks(\s*=\s*true\s*)$/${1}hooks${2}/mg' "$HOME/.codex/config.toml"
 fi
 
 for profile_config in "$HOME/.codex/"*.config.toml; do

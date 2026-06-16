@@ -15,4 +15,5 @@ Thumbs.db
 # IDE tooling
 .ruby-lsp/
 .claude/current_task.txt
-.omx
+.omx/
+

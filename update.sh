@@ -28,6 +28,52 @@ echo ""
 info "Detected OS: $OS"
 echo ""
 
+run_foreground() {
+    local title="$1"
+    shift
+
+    if has_gum; then
+        gum style --foreground 39 "$title"
+    else
+        echo "$title..."
+    fi
+
+    "$@"
+}
+
+upgrade_casks() {
+    local log_file
+    log_file="$(mktemp)"
+
+    if env HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --cask --greedy > >(tee "$log_file") 2>&1; then
+        rm -f "$log_file"
+        return 0
+    fi
+
+    local missing_app_casks=()
+    local cask
+    while IFS= read -r cask; do
+        missing_app_casks+=("$cask")
+    done < <(sed -n "s/^Error: \([^:]*\): It seems the App source '.*' is not there\\.$/\1/p" "$log_file" | sort -u)
+    rm -f "$log_file"
+
+    if [[ ${#missing_app_casks[@]} -eq 0 ]]; then
+        return 1
+    fi
+
+    warn "Repairing casks with missing app bundles: ${missing_app_casks[*]}"
+    for cask in "${missing_app_casks[@]}"; do
+        run_foreground "Reinstalling $cask" bash -c '
+            set -e
+            cask="$1"
+            env HOMEBREW_NO_INSTALL_CLEANUP=1 brew uninstall --cask --force "$cask" || true
+            env HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install --cask "$cask"
+        ' _ "$cask"
+    done
+
+    env HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --cask --greedy
+}
+
 # ==============================================================================
 # macOS: Homebrew
 # ==============================================================================
@@ -36,8 +82,8 @@ if [[ "$OS" == "macos" ]]; then
     header "Homebrew"
     if command -v brew &> /dev/null; then
         spin "Updating Homebrew" brew update
-        spin "Upgrading packages" brew upgrade
-        spin "Upgrading casks" brew upgrade --cask --greedy
+        run_foreground "Upgrading packages" env HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade
+        run_foreground "Upgrading casks" upgrade_casks
         spin "Cleaning up" brew cleanup --prune=30
         info "Brewfile sync..."
         brew bundle --file="$DOTFILES_DIR/Brewfile" || warn "Some Brewfile entries failed"
