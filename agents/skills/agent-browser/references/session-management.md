@@ -185,9 +185,15 @@ echo "*.auth-state.json" >> .gitignore
 rm /tmp/auth-state.json
 ```
 
-### 4. Timeout Long Sessions
+### 4. Bound Long Sessions by Readiness
 
 ```bash
-# Set timeout for automated scripts
-timeout 60 agent-browser --session long-task get text body
+# Prefer readiness/progress checks over a blind 60-second shell timeout.
+# Example: wait for a known element, URL, or network idle before extracting data.
+agent-browser --session long-task open "$APP_URL"
+agent-browser --session long-task wait --load networkidle
+agent-browser --session long-task wait "#content"
+agent-browser --session long-task get text body
 ```
+
+For scripts that must have a hard safety cap, choose a cap appropriate to the task and app startup cost, and document why. Do not use `timeout 60` as the default pattern for real-app validation.

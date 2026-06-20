@@ -221,7 +221,7 @@ agent-browser -p ios close
 
 ## Timeouts and Slow Pages
 
-The default Playwright timeout is 60 seconds for local browsers. For slow websites or large pages, use explicit waits instead of relying on the default timeout:
+Do not treat 60 seconds as the agent-browser validation budget. Browser automation should be bounded by readiness and progress signals, not by an arbitrary short timeout. For slow websites, local app boot, asset compilation, authentication, or large pages, use explicit waits and keep polling while the app/browser is making progress:
 
 ```bash
 # Wait for network activity to settle (best for slow pages)
@@ -241,7 +241,7 @@ agent-browser wait --fn "document.readyState === 'complete'"
 agent-browser wait 5000
 ```
 
-When dealing with consistently slow websites, use `wait --load networkidle` after `open` to ensure the page is fully loaded before taking a snapshot. If a specific element is slow to render, wait for it directly with `wait <selector>` or `wait @ref`.
+When dealing with consistently slow websites or real local apps, use `wait --load networkidle` after `open` to ensure the page is fully loaded before taking a snapshot. If a specific element is slow to render, wait for it directly with `wait <selector>` or `wait @ref`. For substantial validation flows, start the app/server as a tracked background process and wait on concrete readiness checks such as a listening log line, open port, HTTP 200, URL change, or expected element. Do not kill a healthy browser validation just because 60 seconds elapsed.
 
 ## Session Management and Cleanup
 
