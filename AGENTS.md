@@ -53,7 +53,6 @@ fi
 - `git/ignore` → `~/.config/git/ignore`
 - `ghostty/config` → `~/.config/ghostty/config`
 - `tmux/tmux.conf` → `~/.tmux.conf`
-- `zellij/config.kdl` → `~/.config/zellij/config.kdl`
 - `starship/starship.toml` → `~/.config/starship.toml`
 - `ssh/config` → included in `~/.ssh/config` via `Include` (preserves local hosts)
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md` (via `install/claude.sh`)

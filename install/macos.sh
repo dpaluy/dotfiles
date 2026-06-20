@@ -62,13 +62,6 @@ fi
 # ==============================================================================
 
 header "Optional Tools"
-if command -v zellij &>/dev/null; then
-    info "Zellij already installed"
-elif ask_yes_no "Install zellij (modern terminal multiplexer)?"; then
-    spin "Installing zellij" brew install zellij
-else
-    info "Skipping zellij"
-fi
 
 if command -v op &>/dev/null; then
     info "1Password CLI already installed"

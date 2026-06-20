@@ -109,27 +109,6 @@ else
     info "Lazygit already installed"
 fi
 
-# Install zellij
-if command -v zellij &> /dev/null; then
-    info "Zellij already installed"
-elif ask_yes_no "Install zellij (modern terminal multiplexer)?"; then
-    info "Installing zellij..."
-    case "$OS" in
-        arch)   sudo pacman -S --noconfirm zellij ;;
-        debian)
-            ZELLIJ_ARCH=$(uname -m)
-            curl -fsSL "https://github.com/zellij-org/zellij/releases/latest/download/zellij-${ZELLIJ_ARCH}-unknown-linux-musl.tar.gz" -o /tmp/zellij.tar.gz
-            tar -xf /tmp/zellij.tar.gz -C /tmp
-            sudo install /tmp/zellij /usr/local/bin/zellij
-            rm /tmp/zellij.tar.gz /tmp/zellij
-            ;;
-        fedora) sudo dnf install -y zellij ;;
-    esac
-    info "Zellij installed"
-else
-    info "Skipping zellij"
-fi
-
 # Install sesh (tmux session manager)
 if ! command -v sesh &> /dev/null; then
     info "Installing sesh..."

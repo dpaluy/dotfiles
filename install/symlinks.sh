@@ -103,9 +103,6 @@ if command -v sesh &>/dev/null; then
     fi
 fi
 
-# Zellij
-mkdir -p "$HOME/.config/zellij"
-create_symlink "$DOTFILES_DIR/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
 
 # SSH - use Include pattern (preserves local host-specific config)
 ensure_ssh_include() {
@@ -183,5 +180,9 @@ if [[ "$OS" != "macos" ]]; then
         create_symlink "$DOTFILES_DIR/hypr/hyprland.conf" "$HOME/.config/hypr/hyprland.conf"
         create_symlink "$DOTFILES_DIR/hypr/bindings.conf" "$HOME/.config/hypr/bindings.conf"
         create_symlink "$DOTFILES_DIR/hypr/plugins.conf" "$HOME/.config/hypr/plugins.conf"
+
+        if command -v hyprctl &> /dev/null && hyprctl monitors &> /dev/null; then
+            hyprctl reload &> /dev/null && info "Reloaded Hyprland config"
+        fi
     fi
 fi
