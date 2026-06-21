@@ -7,6 +7,8 @@ model_reasoning_effort = "medium"
 
 model_context_window = 250000
 model_auto_compact_token_limit = 200000
+sandbox_mode = "danger-full-access"
+approval_policy = "never"
 
 [features]
 unified_exec = true
@@ -21,7 +23,7 @@ personality = true
 multi_agent = true
 prevent_idle_sleep = true
 js_repl = true
-guardian_approval = true
+guardian_approval = false
 child_agents_md = true
 memories = true
 goals = true
