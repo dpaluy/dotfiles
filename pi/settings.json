@@ -1,12 +1,11 @@
 {
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
+  "defaultProvider": "zai-coding",
+  "defaultModel": "glm-5.2",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-side-chat",
-    "npm:@oh-my-pi/pi-coding-agent",
     "git:github.com/majesticlabs-dev/pi-minimax_image",
     "npm:pi-subagents",
     "npm:pi-model-switch",
@@ -20,11 +19,12 @@
   "enabledModels": [
     "openai-codex/gpt-5.5",
     "kimi-coding/k2p6",
-    "zai-coding/glm-5.1",
+    "zai-coding/glm-5.2",
     "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
     "deepseek/deepseek-v4-flash",
     "deepseek/deepseek-v4-pro"
   ],
-  "lastChangelogVersion": "0.74.0",
-  "quietStartup": true
+  "lastChangelogVersion": "0.79.9",
+  "quietStartup": true,
+  "theme": "dark"
 }
