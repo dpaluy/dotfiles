@@ -38,5 +38,5 @@ USAGE
         chmod 600 "$profile_config"
     fi
 
-    codex --profile "$profile" ${search_flag:+$search_flag} "$@"
+    codex --profile "$profile" --dangerously-bypass-approvals-and-sandbox ${search_flag:+$search_flag} "$@"
 }

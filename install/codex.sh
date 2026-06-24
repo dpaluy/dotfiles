@@ -61,7 +61,7 @@ for profile_config in "$HOME/.codex/"*.config.toml; do
     [[ -f "$profile_config" ]] || continue
 
     case "$(basename "$profile_config")" in
-        dev.config.toml|quick.config.toml)
+        dev.config.toml|quick.config.toml|research.config.toml)
             perl -0pi -e '
                 if (!/^sandbox_mode\s*=/m) { s/\A/sandbox_mode = "danger-full-access"\n/ }
                 else { s/^sandbox_mode\s*=.*$/sandbox_mode = "danger-full-access"/mg }

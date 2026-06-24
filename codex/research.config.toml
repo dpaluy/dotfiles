@@ -1,4 +1,4 @@
 model = "gpt-5.5"
 model_reasoning_effort = "xhigh"
-sandbox_mode = "workspace-write"
-approval_policy = "on-failure"
+sandbox_mode = "danger-full-access"
+approval_policy = "never"
