@@ -1,6 +1,6 @@
 {
-  "defaultProvider": "kimi-coding",
-  "defaultModel": "k2p7",
+  "defaultProvider": "zai-coding",
+  "defaultModel": "glm-5.2",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
