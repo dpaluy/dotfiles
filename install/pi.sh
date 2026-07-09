@@ -13,6 +13,13 @@ PI_EXTENSIONS=(
     npm:pi-side-chat
     npm:pi-mcp-adapter
     npm:pi-subagents
+    npm:pi-xai-oauth
+    npm:pi-model-switch
+    https://github.com/jhochenbaum/pi-autoresearch-studio
+    npm:pi-web-access
+    npm:@ff-labs/pi-fff
+    https://github.com/nicobailon/pi-boomerang
+    https://github.com/zereraz/pi-goal
 )
 
 if command -v pi &>/dev/null && ask_yes_no "Install pi extensions?"; then
