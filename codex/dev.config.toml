@@ -1,4 +1,4 @@
-model = "gpt-5.5"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "medium"
 model_verbosity = "high"
 sandbox_mode = "danger-full-access"
@@ -8,6 +8,5 @@ plan_mode_reasoning_effort = "xhigh"
 service_tier = "fast"
 
 [features]
-js_repl = true
 guardian_approval = false
 prevent_idle_sleep = true
