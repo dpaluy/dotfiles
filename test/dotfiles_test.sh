@@ -40,6 +40,12 @@ assert_contains "$ROOT_DIR/ghostty/config" 'config-file = ?"~/.config/ghostty/pl
 assert_contains "$ROOT_DIR/install/symlinks.sh" 'ghostty_platform="$DOTFILES_DIR/ghostty/macos.conf"'
 [[ -f "$ROOT_DIR/ghostty/macos.conf" ]] || fail "missing ghostty/macos.conf"
 [[ -f "$ROOT_DIR/ghostty/linux.conf" ]] || fail "missing ghostty/linux.conf"
+assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+w=close_surface'
+assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = super+d=new_split:right'
+assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = super+shift+d=new_split:down'
+assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+g=equalize_splits'
+assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = shift+enter=text:\n'
+assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+r=prompt_surface_title'
 assert_not_contains "$ROOT_DIR/README.md" 'min-release-age'
 assert_not_contains "$ROOT_DIR/README.md" 'Comment out macOS section'
 assert_not_contains "$ROOT_DIR/install/symlinks.sh" 'source "$HOME/dotfiles/zsh/zshrc"'
