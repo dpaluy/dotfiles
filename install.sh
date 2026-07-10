@@ -4,7 +4,7 @@
 # Works on macOS and Linux (Debian/Ubuntu, Fedora, Arch)
 #
 
-set -e
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -13,6 +13,11 @@ source "$SCRIPT_DIR/install/lib.sh"
 
 # Detect OS
 OS=$(detect_os)
+
+if [[ "$OS" == "unknown" ]]; then
+    error "Unsupported operating system"
+    exit 1
+fi
 
 # Show banner
 show_banner

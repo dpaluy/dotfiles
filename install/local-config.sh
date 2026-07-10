@@ -72,8 +72,8 @@ setup_git_config() {
         git_name=$(gum input --placeholder "Your Name" --header "Git user name:")
         git_email=$(gum input --placeholder "you@example.com" --header "Git email:")
     else
-        read -p "Git user name: " git_name
-        read -p "Git email: " git_email
+        read -r -p "Git user name: " git_name
+        read -r -p "Git email: " git_email
     fi
 
     if [[ -n "$git_name" && -n "$git_email" ]]; then
@@ -109,7 +109,7 @@ setup_gpg_signing() {
 
     if [[ -z "$key_output" ]]; then
         warn "No GPG secret keys found."
-        GPG_NEEDS_SETUP=true
+        export GPG_NEEDS_SETUP=true
         return
     fi
 
@@ -149,7 +149,7 @@ setup_gpg_signing() {
             ((i++))
         done
         local choice
-        read -p "Enter number: " choice
+        read -r -p "Enter number: " choice
         selected_key="${key_ids[$((choice - 1))]}"
     fi
 

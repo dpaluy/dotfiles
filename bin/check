@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+for file in install.sh update.sh harden-mac.sh install/*.sh claude/hooks/*.sh; do
+    bash -n "$file"
+done
+
+for file in zsh/zshrc zsh/path zsh/exports zsh/aliases zsh/functions zsh/ai zsh/rails zsh/macos zsh/linux zsh/ai-tools/*; do
+    zsh -n "$file"
+done
+
+for file in opencode/*.json pi/*.json; do
+    jq empty "$file"
+done
+
+if command -v plutil >/dev/null; then
+    for file in qmd/*.plist; do
+        plutil -lint "$file" >/dev/null
+    done
+fi
+
+"$ROOT_DIR/test/dotfiles_test.sh"
+
+if command -v shellcheck >/dev/null; then
+    shellcheck --severity=warning install.sh update.sh harden-mac.sh install/*.sh claude/hooks/*.sh
+fi
+
+echo "all dotfiles checks passed"

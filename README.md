@@ -44,7 +44,9 @@ cd ~/dotfiles
 │   ├── config                         # Git configuration
 │   └── ignore                         # Global gitignore
 ├── ghostty/
-│   └── config                         # Ghostty terminal config
+│   ├── config                         # Shared Ghostty terminal config
+│   ├── macos.conf                     # macOS-only Ghostty settings
+│   └── linux.conf                     # Linux-only Ghostty settings
 ├── starship/
 │   └── starship.toml                  # Prompt configuration
 ├── tmux/
@@ -236,11 +238,11 @@ FileVault is handled inline: if off, the script prompts to enable it and prints 
 
 Settings that cannot be scripted (SIP, firmware password) are flagged with instructions at the end.
 
-**Ghostty keybindings:** Uses `super+` (Cmd) by default. See `ghostty/config`.
+**Ghostty keybindings:** macOS settings are installed from `ghostty/macos.conf`.
 
 ### Linux
 
-**Ghostty keybindings:** Comment out macOS section and uncomment Linux section in `ghostty/config`.
+**Ghostty keybindings:** Linux settings are installed automatically from `ghostty/linux.conf`.
 
 **Theme:** Terminal theme is controlled by Omarchy. To override, edit `ghostty/config` and uncomment the theme line.
 
@@ -285,16 +287,6 @@ gsettings set org.gnome.desktop.interface text-scaling-factor 1.25
    [commit]
        gpgsign = true
    ```
-
-## Supply Chain Security
-
-npm is configured with a 3-day minimum release age (`min-release-age=3` in `.npmrc`) to avoid installing newly published packages before the community has had time to vet them.
-
-To bypass for a specific install:
-
-```bash
-npm install -g @openai/codex --min-release-age=0
-```
 
 ## Dependencies
 

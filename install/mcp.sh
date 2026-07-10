@@ -112,7 +112,7 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
             echo "  A) All"
             echo "  N) None"
             echo ""
-            read -p "Enter choices (e.g., 1 3 or A for all): " -a perplexity_input
+            read -r -p "Enter choices (e.g., 1 3 or A for all): " -a perplexity_input
             perplexity_choices=""
             for choice in "${perplexity_input[@]}"; do
                 case "$choice" in

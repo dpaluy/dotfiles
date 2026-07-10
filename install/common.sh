@@ -11,7 +11,7 @@ header "Oh My Zsh"
 
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
     info "Installing Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    run_remote_script sh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh --unattended
     info "Oh My Zsh installed"
 else
     info "Oh My Zsh already installed"
@@ -39,9 +39,9 @@ if ! command -v atuin &> /dev/null; then
     case "$OS" in
         macos)  brew install atuin ;;
         arch)   sudo pacman -S --noconfirm atuin ;;
-        debian) curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh ;;
+        debian) run_remote_script sh https://setup.atuin.sh ;;
         fedora) sudo dnf install -y atuin ;;
-        *)      curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh ;;
+        *)      run_remote_script sh https://setup.atuin.sh ;;
     esac
     info "Atuin installed"
 else
@@ -68,9 +68,9 @@ elif ask_yes_no "Install Yazi (terminal file manager)?" "n"; then
         debian)
             YAZI_ARCH=$(uname -m)
             YAZI_VERSION=$(curl -fsSL "https://api.github.com/repos/sxyazi/yazi/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
-            curl -fsSL "https://github.com/sxyazi/yazi/releases/download/${YAZI_VERSION}/yazi-${YAZI_ARCH}-unknown-linux-gnu.zip" -o /tmp/yazi.zip
+            download_file "https://github.com/sxyazi/yazi/releases/download/${YAZI_VERSION}/yazi-${YAZI_ARCH}-unknown-linux-gnu.zip" /tmp/yazi.zip
             unzip -o /tmp/yazi.zip -d /tmp/yazi-extract
-            sudo install /tmp/yazi-extract/yazi-${YAZI_ARCH}-unknown-linux-gnu/yazi /usr/local/bin/yazi
+            sudo install "/tmp/yazi-extract/yazi-${YAZI_ARCH}-unknown-linux-gnu/yazi" /usr/local/bin/yazi
             rm -rf /tmp/yazi.zip /tmp/yazi-extract
             ;;
         fedora)

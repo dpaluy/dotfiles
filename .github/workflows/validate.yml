@@ -1,0 +1,34 @@
+name: Validate dotfiles
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install validation tools on macOS
+        if: runner.os == 'macOS'
+        run: brew install jq ripgrep shellcheck
+
+      - name: Install validation tools on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install --yes jq ripgrep shellcheck zsh
+
+      - name: Validate configuration and behavior
+        run: bash bin/check
+
+      - name: Run ShellCheck
+        run: shellcheck --severity=warning install.sh update.sh harden-mac.sh install/*.sh claude/hooks/*.sh

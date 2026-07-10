@@ -5,9 +5,9 @@
 # AI Functions
 # ------------------------------------------------------------------------------
 
-[[ -f "$HOME/dotfiles/zsh/ai-tools/git" ]] && source "$HOME/dotfiles/zsh/ai-tools/git"
-[[ -f "$HOME/dotfiles/zsh/ai-tools/codex" ]] && source "$HOME/dotfiles/zsh/ai-tools/codex"
-[[ -f "$HOME/dotfiles/zsh/ai-tools/skills" ]] && source "$HOME/dotfiles/zsh/ai-tools/skills"
+[[ -f "$DOTFILES_DIR/zsh/ai-tools/git" ]] && source "$DOTFILES_DIR/zsh/ai-tools/git"
+[[ -f "$DOTFILES_DIR/zsh/ai-tools/codex" ]] && source "$DOTFILES_DIR/zsh/ai-tools/codex"
+[[ -f "$DOTFILES_DIR/zsh/ai-tools/skills" ]] && source "$DOTFILES_DIR/zsh/ai-tools/skills"
 
 # ------------------------------------------------------------------------------
 # Claude Code

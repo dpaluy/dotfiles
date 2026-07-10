@@ -5,8 +5,6 @@ personality = "pragmatic"
 model = "gpt-5.6-terra"
 model_reasoning_effort = "medium"
 
-model_context_window = 250000
-model_auto_compact_token_limit = 200000
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 

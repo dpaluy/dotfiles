@@ -11,7 +11,8 @@ cdx() {
             cat <<'USAGE' >&2
 Usage: cdx [profile|shortcut] [codex args...]
 Profiles: dev(d), quick(q), research(r)
-Special: update -> npm install -g @openai/codex@latest
+Special: -r/--resume resumes the most recent session
+         update -> npm install -g @openai/codex@latest
 USAGE
             return 0 ;;
         update)
@@ -24,6 +25,19 @@ USAGE
 
     if [[ ${shortcuts[$1]+1} ]]; then profile="${shortcuts[$1]}"; shift; fi
     if [[ "$1" =~ ^(dev|quick|research)$ ]]; then profile="$1"; shift; fi
+
+    # Codex 0.144 moved resume from a global -r flag to a subcommand. Preserve
+    # the established cdx shorthand while allowing an explicit session ID.
+    case "${1:-}" in
+        -r|--resume)
+            shift
+            if [[ $# -eq 0 ]]; then
+                set -- resume --last
+            else
+                set -- resume "$@"
+            fi
+            ;;
+    esac
 
     case "$profile" in
         quick) search_flag="";;
