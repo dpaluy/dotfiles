@@ -57,7 +57,7 @@ else
     echo "  A) All"
     echo "  N) None"
     echo ""
-    read -p "Enter choices (e.g., 1 3 or A for all): " -a ai_choices
+    read -r -p "Enter choices (e.g., 1 3 or A for all): " -a ai_choices
 
     for choice in "${ai_choices[@]}"; do
         case "$choice" in
@@ -98,13 +98,13 @@ fi
 
 if $install_claude; then
     info "Installing Claude Code..."
-    curl -fsSL https://claude.ai/install.sh | bash
+    run_remote_script bash https://claude.ai/install.sh
 fi
 
 if $install_codex; then
     if ensure_node; then
         info "Installing Codex..."
-        npm i -g @openai/codex --force || warn "Codex installation failed. Try manually: npm i -g @openai/codex --force"
+        npm install -g @openai/codex || warn "Codex installation failed. Try manually: npm install -g @openai/codex"
     else
         warn "npm not found and mise unavailable. Install Node.js manually."
     fi
@@ -113,7 +113,7 @@ fi
 if $install_gemini; then
     if ensure_node; then
         info "Installing Gemini CLI..."
-        npm i -g @google/gemini-cli --force
+        npm install -g @google/gemini-cli
     else
         warn "npm not found and mise unavailable. Install Node.js manually."
     fi
@@ -121,7 +121,7 @@ fi
 
 if $install_opencode; then
     info "Installing OpenCode..."
-    curl -fsSL https://opencode.ai/install | bash
+    run_remote_script bash https://opencode.ai/install
 fi
 
 if $install_pi; then
@@ -157,12 +157,12 @@ fi
 
 if $install_droid; then
     info "Installing droid..."
-    curl -fsSL https://app.factory.ai/cli | sh
+    run_remote_script sh https://app.factory.ai/cli
 fi
 
 if $install_kimi; then
     info "Installing Kimi Code..."
-    curl -fsSL code.kimi.com/install.sh | bash
+    run_remote_script bash https://code.kimi.com/install.sh
 fi
 
 # Agent Browser — headless browser automation for AI agents (Rust native binary)

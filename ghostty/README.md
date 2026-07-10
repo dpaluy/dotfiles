@@ -4,7 +4,8 @@ Terminal emulator config for [Ghostty](https://ghostty.org/).
 
 ## Files
 
-- `config` - Main configuration (symlinked to `~/.config/ghostty/config`)
+- `config` - Main shared configuration (symlinked to `~/.config/ghostty/config`)
+- `macos.conf` / `linux.conf` - Platform settings, linked as `~/.config/ghostty/platform.conf` by the installer
 - `~/.local/dotfiles/ghostty.local` - Machine-specific overrides (font size, theme)
 
 ## SSH to Remote Machines (Terminfo)

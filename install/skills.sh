@@ -4,6 +4,21 @@
 # Symlinks dotfiles skills + external skill repos into standard locations
 #
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$SCRIPT_DIR/.." && pwd)}"
+source "$SCRIPT_DIR/lib.sh"
+
+install_claude="${install_claude:-false}"
+
+if [[ "${1:-}" == "help" || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    cat <<'USAGE'
+Usage: ./install/skills.sh
+
+Install or update the shared Agent Skills and optional Claude shaping skills.
+USAGE
+    exit 0
+fi
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Dotfiles skills (agents/skills/)
 # ─────────────────────────────────────────────────────────────────────────────

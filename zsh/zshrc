@@ -48,7 +48,7 @@ set -o vi
 # Dotfiles Directories
 # ------------------------------------------------------------------------------
 
-DOTFILES_DIR="$HOME/dotfiles"
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 DOTFILES_LOCAL="$HOME/.local/dotfiles"
 
 # ------------------------------------------------------------------------------

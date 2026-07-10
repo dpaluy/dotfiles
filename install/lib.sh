@@ -3,9 +3,11 @@
 # Shared utility functions for dotfiles installation
 #
 
-# Directory paths
-DOTFILES_DIR="$HOME/dotfiles"
-DOTFILES_LOCAL="$HOME/.local/dotfiles"
+# Directory paths. Callers may override DOTFILES_DIR, otherwise derive it from
+# this file so the installer works from any checkout location.
+LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$LIB_DIR/.." && pwd)}"
+DOTFILES_LOCAL="${DOTFILES_LOCAL:-$HOME/.local/dotfiles}"
 
 # Ensure required directories exist
 mkdir -p "$HOME/.local/bin"
@@ -77,7 +79,8 @@ spin() {
 backup_if_exists() {
     local file="$1"
     if [[ -e "$file" && ! -L "$file" ]]; then
-        local backup="${file}.backup.$(date +%Y%m%d%H%M%S)"
+        local backup
+        backup="${file}.backup.$(date +%Y%m%d%H%M%S)"
         warn "Backing up $file to $backup"
         mv "$file" "$backup"
     elif [[ -L "$file" ]]; then
@@ -137,7 +140,7 @@ ask_yes_no() {
             prompt="[y/N]"
         fi
 
-        read -p "$question $prompt " answer
+        read -r -p "$question $prompt " answer
         answer="${answer:-$default}"
 
         [[ "$answer" =~ ^[Yy] ]]
@@ -170,6 +173,72 @@ ensure_bun() {
     command -v bun &> /dev/null && return 0
     ensure_js_runtimes
     command -v bun &> /dev/null
+}
+
+# Normalize uname architecture values to GitHub release asset conventions.
+normalize_release_arch() {
+    case "${1:-$(uname -m)}" in
+        x86_64|amd64) echo "x86_64" ;;
+        aarch64|arm64) echo "arm64" ;;
+        *)
+            error "Unsupported architecture: ${1:-$(uname -m)}"
+            return 1
+            ;;
+    esac
+}
+
+# Download over HTTPS with retries.
+download_file() {
+    local url="$1"
+    local destination="$2"
+
+    curl --fail --location --retry 3 --proto '=https' --tlsv1.2 \
+        --output "$destination" "$url"
+}
+
+verify_sha256_checksum() {
+    local checksum_file="$1"
+    local artifact="$2"
+    local artifact_name
+    artifact_name="${3:-$(basename "$artifact")}"
+
+    local expected actual
+    expected="$(awk -v name="$artifact_name" '$NF == name { print $1; exit }' "$checksum_file")"
+    if [[ -z "$expected" ]]; then
+        error "No checksum found for $artifact_name"
+        return 1
+    fi
+
+    if command -v sha256sum &>/dev/null; then
+        actual="$(sha256sum "$artifact" | awk '{ print $1 }')"
+    else
+        actual="$(shasum -a 256 "$artifact" | awk '{ print $1 }')"
+    fi
+
+    [[ "$actual" == "$expected" ]] || {
+        error "Checksum verification failed for $artifact_name"
+        return 1
+    }
+}
+
+# Avoid curl-to-shell pipelines so a failed download cannot be reported as a
+# successful installation. The caller has already opted into the installer.
+run_remote_script() {
+    local interpreter="$1"
+    local url="$2"
+    shift 2
+
+    local script
+    script="$(mktemp)"
+    download_file "$url" "$script"
+
+    if "$interpreter" "$script" "$@"; then
+        rm -f "$script"
+    else
+        local status=$?
+        rm -f "$script"
+        return "$status"
+    fi
 }
 
 # Detect OS

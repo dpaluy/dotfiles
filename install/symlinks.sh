@@ -22,17 +22,18 @@ create_zshrc_wrapper() {
     backup_if_exists "$wrapper"
 
     # Create wrapper
-    cat > "$wrapper" << 'EOF'
+    cat > "$wrapper" << EOF
 #!/usr/bin/env zsh
 # ~/.zshrc - Local shell config (not version controlled)
 # Source dotfiles
-source "$HOME/dotfiles/zsh/zshrc"
+export DOTFILES_DIR="$DOTFILES_DIR"
+source "$DOTFILES_DIR/zsh/zshrc"
 
 # Tool additions below (mise, atuin, fzf, etc.)
 # -----------------------------------------------
 
-# Keep non-interactive wrappers like `source ~/.zshrc && ...` from failing when
-# the sourced dotfiles end on an optional missing-file check.
+# Keep non-interactive wrapper commands from failing when the sourced dotfiles
+# end on an optional missing-file check.
 true
 EOF
 
@@ -47,13 +48,19 @@ create_zshrc_wrapper
 # machine-owned.
 create_git_config_wrapper() {
     local wrapper="$HOME/.config/git/config"
-    local include_path="~/dotfiles/git/config"
+    local include_path="$DOTFILES_DIR/git/config"
+    # The literal tilde is retained to recognize wrappers created by earlier versions.
+    # shellcheck disable=SC2088
+    local legacy_include_path="~/dotfiles/git/config"
 
     mkdir -p "$HOME/.config/git"
 
-    if [[ -f "$wrapper" && ! -L "$wrapper" ]] && grep -qF "path = $include_path" "$wrapper" 2>/dev/null; then
-        info "Git wrapper already configured"
-        return 0
+    if [[ -f "$wrapper" && ! -L "$wrapper" ]]; then
+        if grep -qF "path = $include_path" "$wrapper" 2>/dev/null \
+            || { [[ "$DOTFILES_DIR" == "$HOME/dotfiles" ]] && grep -qF "path = $legacy_include_path" "$wrapper" 2>/dev/null; }; then
+            info "Git wrapper already configured"
+            return 0
+        fi
     fi
 
     backup_if_exists "$wrapper"
@@ -77,6 +84,13 @@ create_symlink "$DOTFILES_DIR/git/ignore" "$HOME/.config/git/ignore"
 # Ghostty
 mkdir -p "$HOME/.config/ghostty"
 create_symlink "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
+case "$OS" in
+    macos) ghostty_platform="$DOTFILES_DIR/ghostty/macos.conf" ;;
+    arch|debian|fedora) ghostty_platform="$DOTFILES_DIR/ghostty/linux.conf" ;;
+esac
+if [[ -n "${ghostty_platform:-}" ]]; then
+    create_symlink "$ghostty_platform" "$HOME/.config/ghostty/platform.conf"
+fi
 
 # Starship
 create_symlink "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
@@ -108,19 +122,25 @@ fi
 ensure_ssh_include() {
     local ssh_dir="$HOME/.ssh"
     local ssh_config="$ssh_dir/config"
-    local include_line="Include ~/dotfiles/ssh/config"
+    local include_line="Include $DOTFILES_DIR/ssh/config"
+    # shellcheck disable=SC2088
+    local legacy_include_line="Include ~/dotfiles/ssh/config"
 
     mkdir -p "$ssh_dir"
     chmod 700 "$ssh_dir"
 
-    if [[ -f "$ssh_config" ]] && grep -qF "$include_line" "$ssh_config" 2>/dev/null; then
-        info "SSH include already configured"
-        return 0
+    if [[ -f "$ssh_config" ]]; then
+        if grep -qF "$include_line" "$ssh_config" 2>/dev/null \
+            || { [[ "$DOTFILES_DIR" == "$HOME/dotfiles" ]] && grep -qF "$legacy_include_line" "$ssh_config" 2>/dev/null; }; then
+            info "SSH include already configured"
+            return 0
+        fi
     fi
 
     # Prepend Include (must be before Host blocks)
     if [[ -f "$ssh_config" ]]; then
-        local tmp=$(mktemp)
+        local tmp
+        tmp=$(mktemp)
         echo "$include_line" > "$tmp"
         echo "" >> "$tmp"
         cat "$ssh_config" >> "$tmp"
@@ -168,7 +188,7 @@ if [[ ! -f "$HOME/.pi/agent/models.json" ]]; then
     cp "$DOTFILES_DIR/pi/models.json" "$HOME/.pi/agent/models.json"
     info "Created ~/.pi/agent/models.json (add API keys there, not in dotfiles)"
 else
-    info "~/.pi/agent/models.json already exists, skipping"
+    info "$HOME/.pi/agent/models.json already exists, skipping"
 fi
 create_symlink "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
 create_symlink "$DOTFILES_DIR/pi/themes/catppuccin-macchiato.json" "$HOME/.pi/agent/themes/catppuccin-macchiato.json"

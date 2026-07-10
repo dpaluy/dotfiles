@@ -17,6 +17,11 @@ if [[ "$(detect_os)" != "macos" ]]; then
     exit 1
 fi
 
+if ! sudo -v; then
+    error "Administrator access is required to inspect and apply security settings."
+    exit 1
+fi
+
 APPLIED=0
 SKIPPED=0
 
@@ -68,7 +73,7 @@ stealth_state=$(/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode
 gatekeeper_state=$(spctl --status 2>/dev/null | grep -o "enabled\|disabled" || echo "unknown")
 sip_state=$(csrutil status 2>/dev/null | grep -o "enabled\|disabled" || echo "unknown")
 fv_state=$(fdesetup status 2>/dev/null | grep -o "On\|Off" || echo "unknown")
-ssh_state=$(systemsetup -getremotelogin 2>/dev/null | grep -o "On\|Off" || echo "unknown")
+ssh_state=$(sudo systemsetup -getremotelogin 2>/dev/null | grep -o "On\|Off" || echo "unknown")
 autologin_state=$(defaults read /Library/Preferences/com.apple.loginwindow autoLoginUser 2>/dev/null || echo "disabled")
 guest_state=$(defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled 2>/dev/null || echo "0")
 
@@ -100,8 +105,10 @@ apply "Enable Stealth Mode (ignore ICMP pings and port scans)" \
 if [[ "$ssh_state" == "On" ]]; then
     apply "Disable Remote Login / SSH (currently ON)" \
         sudo systemsetup -setremotelogin off
-else
+elif [[ "$ssh_state" == "Off" ]]; then
     info "Remote Login (SSH) is already off — skipping"
+else
+    warn "Could not determine Remote Login state. Leaving it unchanged."
 fi
 
 apply "Disable Remote Apple Events" \

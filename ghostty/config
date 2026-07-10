@@ -30,7 +30,6 @@ background-blur-radius = 20
 confirm-close-surface = false
 unfocused-split-opacity = 0.5
 window-save-state = always
-window-colorspace = display-p3
 window-padding-x = 12
 window-padding-y = 12
 
@@ -75,55 +74,12 @@ shell-integration-features = no-cursor,no-title,ssh-env
 # Prevents ^[[?2026;2$y leak: xterm-ghostty terminfo advertises mode 2026, triggering a Starship/epoll race condition
 term = xterm-256color
 
-# ------------------------------------------------------------------------------
-# Keybindings - macOS
-# ------------------------------------------------------------------------------
-
-# Global hotkeys (work even when Ghostty not focused)
-keybind = global:super+,=toggle_visibility
-keybind = global:ctrl+grave_accent=toggle_quick_terminal
-
-# Tabs
-keybind = super+t=new_tab
-keybind = ctrl+shift+w=close_surface
-keybind = super+n=new_window
-keybind = super+left=previous_tab
-keybind = super+right=next_tab
-keybind = super+1=goto_tab:1
-keybind = super+2=goto_tab:2
-keybind = super+3=goto_tab:3
-keybind = super+4=goto_tab:4
-keybind = super+5=goto_tab:5
-
-# Splits
-keybind = super+d=new_split:right
-keybind = super+shift+d=new_split:down
-keybind = super+shift+e=equalize_splits
-keybind = super+shift+f=toggle_split_zoom
-
-# Editing
-keybind = shift+enter=text:\n
-keybind = ctrl+shift+t=prompt_surface_title
-
-# macOS-specific
-macos-option-as-alt = true
-
-# ------------------------------------------------------------------------------
-# Keybindings - Linux (uncomment on Linux, comment macOS section above)
-# ------------------------------------------------------------------------------
-
-# keybind = shift+insert=paste_from_clipboard
-# keybind = control+insert=copy_to_clipboard
-# keybind = super+control+shift+alt+arrow_down=resize_split:down,100
-# keybind = super+control+shift+alt+arrow_up=resize_split:up,100
-# keybind = super+control+shift+alt+arrow_left=resize_split:left,100
-# keybind = super+control+shift+alt+arrow_right=resize_split:right,100
+# Platform-specific keybindings and backend settings. install/symlinks.sh links
+# the correct fragment to this path for the detected operating system.
+config-file = ?"~/.config/ghostty/platform.conf"
 
 # ------------------------------------------------------------------------------
 # Local overrides (font, size, theme preferences)
 # ------------------------------------------------------------------------------
 
 config-file = ?"~/.local/dotfiles/ghostty.local"
-
-# Fix general slowness on hyprland (https://github.com/ghostty-org/ghostty/discussions/3224)
-async-backend = epoll

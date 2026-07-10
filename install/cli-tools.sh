@@ -33,7 +33,7 @@ else
     echo "  A) All"
     echo "  N) None"
     echo ""
-    read -p "Enter choices (e.g., 1 3 or A for all): " -a cli_choices
+    read -r -p "Enter choices (e.g., 1 3 or A for all): " -a cli_choices
 
     for choice in "${cli_choices[@]}"; do
         case "$choice" in

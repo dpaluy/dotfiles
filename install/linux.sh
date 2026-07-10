@@ -58,7 +58,7 @@ if ! command -v delta &> /dev/null; then
         debian)
             DELTA_VERSION=$(curl -fsSL "https://api.github.com/repos/dandavison/delta/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
             DELTA_ARCH=$(dpkg --print-architecture)
-            curl -fsSL "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/git-delta_${DELTA_VERSION}_${DELTA_ARCH}.deb" -o /tmp/git-delta.deb
+            download_file "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/git-delta_${DELTA_VERSION}_${DELTA_ARCH}.deb" /tmp/git-delta.deb
             sudo dpkg -i /tmp/git-delta.deb
             rm /tmp/git-delta.deb
             ;;
@@ -75,8 +75,12 @@ fi
 if ! command -v diffnav &> /dev/null; then
     info "Installing diffnav..."
     DIFFNAV_VERSION=$(curl -fsSL "https://api.github.com/repos/dlvhdr/diffnav/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
-    DIFFNAV_ARCH=$(uname -m)
-    curl -fsSL "https://github.com/dlvhdr/diffnav/releases/download/v${DIFFNAV_VERSION}/diffnav_Linux_${DIFFNAV_ARCH}.tar.gz" -o /tmp/diffnav.tar.gz
+    DIFFNAV_ARCH="$(normalize_release_arch)"
+    download_file "https://github.com/dlvhdr/diffnav/releases/download/v${DIFFNAV_VERSION}/diffnav_Linux_${DIFFNAV_ARCH}.tar.gz" /tmp/diffnav.tar.gz
+    diffnav_checksums=$(mktemp)
+    download_file "https://github.com/dlvhdr/diffnav/releases/download/v${DIFFNAV_VERSION}/diffnav_${DIFFNAV_VERSION}_checksums.txt" "$diffnav_checksums"
+    verify_sha256_checksum "$diffnav_checksums" /tmp/diffnav.tar.gz "diffnav_Linux_${DIFFNAV_ARCH}.tar.gz"
+    rm -f "$diffnav_checksums"
     tar -xf /tmp/diffnav.tar.gz -C /tmp diffnav
     sudo install /tmp/diffnav /usr/local/bin/diffnav
     rm /tmp/diffnav.tar.gz /tmp/diffnav
@@ -94,7 +98,12 @@ if ! command -v lazygit &> /dev/null; then
             ;;
         debian)
             LAZYGIT_VERSION=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
-            curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" -o /tmp/lazygit.tar.gz
+            LAZYGIT_ARCH="$(normalize_release_arch)"
+            download_file "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_linux_${LAZYGIT_ARCH}.tar.gz" /tmp/lazygit.tar.gz
+            lazygit_checksums=$(mktemp)
+            download_file "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/checksums.txt" "$lazygit_checksums"
+            verify_sha256_checksum "$lazygit_checksums" /tmp/lazygit.tar.gz "lazygit_${LAZYGIT_VERSION}_linux_${LAZYGIT_ARCH}.tar.gz"
+            rm -f "$lazygit_checksums"
             tar -xf /tmp/lazygit.tar.gz -C /tmp lazygit
             sudo install /tmp/lazygit /usr/local/bin/lazygit
             rm /tmp/lazygit.tar.gz /tmp/lazygit
@@ -113,8 +122,12 @@ fi
 if ! command -v sesh &> /dev/null; then
     info "Installing sesh..."
     SESH_VERSION=$(curl -fsSL "https://api.github.com/repos/joshmedeski/sesh/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
-    SESH_ARCH=$(uname -m)
-    curl -fsSL "https://github.com/joshmedeski/sesh/releases/download/v${SESH_VERSION}/sesh_Linux_${SESH_ARCH}.tar.gz" -o /tmp/sesh.tar.gz
+    SESH_ARCH="$(normalize_release_arch)"
+    download_file "https://github.com/joshmedeski/sesh/releases/download/v${SESH_VERSION}/sesh_Linux_${SESH_ARCH}.tar.gz" /tmp/sesh.tar.gz
+    sesh_checksums=$(mktemp)
+    download_file "https://github.com/joshmedeski/sesh/releases/download/v${SESH_VERSION}/sesh_${SESH_VERSION}_checksums.txt" "$sesh_checksums"
+    verify_sha256_checksum "$sesh_checksums" /tmp/sesh.tar.gz "sesh_Linux_${SESH_ARCH}.tar.gz"
+    rm -f "$sesh_checksums"
     tar -xf /tmp/sesh.tar.gz -C /tmp sesh
     sudo install /tmp/sesh /usr/local/bin/sesh
     rm /tmp/sesh.tar.gz /tmp/sesh
@@ -127,12 +140,16 @@ fi
 if ! command -v gitmux &> /dev/null; then
     info "Installing gitmux..."
     GITMUX_VERSION=$(curl -fsSL "https://api.github.com/repos/arl/gitmux/releases/latest" | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
-    GITMUX_ARCH=$(uname -m)
+    GITMUX_ARCH="$(normalize_release_arch)"
     case "$GITMUX_ARCH" in
         x86_64)  GITMUX_ARCH="amd64" ;;
         aarch64) GITMUX_ARCH="arm64" ;;
     esac
-    curl -fsSL "https://github.com/arl/gitmux/releases/download/v${GITMUX_VERSION}/gitmux_v${GITMUX_VERSION}_linux_${GITMUX_ARCH}.tar.gz" -o /tmp/gitmux.tar.gz
+    download_file "https://github.com/arl/gitmux/releases/download/v${GITMUX_VERSION}/gitmux_v${GITMUX_VERSION}_linux_${GITMUX_ARCH}.tar.gz" /tmp/gitmux.tar.gz
+    gitmux_checksums=$(mktemp)
+    download_file "https://github.com/arl/gitmux/releases/download/v${GITMUX_VERSION}/checksums.txt" "$gitmux_checksums"
+    verify_sha256_checksum "$gitmux_checksums" /tmp/gitmux.tar.gz "gitmux_v${GITMUX_VERSION}_linux_${GITMUX_ARCH}.tar.gz"
+    rm -f "$gitmux_checksums"
     tar -xf /tmp/gitmux.tar.gz -C /tmp gitmux
     sudo install /tmp/gitmux /usr/local/bin/gitmux
     rm /tmp/gitmux.tar.gz /tmp/gitmux
@@ -201,7 +218,7 @@ header "mise"
 
 if ! command -v mise &> /dev/null; then
     info "Installing mise..."
-    curl https://mise.run | sh
+    run_remote_script sh https://mise.run
 
     # Add to PATH for this session
     export PATH="$HOME/.local/bin:$PATH"
@@ -228,7 +245,7 @@ if fc-list | grep -qi "JetBrainsMono Nerd Font"; then
 else
     info "Installing JetBrainsMono Nerd Font..."
     mkdir -p "$FONT_DIR"
-    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz -o /tmp/JetBrainsMono.tar.xz
+    download_file https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz /tmp/JetBrainsMono.tar.xz
     tar -xf /tmp/JetBrainsMono.tar.xz -C "$FONT_DIR"
     rm /tmp/JetBrainsMono.tar.xz
     fc-cache -fv
@@ -241,7 +258,7 @@ if fc-list | grep -qi "MartianMono Nerd Font"; then
 elif ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
     info "Installing MartianMono Nerd Font..."
     mkdir -p "$FONT_DIR"
-    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz -o /tmp/MartianMono.tar.xz
+    download_file https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz /tmp/MartianMono.tar.xz
     tar -xf /tmp/MartianMono.tar.xz -C "$FONT_DIR"
     rm /tmp/MartianMono.tar.xz
     fc-cache -fv
