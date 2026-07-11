@@ -20,9 +20,14 @@ guardian_approval = false
 memories = true
 goals = true
 
+[features.multi_agent_v2]
+enabled = true
+hide_spawn_agent_metadata = false
+tool_namespace = "agents"
+max_concurrent_threads_per_session = 2
+
 [agents]
-max_threads = 12
-max_depth = 2
+max_depth = 1
 
 [shell_environment_policy.set]
 OMX_LORE_COMMIT_GUARD = "0"
