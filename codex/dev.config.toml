@@ -4,7 +4,7 @@ model_verbosity = "high"
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 personality = "pragmatic"
-plan_mode_reasoning_effort = "xhigh"
+plan_mode_reasoning_effort = "medium"
 service_tier = "fast"
 
 [features]
