@@ -3,14 +3,10 @@
 # ------------------------------------------------------------------------------
 
 cdx() {
-    local default_profile="dev"
-    local -A shortcuts=([d]=dev [q]=quick [r]=research)
-
     case "$1" in
         help|-h|--help)
             cat <<'USAGE' >&2
-Usage: cdx [profile|shortcut] [codex args...]
-Profiles: dev(d), quick(q), research(r)
+Usage: cdx [codex args...]
 Special: -r/--resume resumes the most recent session
          update -> npm install -g @openai/codex@latest
 USAGE
@@ -19,12 +15,6 @@ USAGE
             npm install -g @openai/codex@latest
             return 0 ;;
     esac
-
-    local profile="$default_profile"
-    local search_flag="--search"
-
-    if [[ ${shortcuts[$1]+1} ]]; then profile="${shortcuts[$1]}"; shift; fi
-    if [[ "$1" =~ ^(dev|quick|research)$ ]]; then profile="$1"; shift; fi
 
     # Codex 0.144 moved resume from a global -r flag to a subcommand. Preserve
     # the established cdx shorthand while allowing an explicit session ID.
@@ -39,18 +29,5 @@ USAGE
             ;;
     esac
 
-    case "$profile" in
-        quick) search_flag="";;
-        research|dev) search_flag="--search";;
-    esac
-
-    local profile_config="$HOME/.codex/${profile}.config.toml"
-    local dotfiles_profile_config="$HOME/dotfiles/codex/${profile}.config.toml"
-    if [[ ! -f "$profile_config" && -f "$dotfiles_profile_config" ]]; then
-        mkdir -p "$HOME/.codex"
-        cp "$dotfiles_profile_config" "$profile_config"
-        chmod 600 "$profile_config"
-    fi
-
-    codex --profile "$profile" --dangerously-bypass-approvals-and-sandbox ${search_flag:+$search_flag} "$@"
+    codex --dangerously-bypass-approvals-and-sandbox --search "$@"
 }

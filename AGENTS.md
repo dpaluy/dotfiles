@@ -58,6 +58,7 @@ fi
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md` (via `install/claude.sh`)
 - `claude/hooks/*.sh` → `~/.claude/hooks/*.sh` (optional, registers in settings.json)
 - `codex/config.toml` → `~/.codex/config.toml` (copied, not symlinked)
+- `codex/agents/*.toml` → `~/.codex/agents/*.toml` (individual agent symlinks via `install/codex.sh`)
 - `codex/AGENTS.md` → `~/.codex/AGENTS.md` (if codex installed)
 - `opencode/AGENTS.md` → `~/.config/opencode/AGENTS.md` (if opencode installed)
 - `opencode/opencode.json` → merged into `~/.config/opencode/opencode.json` (local file, shared defaults preserved)

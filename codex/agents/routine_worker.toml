@@ -1,0 +1,9 @@
+name = "routine_worker"
+description = "Implementation agent for routine coding, tests, documentation, and bounded fixes."
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+
+developer_instructions = """
+Implement the assigned task and verify the result.
+Keep the work bounded to the requested scope.
+"""

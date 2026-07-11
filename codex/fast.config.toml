@@ -1,4 +1,0 @@
-# Efficient engineer lane: gpt-5.6-luna, works fast.
-# Usage: codex exec --profile fast "..."
-model = "gpt-5.6-luna"
-model_reasoning_effort = "medium"

@@ -32,8 +32,15 @@ assert_contains "$ROOT_DIR/install/linux.sh" 'SESH_ARCH="$(normalize_release_arc
 assert_contains "$ROOT_DIR/install/skills.sh" 'Usage: ./install/skills.sh'
 assert_contains "$ROOT_DIR/install/skills.sh" 'source "$SCRIPT_DIR/lib.sh"'
 assert_contains "$ROOT_DIR/zsh/ai-tools/codex" '--dangerously-bypass-approvals-and-sandbox'
-assert_contains "$ROOT_DIR/codex/dev.config.toml" 'personality = "pragmatic"'
-assert_not_contains "$ROOT_DIR/codex/dev.config.toml" 'model_personality'
+assert_not_contains "$ROOT_DIR/zsh/ai-tools/codex" '--profile'
+assert_contains "$ROOT_DIR/codex/config.toml" 'personality = "pragmatic"'
+assert_contains "$ROOT_DIR/codex/config.toml" 'model_verbosity = "low"'
+assert_not_contains "$ROOT_DIR/codex/config.toml" 'plan_mode_reasoning_effort'
+assert_contains "$ROOT_DIR/codex/config.toml" 'Delegate only when useful:'
+for profile in dev fast quick research; do
+    [[ ! -e "$ROOT_DIR/codex/$profile.config.toml" ]] \
+        || fail "obsolete Codex profile still exists: $profile"
+done
 assert_not_contains "$ROOT_DIR/codex/config.toml" 'model_context_window'
 assert_not_contains "$ROOT_DIR/codex/config.toml" 'model_auto_compact_token_limit'
 assert_contains "$ROOT_DIR/ghostty/config" 'config-file = ?"~/.config/ghostty/platform.conf"'
@@ -96,17 +103,17 @@ resume_args="$(HOME=/private/tmp/dotfiles-cdx-test zsh -f -c '
     source "$1"
     cdx -r
 ' _ "$ROOT_DIR/zsh/ai-tools/codex")"
-expected_resume_args=$'--profile\ndev\n--dangerously-bypass-approvals-and-sandbox\n--search\nresume\n--last'
+expected_resume_args=$'--dangerously-bypass-approvals-and-sandbox\n--search\nresume\n--last'
 [[ "$resume_args" == "$expected_resume_args" ]] \
     || fail "cdx -r did not resume the most recent session"
 
-research_resume_args="$(HOME=/private/tmp/dotfiles-cdx-test zsh -f -c '
+explicit_resume_args="$(HOME=/private/tmp/dotfiles-cdx-test zsh -f -c '
     codex() { print -rl -- "$@"; }
     source "$1"
-    cdx r --resume session-123
+    cdx --resume session-123
 ' _ "$ROOT_DIR/zsh/ai-tools/codex")"
-expected_research_resume_args=$'--profile\nresearch\n--dangerously-bypass-approvals-and-sandbox\n--search\nresume\nsession-123'
-[[ "$research_resume_args" == "$expected_research_resume_args" ]] \
-    || fail "cdx research --resume did not preserve the explicit session ID"
+expected_explicit_resume_args=$'--dangerously-bypass-approvals-and-sandbox\n--search\nresume\nsession-123'
+[[ "$explicit_resume_args" == "$expected_explicit_resume_args" ]] \
+    || fail "cdx --resume did not preserve the explicit session ID"
 
 echo "dotfiles behavior checks passed"

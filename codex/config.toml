@@ -4,6 +4,14 @@ suppress_unstable_features_warning = true
 personality = "pragmatic"
 model = "gpt-5.6-terra"
 model_reasoning_effort = "medium"
+model_verbosity = "low"
+service_tier = "fast"
+
+developer_instructions = """
+Delegate only when useful: use fast_scan for read-only exploration, routine_worker for bounded implementation, and deep_worker for complex or high-risk work.
+Keep simple tasks on the main agent.
+Do not ask the user to choose a model unless the required model is unavailable.
+"""
 
 sandbox_mode = "danger-full-access"
 approval_policy = "never"

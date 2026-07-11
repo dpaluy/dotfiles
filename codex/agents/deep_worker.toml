@@ -1,0 +1,9 @@
+name = "deep_worker"
+description = "Deep-reasoning agent for difficult debugging, architecture, security, and ambiguous multi-step work."
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+
+developer_instructions = """
+Handle complex work carefully.
+Validate assumptions before acting and provide strong verification of the result.
+"""
