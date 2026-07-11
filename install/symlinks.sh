@@ -7,6 +7,54 @@ header "Symlinks"
 
 info "Creating symlinks..."
 
+# Zsh environment - use a wrapper so machine-local additions remain possible.
+# .zshenv is loaded by interactive and non-interactive zsh processes.
+create_zshenv_wrapper() {
+    local wrapper="$HOME/.zshenv"
+
+    if [[ -f "$wrapper" && ! -L "$wrapper" ]] && grep -q "source.*dotfiles/zsh/zshenv" "$wrapper" 2>/dev/null; then
+        info "Zsh environment wrapper already configured"
+        return 0
+    fi
+
+    backup_if_exists "$wrapper"
+
+    cat > "$wrapper" << EOF
+#!/usr/bin/env zsh
+# ~/.zshenv - Environment shared by interactive and non-interactive shells
+export DOTFILES_DIR="$DOTFILES_DIR"
+source "$DOTFILES_DIR/zsh/zshenv"
+
+# Machine-specific environment additions below
+EOF
+
+    info "Created ~/.zshenv wrapper"
+}
+
+create_zshenv_wrapper
+
+# Login shells load /etc/zprofile after .zshenv. On macOS, path_helper can move
+# system paths ahead of mise, so reapply the shared environment afterward.
+ensure_zprofile_source() {
+    local profile="$HOME/.zprofile"
+    local source_line="source \"$DOTFILES_DIR/zsh/zprofile\""
+
+    if [[ -f "$profile" ]] && grep -qF "$source_line" "$profile" 2>/dev/null; then
+        info "Zsh login environment already configured"
+        return 0
+    fi
+
+    if [[ -s "$profile" ]]; then
+        printf '\n%s\n' "$source_line" >> "$profile"
+    else
+        printf '%s\n' "$source_line" > "$profile"
+    fi
+
+    info "Configured ~/.zprofile login environment"
+}
+
+ensure_zprofile_source
+
 # Zsh - use wrapper pattern (local file sources dotfiles)
 # This allows external tools (mise, atuin, fzf) to safely append their init lines
 create_zshrc_wrapper() {

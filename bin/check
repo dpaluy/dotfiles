@@ -9,7 +9,7 @@ for file in install.sh update.sh harden-mac.sh install/*.sh claude/hooks/*.sh; d
     bash -n "$file"
 done
 
-for file in zsh/zshrc zsh/path zsh/exports zsh/aliases zsh/functions zsh/ai zsh/rails zsh/macos zsh/linux zsh/ai-tools/*; do
+for file in zsh/zshenv zsh/zprofile zsh/zshrc zsh/path zsh/exports zsh/aliases zsh/functions zsh/ai zsh/rails zsh/macos zsh/linux zsh/ai-tools/*; do
     zsh -n "$file"
 done
 

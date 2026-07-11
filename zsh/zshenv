@@ -1,0 +1,8 @@
+# Environment required by every zsh, including non-interactive agent shells.
+
+mise_shims="$HOME/.local/share/mise/shims"
+if [[ -d "$mise_shims" ]]; then
+    path=("$mise_shims" "${(@)path:#$mise_shims}")
+    export PATH
+fi
+unset mise_shims

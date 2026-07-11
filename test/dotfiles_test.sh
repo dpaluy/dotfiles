@@ -38,6 +38,9 @@ assert_not_contains "$ROOT_DIR/codex/config.toml" 'model_context_window'
 assert_not_contains "$ROOT_DIR/codex/config.toml" 'model_auto_compact_token_limit'
 assert_contains "$ROOT_DIR/ghostty/config" 'config-file = ?"~/.config/ghostty/platform.conf"'
 assert_contains "$ROOT_DIR/install/symlinks.sh" 'ghostty_platform="$DOTFILES_DIR/ghostty/macos.conf"'
+assert_contains "$ROOT_DIR/install/symlinks.sh" 'create_zshenv_wrapper'
+assert_contains "$ROOT_DIR/install/symlinks.sh" 'ensure_zprofile_source'
+assert_contains "$ROOT_DIR/install/claude.sh" 'mise-environment.sh'
 [[ -f "$ROOT_DIR/ghostty/macos.conf" ]] || fail "missing ghostty/macos.conf"
 [[ -f "$ROOT_DIR/ghostty/linux.conf" ]] || fail "missing ghostty/linux.conf"
 assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+w=close_surface'
@@ -46,6 +49,10 @@ assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = super+shift+d=new_spli
 assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+g=equalize_splits'
 assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = shift+enter=text:\n'
 assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+r=prompt_surface_title'
+[[ -f "$ROOT_DIR/zsh/zshenv" ]] || fail "missing zsh/zshenv"
+[[ -f "$ROOT_DIR/zsh/zprofile" ]] || fail "missing zsh/zprofile"
+[[ -x "$ROOT_DIR/claude/hooks/mise-environment.sh" ]] || fail "missing executable Claude mise environment hook"
+
 assert_not_contains "$ROOT_DIR/README.md" 'min-release-age'
 assert_not_contains "$ROOT_DIR/README.md" 'Comment out macOS section'
 assert_not_contains "$ROOT_DIR/install/symlinks.sh" 'source "$HOME/dotfiles/zsh/zshrc"'
@@ -57,6 +64,32 @@ assert_not_contains "$ROOT_DIR/install/symlinks.sh" 'source "$HOME/dotfiles/zsh/
 
 "$ROOT_DIR/install/skills.sh" --help | rg -q '^Usage: ./install/skills.sh' \
     || fail "install/skills.sh --help is not usable standalone"
+
+shim_home="$(mktemp -d)"
+trap 'rm -rf "$shim_home"' EXIT
+mkdir -p "$shim_home/.local/share/mise/shims"
+shim_path="$(HOME="$shim_home" PATH="/usr/bin:/bin:$shim_home/.local/share/mise/shims" zsh -f -c '
+    source "$1"
+    source "$1"
+    print -r -- "$PATH"
+' _ "$ROOT_DIR/zsh/zshenv")"
+expected_shim_path="$shim_home/.local/share/mise/shims:/usr/bin:/bin"
+[[ "$shim_path" == "$expected_shim_path" ]] \
+    || fail "zshenv did not prepend the mise shim directory exactly once"
+
+login_path="$(HOME="$shim_home" PATH="/usr/bin:/bin:$shim_home/.local/share/mise/shims" zsh -f -c '
+    source "$1"
+    print -r -- "$PATH"
+' _ "$ROOT_DIR/zsh/zprofile")"
+[[ "$login_path" == "$expected_shim_path" ]] \
+    || fail "zprofile did not restore mise shims after login PATH setup"
+
+claude_env_file="$shim_home/claude-env"
+CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
+CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
+[[ "$(wc -l < "$claude_env_file" | tr -d " ")" == "1" ]] \
+    || fail "Claude mise environment hook wrote duplicate exports"
+assert_contains "$claude_env_file" 'export PATH="$HOME/.local/share/mise/shims:$PATH"'
 
 resume_args="$(HOME=/private/tmp/dotfiles-cdx-test zsh -f -c '
     codex() { print -rl -- "$@"; }

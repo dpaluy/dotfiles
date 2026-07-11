@@ -42,7 +42,8 @@ if [[ -d "$DOTFILES_DIR/claude/hooks" ]]; then
         if [[ ! -f "$settings" ]] \
             || ! jq -e '.hooks.PostToolUse // [] | .[] | .hooks[]? | select(.command | contains("count-tools.sh"))' "$settings" &>/dev/null \
             || ! jq -e '.hooks.UserPromptSubmit // [] | .[] | .hooks[]? | select(.command | contains("optimization-hint.sh"))' "$settings" &>/dev/null \
-            || ! jq -e '.hooks.UserPromptSubmit // [] | .[] | .hooks[]? | select(.command | contains("clarify-long-prompt.sh"))' "$settings" &>/dev/null; then
+            || ! jq -e '.hooks.UserPromptSubmit // [] | .[] | .hooks[]? | select(.command | contains("clarify-long-prompt.sh"))' "$settings" &>/dev/null \
+            || ! jq -e '.hooks.SessionStart // [] | .[] | .hooks[]? | select(.command | contains("mise-environment.sh"))' "$settings" &>/dev/null; then
             hooks_installed=false
         fi
     fi
@@ -83,6 +84,14 @@ elif [[ -d "$DOTFILES_DIR/claude/hooks" ]] && ask_yes_no "Install Claude Code ho
                 '.hooks.UserPromptSubmit = (.hooks.UserPromptSubmit // []) + [{"matcher":"","hooks":[{"type":"command","command":$cmd,"timeout":1000}]}]' \
                 "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
             info "Registered hook: clarify-long-prompt.sh (UserPromptSubmit)"
+        fi
+
+        # SessionStart: persist mise shims for Claude's non-interactive Bash tools
+        if ! jq -e '.hooks.SessionStart // [] | .[] | .hooks[]? | select(.command | contains("mise-environment.sh"))' "$settings" &>/dev/null; then
+            jq --arg cmd "$HOME/.claude/hooks/mise-environment.sh" \
+                '.hooks.SessionStart = (.hooks.SessionStart // []) + [{"matcher":"startup|resume|clear|compact","hooks":[{"type":"command","command":$cmd,"timeout":5}]}]' \
+                "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
+            info "Registered hook: mise-environment.sh (SessionStart)"
         fi
     else
         warn "jq not found — hooks symlinked but not registered in settings.json"

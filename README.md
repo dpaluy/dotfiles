@@ -31,6 +31,8 @@ cd ~/dotfiles
 ```
 ~/dotfiles/                            # Public (version controlled)
 ├── zsh/
+│   ├── zshenv                        # Non-interactive environment (mise shims)
+│   ├── zprofile                       # Login-shell environment restoration
 │   ├── zshrc                          # Main zsh config
 │   ├── aliases                        # Command aliases
 │   ├── functions                      # Shell functions

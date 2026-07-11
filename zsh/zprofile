@@ -1,0 +1,2 @@
+# Reassert shared environment after macOS /etc/zprofile runs path_helper.
+source "${DOTFILES_DIR:-$HOME/dotfiles}/zsh/zshenv"

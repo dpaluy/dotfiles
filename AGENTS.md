@@ -77,6 +77,16 @@ fi
 - External tools can safely append their initialization lines
 - This prevents tool-added lines from polluting version-controlled files
 
+**Special Case - ~/.zshenv**: Uses the same wrapper pattern for non-interactive shells.
+- `~/.zshenv` (local file) sources `~/dotfiles/zsh/zshenv`
+- The shared file prepends mise shims so Codex and other non-interactive zsh processes resolve project runtimes
+- Machine-specific environment additions remain in the local wrapper
+
+**Special Case - ~/.zprofile**: Preserves existing login-shell additions.
+- `install/symlinks.sh` appends a source line for `~/dotfiles/zsh/zprofile`
+- The shared file reapplies `zsh/zshenv` after macOS `/etc/zprofile` runs `path_helper`
+- Existing additions such as OrbStack remain untouched
+
 **Special Case - Git Config**: Uses a local wrapper instead of a symlink.
 - `~/.config/git/config` is the live machine-owned file
 - It includes `~/dotfiles/git/config` for shared settings
@@ -84,11 +94,13 @@ fi
 - This prevents `gh auth setup-git` and similar commands from dirtying the repo
 
 **Zsh Loading Order** (`zsh/zshrc`):
-1. Oh My Zsh initialization (plugins: gitfast, z, fzf, zsh-autosuggestions, etc.)
-2. Public modules: `zsh/{path,exports,aliases,functions,ai,rails}`
-3. OS-specific: `zsh/macos` (darwin) or `zsh/linux` (linux)
-4. Local overrides: `~/.local/dotfiles/*.local`
-5. Tool initializations: mise, starship, atuin, fzf
+1. `zsh/zshenv` prepends mise shims for every zsh process
+2. Login shells reapply it through `zsh/zprofile` after system PATH setup
+3. Oh My Zsh initialization (plugins: gitfast, z, fzf, zsh-autosuggestions, etc.)
+4. Public modules: `zsh/{path,exports,aliases,functions,ai,rails}`
+5. OS-specific: `zsh/macos` (darwin) or `zsh/linux` (linux)
+6. Local overrides: `~/.local/dotfiles/*.local`
+7. Tool initializations: mise, starship, atuin, fzf
 
 **Public/Private Split**:
 - Public (this repo): Shareable configurations
