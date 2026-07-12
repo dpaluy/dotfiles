@@ -92,8 +92,8 @@ login_path="$(HOME="$shim_home" DOTFILES_DIR="$ROOT_DIR" PATH="/usr/bin:/bin:$sh
     || fail "zprofile did not restore mise shims after login PATH setup"
 
 claude_env_file="$shim_home/claude-env"
-CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
-CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
+HOME="$shim_home" CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
+HOME="$shim_home" CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
 [[ "$(wc -l < "$claude_env_file" | tr -d " ")" == "1" ]] \
     || fail "Claude mise environment hook wrote duplicate exports"
 assert_contains "$claude_env_file" 'export PATH="$HOME/.local/share/mise/shims:$PATH"'
