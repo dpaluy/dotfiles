@@ -84,7 +84,7 @@ expected_shim_path="$shim_home/.local/share/mise/shims:/usr/bin:/bin"
 [[ "$shim_path" == "$expected_shim_path" ]] \
     || fail "zshenv did not prepend the mise shim directory exactly once"
 
-login_path="$(HOME="$shim_home" PATH="/usr/bin:/bin:$shim_home/.local/share/mise/shims" zsh -f -c '
+login_path="$(HOME="$shim_home" DOTFILES_DIR="$ROOT_DIR" PATH="/usr/bin:/bin:$shim_home/.local/share/mise/shims" zsh -f -c '
     source "$1"
     print -r -- "$PATH"
 ' _ "$ROOT_DIR/zsh/zprofile")"
