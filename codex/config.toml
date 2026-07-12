@@ -31,7 +31,6 @@ goals = true
 enabled = true
 hide_spawn_agent_metadata = false
 tool_namespace = "agents"
-max_concurrent_threads_per_session = 2
 
 [agents]
 max_depth = 1
