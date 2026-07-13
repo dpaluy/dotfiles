@@ -1,2 +1,4 @@
 # Reassert shared environment after macOS /etc/zprofile runs path_helper.
-source "${DOTFILES_DIR:-$HOME/dotfiles}/zsh/zshenv"
+# Resolve relative to this sourced file so login shells work before DOTFILES_DIR
+# is set and isolated tests do not depend on a $HOME/dotfiles checkout.
+source "${${(%):-%N}:A:h}/zshenv"
