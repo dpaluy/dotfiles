@@ -23,7 +23,7 @@
     "deepseek/deepseek-v4-flash",
     "deepseek/deepseek-v4-pro"
   ],
-  "lastChangelogVersion": "0.80.5",
+  "lastChangelogVersion": "0.80.10",
   "quietStartup": true,
   "theme": "dark"
 }

@@ -37,6 +37,12 @@ assert_contains "$ROOT_DIR/codex/config.toml" 'personality = "pragmatic"'
 assert_contains "$ROOT_DIR/codex/config.toml" 'model_verbosity = "low"'
 assert_not_contains "$ROOT_DIR/codex/config.toml" 'plan_mode_reasoning_effort'
 assert_contains "$ROOT_DIR/codex/config.toml" 'Delegate only when useful:'
+assert_contains "$ROOT_DIR/install/codex.sh" 'block-destructive-commands.py'
+[[ -x "$ROOT_DIR/codex/hooks/block-destructive-commands.py" ]] \
+    || fail "missing executable Codex destructive-command hook"
+python3 -m json.tool "$ROOT_DIR/codex/hooks.json" >/dev/null \
+    || fail "codex/hooks.json is invalid JSON"
+python3 "$ROOT_DIR/test/test_codex_hook.py"
 for profile in dev fast quick research; do
     [[ ! -e "$ROOT_DIR/codex/$profile.config.toml" ]] \
         || fail "obsolete Codex profile still exists: $profile"

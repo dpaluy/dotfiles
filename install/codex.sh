@@ -74,6 +74,47 @@ if [[ -f "$HOME/.codex/hooks.json" ]]; then
     fi
 fi
 
+# Hooks: symlink scripts and merge portable definitions without replacing
+# machine-local or plugin-managed hooks.
+if [[ -d "$DOTFILES_DIR/codex/hooks" ]]; then
+    mkdir -p "$HOME/.codex/hooks"
+    for hook_script in "$DOTFILES_DIR/codex/hooks/"*; do
+        [[ -f "$hook_script" ]] || continue
+        hook_name="$(basename "$hook_script")"
+        create_symlink "$hook_script" "$HOME/.codex/hooks/$hook_name"
+    done
+fi
+
+if [[ -f "$DOTFILES_DIR/codex/hooks.json" ]]; then
+    if [[ ! -f "$HOME/.codex/hooks.json" ]]; then
+        cp "$DOTFILES_DIR/codex/hooks.json" "$HOME/.codex/hooks.json"
+        info "Copied Codex hooks to ~/.codex/hooks.json"
+    elif command -v jq &>/dev/null; then
+        codex_hooks_tmp="$(mktemp)"
+        if jq --slurpfile managed "$DOTFILES_DIR/codex/hooks.json" '
+            ($managed[0].hooks.PreToolUse[0]) as $managed_group
+            | def managed_hook:
+                ((.command // "") | contains("block-destructive-commands.py"));
+
+            .hooks //= {}
+            | .hooks.PreToolUse = (
+                ((.hooks.PreToolUse // [])
+                    | map(.hooks = ((.hooks // []) | map(select(managed_hook | not))))
+                    | map(select(((.hooks // []) | length) > 0)))
+                + [$managed_group]
+            )
+        ' "$HOME/.codex/hooks.json" > "$codex_hooks_tmp"; then
+            command mv -f "$codex_hooks_tmp" "$HOME/.codex/hooks.json"
+            info "Merged Codex hooks into ~/.codex/hooks.json"
+        else
+            command rm -f "$codex_hooks_tmp"
+            warn "Failed to merge dotfiles hooks into ~/.codex/hooks.json"
+        fi
+    else
+        warn "jq not found, leaving existing ~/.codex/hooks.json unchanged"
+    fi
+fi
+
 # AGENTS.md: symlink for global instructions
 create_symlink "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
 
