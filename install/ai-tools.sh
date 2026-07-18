@@ -127,7 +127,7 @@ fi
 if $install_pi; then
     if ensure_node; then
         info "Installing pi..."
-        npm install -g @mariozechner/pi-coding-agent
+        npm install -g @earendil-works/pi-coding-agent
     else
         warn "npm not found and mise unavailable. Install Node.js manually."
     fi

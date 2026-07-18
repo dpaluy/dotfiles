@@ -130,7 +130,7 @@ fi
 #
 
 NPM_GLOBALS=(
-    @mariozechner/pi-coding-agent
+    @earendil-works/pi-coding-agent
 )
 
 if command -v npm &> /dev/null && [[ ${#NPM_GLOBALS[@]} -gt 0 ]]; then
