@@ -28,6 +28,7 @@ install/
 ├── linux.sh            ← System packages, fonts
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── cli-tools.sh        ← Optional CLI tools (Google CLI, etc.)
+├── multiplexer.sh      ← Optional terminal multiplexer (tmux and/or herdr)
 ├── ai-tools.sh         ← AI tool selection + installation orchestrator
 ├── mcp.sh              ← MCP server registration (qmd, Perplexity)
 ├── skills.sh           ← Agent skills setup (dotfiles + external repos)

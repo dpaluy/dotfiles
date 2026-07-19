@@ -11,6 +11,8 @@ install/
 ├── macos.sh        ← macOS: Homebrew, fonts, Raycast, LazyVim, fzf
 ├── linux.sh        ← Linux: packages, gum, fonts (Debian/Fedora/Arch)
 ├── common.sh       ← Cross-platform: Oh My Zsh, plugins, Atuin, shell
+├── cli-tools.sh    ← Optional CLI tools (gh-dash)
+├── multiplexer.sh  ← Optional terminal multiplexer (tmux and/or herdr)
 ├── ai-tools.sh     ← AI tool selection + installation orchestrator
 ├── mcp.sh          ← MCP server registration (qmd, Perplexity)
 ├── skills.sh       ← Agent skills setup (dotfiles + external repos)
@@ -25,7 +27,7 @@ install/
 
 1. `install.sh` sources `lib.sh` first (utilities available to all modules)
 2. OS detection routes to `macos.sh` or `linux.sh`
-3. Remaining modules source in order: common → cli-tools → ai-tools (→ mcp → claude → codex → opencode → skills) → symlinks → local-config
+3. Remaining modules source in order: common → cli-tools → multiplexer → ai-tools (→ mcp → claude → codex → opencode → skills) → symlinks → local-config
 4. Each module executes on source (not function-based)
 
 ## Adding New Modules

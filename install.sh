@@ -46,6 +46,9 @@ source "$SCRIPT_DIR/install/common.sh"
 # CLI tools (optional)
 source "$SCRIPT_DIR/install/cli-tools.sh"
 
+# Terminal multiplexer (optional: tmux and/or herdr)
+source "$SCRIPT_DIR/install/multiplexer.sh"
+
 # AI coding assistants + agent skills
 source "$SCRIPT_DIR/install/ai-tools.sh"
 

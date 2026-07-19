@@ -17,7 +17,6 @@ brew "diffnav"              # TUI file navigator for diffs
 brew "git-lfs"              # Large file storage
 brew "gh"                   # GitHub CLI
 brew "neovim"               # Editor
-brew "tmux"                 # Terminal multiplexer
 brew "mise"                 # Version manager (replaces asdf)
 brew "direnv"               # Per-directory environment variables
 brew "uv"                   # Fast Python package installer (uses mise Python)
