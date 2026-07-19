@@ -1,7 +1,7 @@
 {
-  "defaultProvider": "zai-coding",
-  "defaultModel": "glm-5.2",
-  "defaultThinkingLevel": "xhigh",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
     "https://github.com/davebcn87/pi-autoresearch",
@@ -13,11 +13,17 @@
     "npm:@ff-labs/pi-fff",
     "https://github.com/nicobailon/pi-boomerang",
     "https://github.com/zereraz/pi-goal",
-    "npm:pi-xai-oauth"
+    "npm:pi-xai-oauth",
+    "npm:pi-cursor-provider"
   ],
   "enabledModels": [
-    "openai-codex/gpt-5.5",
-    "kimi-coding/k2p6",
+    "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-5.6-terra",
+    "openai-codex/gpt-5.6-luna",
+    "kimi-coding/k3",
+    "xai-auth/grok-4.5",
+    "cursor/cursor-grok-4.5:high",
+    "cursor/cursor-grok-4.5-fast:high",
     "kimi-coding/k2p7",
     "zai-coding/glm-5.2",
     "deepseek/deepseek-v4-flash",
