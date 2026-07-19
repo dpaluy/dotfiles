@@ -19,6 +19,8 @@ PI_EXTENSIONS=(
     npm:@ff-labs/pi-fff
     https://github.com/nicobailon/pi-boomerang
     https://github.com/zereraz/pi-goal
+    npm:pi-cursor-provider
+    npm:pi-claude-bridge
 )
 
 if command -v pi &>/dev/null && ask_yes_no "Install pi extensions?"; then

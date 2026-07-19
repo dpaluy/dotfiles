@@ -13,7 +13,8 @@
     "https://github.com/nicobailon/pi-boomerang",
     "https://github.com/zereraz/pi-goal",
     "npm:pi-xai-oauth",
-    "npm:pi-cursor-provider"
+    "npm:pi-cursor-provider",
+    "npm:pi-claude-bridge"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.6-sol",
