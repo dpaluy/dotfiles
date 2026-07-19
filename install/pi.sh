@@ -14,7 +14,6 @@ PI_EXTENSIONS=(
     npm:pi-mcp-adapter
     npm:pi-subagents
     npm:pi-xai-oauth
-    npm:pi-model-switch
     https://github.com/jhochenbaum/pi-autoresearch-studio
     npm:pi-web-access
     npm:@ff-labs/pi-fff
