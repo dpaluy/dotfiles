@@ -12,7 +12,7 @@ install/
 ├── linux.sh        ← Linux: packages, gum, fonts (Debian/Fedora/Arch)
 ├── common.sh       ← Cross-platform: Oh My Zsh, plugins, Atuin, shell
 ├── cli-tools.sh    ← Optional CLI tools (gh-dash)
-├── multiplexer.sh  ← Optional terminal multiplexer (tmux and/or herdr)
+├── multiplexer.sh  ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux)
 ├── ai-tools.sh     ← AI tool selection + installation orchestrator
 ├── mcp.sh          ← MCP server registration (qmd, Perplexity)
 ├── skills.sh       ← Agent skills setup (dotfiles + external repos)

@@ -143,10 +143,7 @@ fi
 # Starship
 create_symlink "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
-# Tmux
-if [[ -f "$DOTFILES_DIR/tmux/tmux.conf" ]]; then
-    create_symlink "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
-fi
+# tmux.conf is linked from install/multiplexer.sh (gated on the tmux prompt).
 
 # gitmux config (git status for tmux status bar)
 if command -v gitmux &>/dev/null; then
@@ -238,7 +235,17 @@ if [[ ! -f "$HOME/.pi/agent/models.json" ]]; then
 else
     info "$HOME/.pi/agent/models.json already exists, skipping"
 fi
-create_symlink "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
+# settings.json is copied (not symlinked) — pi writes runtime state into it,
+# which would otherwise dirty the tracked dotfiles file.
+if [[ -L "$HOME/.pi/agent/settings.json" ]]; then
+    rm -f "$HOME/.pi/agent/settings.json"
+fi
+if [[ ! -f "$HOME/.pi/agent/settings.json" ]]; then
+    cp "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
+    info "Created ~/.pi/agent/settings.json (pi writes runtime state here)"
+else
+    info "$HOME/.pi/agent/settings.json already exists, skipping"
+fi
 create_symlink "$DOTFILES_DIR/pi/themes/catppuccin-macchiato.json" "$HOME/.pi/agent/themes/catppuccin-macchiato.json"
 
 # Linux-only: Hyprland

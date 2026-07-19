@@ -28,7 +28,7 @@ install/
 ├── linux.sh            ← System packages, fonts
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── cli-tools.sh        ← Optional CLI tools (Google CLI, etc.)
-├── multiplexer.sh      ← Optional terminal multiplexer (tmux and/or herdr)
+├── multiplexer.sh      ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux)
 ├── ai-tools.sh         ← AI tool selection + installation orchestrator
 ├── mcp.sh              ← MCP server registration (qmd, Perplexity)
 ├── skills.sh           ← Agent skills setup (dotfiles + external repos)
@@ -69,7 +69,7 @@ fi
 - `npm/npmrc` → `~/.npmrc`
 - `uv/uv.toml` → `~/.config/uv/uv.toml`
 - `pi/models.json` → `~/.pi/agent/models.json`
-- `pi/settings.json` → `~/.pi/agent/settings.json`
+- `pi/settings.json` → `~/.pi/agent/settings.json` (copied, not symlinked — pi writes runtime state into it)
 - `pi/AGENTS.md` → `~/.pi/agent/AGENTS.md` (if pi installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
 - `~/.claude/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)
