@@ -14,7 +14,11 @@
     "https://github.com/zereraz/pi-goal",
     "npm:pi-xai-oauth",
     "npm:pi-cursor-provider",
-    "npm:pi-claude-bridge"
+    "npm:pi-claude-bridge",
+    "https://github.com/disler/fusion-harness"
+  ],
+  "extensions": [
+    "git/github.com/disler/fusion-harness/extensions/fusion-harness/fusion-harness.ts"
   ],
   "enabledModels": [
     "openai-codex/gpt-5.6-sol",
