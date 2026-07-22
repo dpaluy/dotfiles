@@ -88,9 +88,9 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
     if ! ensure_node; then
         warn "npm not found — cannot install Perplexity MCP"
     else
-        # Keep stdout clean for stdio MCP and do not let optional shell init
-        # checks prevent the server from launching.
-        perplexity_mcp_shell='source ~/.zshrc >/dev/null 2>&1; exec npx -yq @perplexity-ai/mcp-server'
+        # Load only the private AI environment needed by the server. Sourcing
+        # the interactive zsh config here can run plugins in every MCP client.
+        perplexity_mcp_shell='source ~/.local/dotfiles/ai.local >/dev/null 2>&1; exec npx -yq @perplexity-ai/mcp-server'
 
         # Warn if API key is missing
         if [[ -z "${PERPLEXITY_API_KEY:-}" ]]; then
@@ -127,14 +127,14 @@ if [[ ${#perplexity_targets[@]} -gt 0 ]] && ask_yes_no "Install Perplexity MCP (
             done
         fi
 
-        # Claude Code — re-register with a shell wrapper so it reads the live env
+        # Claude Code — re-register with a shell wrapper so it reads the private AI env
         if [[ "${perplexity_choices:-}" == *"Claude"* ]]; then
             claude mcp remove perplexity 2>/dev/null || true
             claude mcp add perplexity --transport stdio --scope user -- zsh -lc "$perplexity_mcp_shell"
             info "Configured Perplexity MCP for Claude Code"
         fi
 
-        # Codex — rewrite the MCP block so it always uses the live shell env
+        # Codex — rewrite the MCP block so it always uses the private AI env
         if [[ "${perplexity_choices:-}" == *"Codex"* ]]; then
             codex_config="$HOME/.codex/config.toml"
             if [[ -f "$codex_config" ]]; then
@@ -167,7 +167,7 @@ TOML
             fi
         fi
 
-        # OpenCode — overwrite the MCP block so it always uses the live shell env
+        # OpenCode — overwrite the MCP block so it always uses the private AI env
         if [[ "${perplexity_choices:-}" == *"OpenCode"* ]]; then
             oc_config="$HOME/.config/opencode/opencode.json"
             if [[ -f "$oc_config" ]] && command -v jq &>/dev/null; then
@@ -188,7 +188,7 @@ TOML
             fi
         fi
 
-        # pi — configure a shell wrapper so it reads the live env at launch
+        # pi — configure a shell wrapper so it reads the private AI env at launch
         if [[ "${perplexity_choices:-}" == *"pi"* ]]; then
             pi_mcp="$HOME/.pi/agent/mcp.json"
             if command -v jq &>/dev/null; then
@@ -210,7 +210,7 @@ TOML
 }
 JSON
                 fi
-                info "Configured Perplexity MCP for pi using the live shell environment"
+                info "Configured Perplexity MCP for pi using the private AI environment"
             else
                 warn "jq not found — cannot register Perplexity MCP with pi"
             fi
