@@ -34,13 +34,6 @@ plugins=(
     kamal
 )
 
-# Completion plugins are useful only in interactive shells. Keeping 1Password
-# out of manually sourced non-interactive shells also avoids macOS app-data
-# permission prompts from `op completion zsh`.
-if [[ -o interactive ]]; then
-    plugins=(1password "${plugins[@]}")
-fi
-
 # Load Oh My Zsh
 [[ -d "$ZSH" ]] && source "$ZSH/oh-my-zsh.sh"
 

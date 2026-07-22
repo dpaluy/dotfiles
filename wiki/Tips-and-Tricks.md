@@ -8,7 +8,6 @@ These plugins are enabled by default:
 
 | Plugin | Description |
 |--------|-------------|
-| `1password` | 1Password CLI integration |
 | `gitfast` | Fast git completion |
 | `git-extras` | Extra git commands |
 | `z` | Jump to frequently used directories |

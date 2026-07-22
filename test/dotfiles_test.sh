@@ -56,7 +56,7 @@ assert_contains "$ROOT_DIR/install/symlinks.sh" 'ensure_zprofile_source'
 assert_contains "$ROOT_DIR/install/claude.sh" 'mise-environment.sh'
 assert_contains "$ROOT_DIR/install/mcp.sh" 'source ~/.local/dotfiles/ai.local >/dev/null 2>&1; exec npx -yq @perplexity-ai/mcp-server'
 assert_not_contains "$ROOT_DIR/install/mcp.sh" 'source ~/.zshrc >/dev/null 2>&1; exec npx -yq @perplexity-ai/mcp-server'
-assert_contains "$ROOT_DIR/zsh/zshrc" 'plugins=(1password "${plugins[@]}")'
+assert_not_contains "$ROOT_DIR/zsh/zshrc" '1password'
 [[ -f "$ROOT_DIR/ghostty/macos.conf" ]] || fail "missing ghostty/macos.conf"
 [[ -f "$ROOT_DIR/ghostty/linux.conf" ]] || fail "missing ghostty/linux.conf"
 assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+w=close_surface'
