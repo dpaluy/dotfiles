@@ -4,9 +4,9 @@
 # Symlinks dotfiles skills + external skill repos into standard locations
 #
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$SCRIPT_DIR/.." && pwd)}"
-source "$SCRIPT_DIR/lib.sh"
+SKILLS_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$SKILLS_SCRIPT_DIR/.." && pwd)}"
+source "$SKILLS_SCRIPT_DIR/lib.sh"
 
 install_claude="${install_claude:-false}"
 

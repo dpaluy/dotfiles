@@ -24,7 +24,7 @@ PI_EXTENSIONS=(
     https://github.com/disler/fusion-harness
 )
 
-if command -v pi &>/dev/null && ask_yes_no "Install pi extensions?"; then
+if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y"; then
     for ext in "${PI_EXTENSIONS[@]}"; do
         ext_name="$(basename "$ext")"
         if pi list 2>/dev/null | grep -q "$ext_name"; then

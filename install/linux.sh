@@ -151,20 +151,29 @@ if command -v hyprpm &> /dev/null; then
     header "Hyprland Plugins"
 
     HYPR_PLUGINS_REPO="https://github.com/hyprwm/hyprland-plugins"
+    hyprpm_plugins="$(hyprpm list 2>/dev/null || true)"
 
-    if hyprpm list 2>/dev/null | grep -q "hyprland-plugins"; then
+    if [[ "$hyprpm_plugins" == *"hyprland-plugins"* ]]; then
         info "hyprland-plugins repo already added"
     else
         info "Adding hyprland-plugins repo..."
         hyprpm update
         hyprpm add "$HYPR_PLUGINS_REPO"
+        hyprpm_plugins="$(hyprpm list 2>/dev/null || true)"
     fi
 
-    if hyprpm list 2>/dev/null | grep -A1 "Plugin hyprbars" | grep -q "enabled: true"; then
+    if awk '/Plugin hyprbars/ { getline; if ($0 ~ /enabled: .*true/) found=1 } END { exit !found }' <<< "$hyprpm_plugins"; then
         info "hyprbars already enabled"
     else
         info "Enabling hyprbars..."
-        hyprpm enable hyprbars
+        if ! hyprpm enable hyprbars; then
+            hyprpm_plugins="$(hyprpm list 2>/dev/null || true)"
+            if awk '/Plugin hyprbars/ { getline; if ($0 ~ /enabled: .*true/) found=1 } END { exit !found }' <<< "$hyprpm_plugins"; then
+                warn "hyprbars enabled but could not be loaded; restart Hyprland"
+            else
+                warn "hyprbars could not be enabled; continuing installation"
+            fi
+        fi
     fi
 else
     info "hyprpm not found, skipping Hyprland plugins"
