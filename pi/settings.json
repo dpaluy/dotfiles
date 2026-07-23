@@ -15,12 +15,9 @@
     "npm:pi-xai-oauth",
     "npm:pi-cursor-provider",
     "npm:pi-claude-bridge",
-    "https://github.com/disler/fusion-harness",
     "git:github.com/algal/pi-openai-server-compaction"
   ],
-  "extensions": [
-    "git/github.com/disler/fusion-harness/extensions/fusion-harness/fusion-harness.ts"
-  ],
+  "extensions": [],
   "enabledModels": [
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",
