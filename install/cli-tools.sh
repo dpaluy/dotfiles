@@ -6,10 +6,12 @@
 header "CLI Tools"
 
 install_gh_dash=false
+install_bash_lsp=false
 
 # Detect which tools are already installed
 missing_tools=()
 gh extension list 2>/dev/null | grep -q "dlvhdr/gh-dash" && info "gh-dash already installed" || missing_tools+=("gh-dash")
+command -v bash-language-server &>/dev/null && info "bash-language-server already installed" || missing_tools+=("bash-language-server")
 
 if [[ ${#missing_tools[@]} -eq 0 ]]; then
     info "All CLI tools already installed"
@@ -21,6 +23,7 @@ elif has_gum; then
         "${missing_tools[@]}" || true)
 
     [[ "$cli_choices" == *"gh-dash"* ]] && install_gh_dash=true
+    [[ "$cli_choices" == *"bash-language-server"* ]] && install_bash_lsp=true
 
     if [[ -z "$cli_choices" ]]; then
         info "Skipping CLI tools"
@@ -40,6 +43,7 @@ else
             [Aa])
                 for tool in "${missing_tools[@]}"; do
                     [[ "$tool" == "gh-dash" ]] && install_gh_dash=true
+                    [[ "$tool" == "bash-language-server" ]] && install_bash_lsp=true
                 done
                 ;;
             [Nn]) ;;
@@ -47,6 +51,7 @@ else
                 selected="${missing_tools[$((choice - 1))]:-}"
                 if [[ -n "$selected" ]]; then
                     [[ "$selected" == "gh-dash" ]] && install_gh_dash=true
+                    [[ "$selected" == "bash-language-server" ]] && install_bash_lsp=true
                 else
                     warn "Unknown option: $choice"
                 fi
@@ -63,5 +68,15 @@ if $install_gh_dash; then
         info "gh-dash installed — run 'gh dash' to launch"
     else
         warn "gh (GitHub CLI) not found. Install it first."
+    fi
+fi
+
+if $install_bash_lsp; then
+    if command -v npm &>/dev/null; then
+        info "Installing bash-language-server..."
+        npm install -g bash-language-server
+        info "bash-language-server installed"
+    else
+        warn "npm not found. Install Node.js (e.g., via mise) to use bash-language-server."
     fi
 fi
