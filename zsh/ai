@@ -32,3 +32,9 @@ export TEAMMATE_TOOL_ENABLED=true
 
 export DISABLE_TELEMETRY=1
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+
+# ------------------------------------------------------------------------------
+# pi
+# ------------------------------------------------------------------------------
+
+alias pim='pi --models "openai-codex/*,cursor/*,xai-auth/*,kimi-coding/k3,claude-bridge/*,deepseek/*"'
