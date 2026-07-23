@@ -22,6 +22,7 @@ PI_EXTENSIONS=(
     npm:pi-cursor-provider
     npm:pi-claude-bridge
     https://github.com/disler/fusion-harness
+    git:github.com/algal/pi-openai-server-compaction
 )
 
 if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y"; then
