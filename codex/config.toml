@@ -29,8 +29,6 @@ goals = true
 
 [features.multi_agent_v2]
 enabled = true
-hide_spawn_agent_metadata = false
-tool_namespace = "agents"
 
 [agents]
 max_depth = 1
