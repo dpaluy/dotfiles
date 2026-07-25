@@ -200,20 +200,15 @@ elif ask_yes_no "Install Headroom (AI context optimization proxy — saves 60-90
     fi
 fi
 
-# Configure Headroom durable hooks (runs for both fresh and existing installs)
+# Configure Headroom durable hooks for Claude Code.
+# Do not initialize Codex: Headroom's model-list response is incompatible with
+# Codex Desktop and prevents its model catalog from loading.
 if command -v headroom &>/dev/null; then
     export HEADROOM_TELEMETRY=off
     headroom_port="${HEADROOM_PORT:-6787}"
     if command -v claude &>/dev/null; then
         info "Setting up Headroom hooks for Claude Code on port $headroom_port..."
         HEADROOM_TELEMETRY=off headroom init -g --port "$headroom_port" claude || warn "headroom init for Claude Code failed"
-    fi
-    if command -v codex &>/dev/null; then
-        info "Setting up Headroom hooks for Codex CLI on port $headroom_port..."
-        mkdir -p "$HOME/.codex"
-        HEADROOM_TELEMETRY=off headroom init -g --port "$headroom_port" codex || warn "headroom init for Codex failed"
-        # Re-establish symlink in case headroom init replaced AGENTS.md
-        create_symlink "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/.codex/AGENTS.md"
     fi
 fi
 
