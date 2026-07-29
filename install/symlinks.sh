@@ -246,6 +246,7 @@ if [[ ! -f "$HOME/.pi/agent/settings.json" ]]; then
 else
     info "$HOME/.pi/agent/settings.json already exists, skipping"
 fi
+create_symlink "$DOTFILES_DIR/pi/pi-fusion.json" "$HOME/.pi/agent/pi-fusion.json"
 create_symlink "$DOTFILES_DIR/pi/themes/catppuccin-macchiato.json" "$HOME/.pi/agent/themes/catppuccin-macchiato.json"
 
 # Linux-only: Hyprland

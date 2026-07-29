@@ -70,6 +70,8 @@ fi
 - `uv/uv.toml` → `~/.config/uv/uv.toml`
 - `pi/models.json` → `~/.pi/agent/models.json`
 - `pi/settings.json` → `~/.pi/agent/settings.json` (copied, not symlinked — pi writes runtime state into it)
+- `pi/pi-fusion.json` → `~/.pi/agent/pi-fusion.json`
+- `majesticlabs-dev/pi-fusion` → installed as a Pi package via `install/pi.sh`
 - `pi/AGENTS.md` → `~/.pi/agent/AGENTS.md` (if pi installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
 - `~/.claude/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)
