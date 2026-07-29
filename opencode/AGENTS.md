@@ -60,10 +60,11 @@ Default: TDD unless specified otherwise.
 - Files: `rg --files -g "*.ts"`
 - Context: `rg -C3 "pattern"` for surrounding lines
 
-**Docs**: use qmd for markdown:
-- `qmd_query "natural language question" --collections current --files --min-score 0.32`
-- Fallback: `qmd_search` or `qmd_vsearch`
-- Read with `qmd_get` or Read tool
+**Docs**: use qmd for markdown (collection: `kb`):
+- `qmd query "natural language question" -c kb --files --min-score 0.32`
+- Fallback: `qmd search` (BM25) or `qmd vsearch` (vector only)
+- Read with `qmd get` or Read tool
+- Over MCP only `query`, `get`, `multi_get`, and `status` exist
 
 @RTK.md
 
