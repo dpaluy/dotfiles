@@ -1,10 +1,10 @@
 web_search = "live"
 suppress_unstable_features_warning = true
 personality = "pragmatic"
-model = "gpt-5.6-terra"
-model_reasoning_effort = "medium"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"
 model_verbosity = "low"
-service_tier = "fast"
+service_tier = "default"
 
 developer_instructions = """
 Delegate only when useful: use fast_scan for read-only exploration, routine_worker for bounded implementation, and deep_worker for complex or high-risk work.
@@ -28,7 +28,8 @@ memories = true
 goals = true
 
 [features.multi_agent_v2]
-enabled = true
+hide_spawn_agent_metadata = false
+tool_namespace = "agents"
 
 [agents]
 max_depth = 1

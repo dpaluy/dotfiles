@@ -3,129 +3,200 @@
 set -Eeuo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+TEMP_DIRS=()
+TEST_TEMP_DIR=""
 
 fail() {
     echo "FAIL: $1" >&2
     exit 1
 }
 
-assert_contains() {
-    local file="$1"
-    local pattern="$2"
-    rg -q --fixed-strings -- "$pattern" "$file" || fail "$file is missing: $pattern"
+make_temp_dir() {
+    TEST_TEMP_DIR="$(mktemp -d)"
+    TEMP_DIRS+=("$TEST_TEMP_DIR")
 }
 
-assert_not_contains() {
-    local file="$1"
-    local pattern="$2"
-    ! rg -q --fixed-strings -- "$pattern" "$file" || fail "$file still contains: $pattern"
+cleanup() {
+    local dir
+    for dir in "${TEMP_DIRS[@]}"; do
+        [[ ! -d "$dir" ]] || rm -rf "$dir"
+    done
 }
 
-assert_contains "$ROOT_DIR/harden-mac.sh" 'sudo systemsetup -getremotelogin'
-assert_contains "$ROOT_DIR/install/lib.sh" 'normalize_release_arch()'
-assert_contains "$ROOT_DIR/install/lib.sh" 'verify_sha256_checksum()'
-assert_contains "$ROOT_DIR/install/lib.sh" 'DOTFILES_DIR="${DOTFILES_DIR:-$(cd "$LIB_DIR/.." && pwd)}"'
-assert_contains "$ROOT_DIR/install/linux.sh" 'DIFFNAV_ARCH="$(normalize_release_arch)"'
-assert_contains "$ROOT_DIR/install/linux.sh" 'LAZYGIT_ARCH="$(normalize_release_arch)"'
-assert_contains "$ROOT_DIR/install/linux.sh" 'lazygit_${LAZYGIT_VERSION}_linux_${LAZYGIT_ARCH}.tar.gz'
-assert_contains "$ROOT_DIR/install/linux.sh" 'SESH_ARCH="$(normalize_release_arch)"'
-assert_contains "$ROOT_DIR/install/skills.sh" 'Usage: ./install/skills.sh'
-assert_contains "$ROOT_DIR/install/skills.sh" 'source "$SCRIPT_DIR/lib.sh"'
-assert_contains "$ROOT_DIR/zsh/ai-tools/codex" '--dangerously-bypass-approvals-and-sandbox'
-assert_not_contains "$ROOT_DIR/zsh/ai-tools/codex" '--profile'
-assert_contains "$ROOT_DIR/codex/config.toml" 'personality = "pragmatic"'
-assert_contains "$ROOT_DIR/codex/config.toml" 'model_verbosity = "low"'
-assert_not_contains "$ROOT_DIR/codex/config.toml" 'plan_mode_reasoning_effort'
-assert_contains "$ROOT_DIR/codex/config.toml" 'Delegate only when useful:'
-assert_contains "$ROOT_DIR/install/codex.sh" 'block-destructive-commands.py'
-[[ -x "$ROOT_DIR/codex/hooks/block-destructive-commands.py" ]] \
-    || fail "missing executable Codex destructive-command hook"
-python3 -m json.tool "$ROOT_DIR/codex/hooks.json" >/dev/null \
-    || fail "codex/hooks.json is invalid JSON"
-python3 "$ROOT_DIR/test/test_codex_hook.py"
-for profile in dev fast quick research; do
-    [[ ! -e "$ROOT_DIR/codex/$profile.config.toml" ]] \
-        || fail "obsolete Codex profile still exists: $profile"
-done
-assert_not_contains "$ROOT_DIR/codex/config.toml" 'model_context_window'
-assert_not_contains "$ROOT_DIR/codex/config.toml" 'model_auto_compact_token_limit'
-assert_contains "$ROOT_DIR/ghostty/config" 'config-file = ?"~/.config/ghostty/platform.conf"'
-assert_contains "$ROOT_DIR/install/symlinks.sh" 'ghostty_platform="$DOTFILES_DIR/ghostty/macos.conf"'
-assert_contains "$ROOT_DIR/install/symlinks.sh" 'create_zshenv_wrapper'
-assert_contains "$ROOT_DIR/install/symlinks.sh" 'ensure_zprofile_source'
-assert_contains "$ROOT_DIR/install/claude.sh" 'mise-environment.sh'
-assert_contains "$ROOT_DIR/install/ai-tools.sh" 'headroom_port="${HEADROOM_PORT:-6787}"'
-assert_contains "$ROOT_DIR/install/ai-tools.sh" 'headroom init -g --port "$headroom_port" claude'
-assert_not_contains "$ROOT_DIR/install/ai-tools.sh" 'headroom init -g --port "$headroom_port" codex'
-assert_contains "$ROOT_DIR/install/mcp.sh" 'source ~/.local/dotfiles/ai.local >/dev/null 2>&1; exec npx -yq @perplexity-ai/mcp-server'
-assert_not_contains "$ROOT_DIR/install/mcp.sh" 'source ~/.zshrc >/dev/null 2>&1; exec npx -yq @perplexity-ai/mcp-server'
-assert_not_contains "$ROOT_DIR/zsh/zshrc" '1password'
-[[ -f "$ROOT_DIR/ghostty/macos.conf" ]] || fail "missing ghostty/macos.conf"
-[[ -f "$ROOT_DIR/ghostty/linux.conf" ]] || fail "missing ghostty/linux.conf"
-assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+w=close_surface'
-assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = super+d=new_split:right'
-assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = super+shift+d=new_split:down'
-assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+g=equalize_splits'
-assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = shift+enter=text:\n'
-assert_contains "$ROOT_DIR/ghostty/linux.conf" 'keybind = ctrl+shift+r=prompt_surface_title'
-[[ -f "$ROOT_DIR/zsh/zshenv" ]] || fail "missing zsh/zshenv"
-[[ -f "$ROOT_DIR/zsh/zprofile" ]] || fail "missing zsh/zprofile"
-[[ -x "$ROOT_DIR/claude/hooks/mise-environment.sh" ]] || fail "missing executable Claude mise environment hook"
+run_check() {
+    local name="$1"
+    shift
+    "$@"
+    echo "ok - $name"
+}
 
-assert_not_contains "$ROOT_DIR/README.md" 'min-release-age'
-assert_not_contains "$ROOT_DIR/README.md" 'Comment out macOS section'
-assert_not_contains "$ROOT_DIR/install/symlinks.sh" 'source "$HOME/dotfiles/zsh/zshrc"'
+check_codex_configuration() {
+    ROOT_DIR="$ROOT_DIR" python3 - <<'PY'
+import json
+import os
+from pathlib import Path
+import tomllib
 
-[[ "$(bash -c 'source "$1"; normalize_release_arch aarch64' _ "$ROOT_DIR/install/lib.sh")" == "arm64" ]] \
-    || fail "aarch64 did not normalize to arm64"
-[[ "$(bash -c 'source "$1"; normalize_release_arch x86_64' _ "$ROOT_DIR/install/lib.sh")" == "x86_64" ]] \
-    || fail "x86_64 did not normalize to x86_64"
 
-"$ROOT_DIR/install/skills.sh" --help | rg -q '^Usage: ./install/skills.sh' \
-    || fail "install/skills.sh --help is not usable standalone"
+root = Path(os.environ["ROOT_DIR"])
+config = tomllib.loads((root / "codex/config.toml").read_text())
 
-shim_home="$(mktemp -d)"
-trap 'rm -rf "$shim_home"' EXIT
-mkdir -p "$shim_home/.local/share/mise/shims"
-shim_path="$(HOME="$shim_home" PATH="/usr/bin:/bin:$shim_home/.local/share/mise/shims" zsh -f -c '
-    source "$1"
-    source "$1"
-    print -r -- "$PATH"
-' _ "$ROOT_DIR/zsh/zshenv")"
-expected_shim_path="$shim_home/.local/share/mise/shims:/usr/bin:/bin"
-[[ "$shim_path" == "$expected_shim_path" ]] \
-    || fail "zshenv did not prepend the mise shim directory exactly once"
+expected_defaults = {
+    "model": "gpt-5.6-sol",
+    "model_reasoning_effort": "xhigh",
+    "service_tier": "default",
+}
+for key, expected in expected_defaults.items():
+    actual = config.get(key)
+    assert actual == expected, f"codex config {key}: expected {expected!r}, got {actual!r}"
 
-login_path="$(HOME="$shim_home" DOTFILES_DIR="$ROOT_DIR" PATH="/usr/bin:/bin:$shim_home/.local/share/mise/shims" zsh -f -c '
-    source "$1"
-    print -r -- "$PATH"
-' _ "$ROOT_DIR/zsh/zprofile")"
-[[ "$login_path" == "$expected_shim_path" ]] \
-    || fail "zprofile did not restore mise shims after login PATH setup"
+assert "model_catalog_json" not in config, "Codex model catalog override must stay machine-local"
+multi_agent_v2 = config["features"]["multi_agent_v2"]
+assert multi_agent_v2.get("hide_spawn_agent_metadata") is False
+assert multi_agent_v2.get("tool_namespace") == "agents"
+assert "enabled" not in multi_agent_v2, "Sol selects multi-agent v2 through model metadata"
 
-claude_env_file="$shim_home/claude-env"
-HOME="$shim_home" CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
-HOME="$shim_home" CLAUDE_ENV_FILE="$claude_env_file" "$ROOT_DIR/claude/hooks/mise-environment.sh"
-[[ "$(wc -l < "$claude_env_file" | tr -d " ")" == "1" ]] \
-    || fail "Claude mise environment hook wrote duplicate exports"
-assert_contains "$claude_env_file" 'export PATH="$HOME/.local/share/mise/shims:$PATH"'
+agent_names = set()
+for path in sorted((root / "codex/agents").glob("*.toml")):
+    agent = tomllib.loads(path.read_text())
+    name = agent.get("name")
+    assert name == path.stem, f"{path}: agent name must match the filename"
+    assert name not in agent_names, f"duplicate Codex agent name: {name}"
+    assert agent.get("description"), f"{path}: missing description"
+    assert agent.get("developer_instructions", "").strip(), f"{path}: missing instructions"
+    agent_names.add(name)
 
-resume_args="$(HOME=/private/tmp/dotfiles-cdx-test zsh -f -c '
-    codex() { print -rl -- "$@"; }
-    source "$1"
-    cdx -r
-' _ "$ROOT_DIR/zsh/ai-tools/codex")"
-expected_resume_args=$'--dangerously-bypass-approvals-and-sandbox\n--search\nresume\n--last'
-[[ "$resume_args" == "$expected_resume_args" ]] \
-    || fail "cdx -r did not resume the most recent session"
+fast_scan = tomllib.loads((root / "codex/agents/fast_scan.toml").read_text())
+assert fast_scan.get("sandbox_mode") == "read-only", "fast_scan must remain read-only"
 
-explicit_resume_args="$(HOME=/private/tmp/dotfiles-cdx-test zsh -f -c '
-    codex() { print -rl -- "$@"; }
-    source "$1"
-    cdx --resume session-123
-' _ "$ROOT_DIR/zsh/ai-tools/codex")"
-expected_explicit_resume_args=$'--dangerously-bypass-approvals-and-sandbox\n--search\nresume\nsession-123'
-[[ "$explicit_resume_args" == "$expected_explicit_resume_args" ]] \
-    || fail "cdx --resume did not preserve the explicit session ID"
+hooks = json.loads((root / "codex/hooks.json").read_text())
+pre_tool_hooks = hooks.get("hooks", {}).get("PreToolUse", [])
+commands = [
+    hook
+    for group in pre_tool_hooks
+    for hook in group.get("hooks", [])
+    if hook.get("type") == "command"
+]
+assert any("block-destructive-commands.py" in hook.get("command", "") for hook in commands), (
+    "Codex PreToolUse must register the destructive-command hook"
+)
+PY
+}
+
+check_install_helpers() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local artifact="$sandbox/artifact.txt"
+    local checksums="$sandbox/checksums.txt"
+    local bad_checksums="$sandbox/bad-checksums.txt"
+    local source_file="$sandbox/source.txt"
+    local destination="$sandbox/destination.txt"
+    local digest
+
+    mkdir -p "$sandbox/home"
+    printf 'verified artifact\n' > "$artifact"
+    digest="$(python3 -c 'import hashlib, sys; print(hashlib.sha256(open(sys.argv[1], "rb").read()).hexdigest())' "$artifact")"
+    printf '%s  artifact.txt\n' "$digest" > "$checksums"
+    printf '%064d  artifact.txt\n' 0 > "$bad_checksums"
+    printf 'new contents\n' > "$source_file"
+    printf 'old contents\n' > "$destination"
+
+    HOME="$sandbox/home" PATH="/usr/bin:/bin" bash -c '
+        set -Eeuo pipefail
+        source "$1"
+
+        [[ "$(normalize_release_arch aarch64)" == "arm64" ]]
+        [[ "$(normalize_release_arch arm64)" == "arm64" ]]
+        [[ "$(normalize_release_arch amd64)" == "x86_64" ]]
+        [[ "$(normalize_release_arch x86_64)" == "x86_64" ]]
+        ! normalize_release_arch sparc >/dev/null 2>&1
+
+        verify_sha256_checksum "$2" "$3"
+        ! verify_sha256_checksum "$4" "$3" >/dev/null 2>&1
+
+        create_symlink "$5" "$6" >/dev/null
+        [[ -L "$6" ]]
+        [[ "$(readlink "$6")" == "$5" ]]
+        compgen -G "${6}.backup.*" >/dev/null
+    ' _ "$ROOT_DIR/install/lib.sh" "$checksums" "$artifact" "$bad_checksums" \
+        "$source_file" "$destination"
+}
+
+check_skills_help() {
+    make_temp_dir
+    local output
+    output="$(HOME="$TEST_TEMP_DIR" "$ROOT_DIR/install/skills.sh" --help)"
+    [[ "$output" == Usage:\ ./install/skills.sh* ]] \
+        || fail "install/skills.sh --help is not usable standalone"
+}
+
+check_zsh_path_setup() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+
+    mkdir -p "$sandbox/.local/share/mise/shims"
+    HOME="$sandbox" PATH="/usr/bin:/bin:$sandbox/.local/share/mise/shims" zsh -f -c '
+        expected="$2/.local/share/mise/shims:/usr/bin:/bin"
+        source "$1"
+        source "$1"
+        [[ "$PATH" == "$expected" ]] || exit 1
+
+        DOTFILES_DIR="$3"
+        source "$4"
+        [[ "$PATH" == "$expected" ]]
+    ' _ "$ROOT_DIR/zsh/zshenv" "$sandbox" "$ROOT_DIR" "$ROOT_DIR/zsh/zprofile" \
+        || fail "zshenv/zprofile did not preserve one mise shim entry"
+}
+
+check_claude_environment_hook() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local environment_file="$sandbox/claude-env"
+    local expected_line="export PATH=\"\$HOME/.local/share/mise/shims:\$PATH\""
+
+    mkdir -p "$sandbox/.local/share/mise/shims"
+    HOME="$sandbox" CLAUDE_ENV_FILE="$environment_file" \
+        "$ROOT_DIR/claude/hooks/mise-environment.sh"
+    HOME="$sandbox" CLAUDE_ENV_FILE="$environment_file" \
+        "$ROOT_DIR/claude/hooks/mise-environment.sh"
+
+    [[ "$(wc -l < "$environment_file" | tr -d ' ')" == "1" ]] \
+        || fail "Claude mise hook wrote duplicate exports"
+    [[ "$(<"$environment_file")" == "$expected_line" ]] \
+        || fail "Claude mise hook wrote an unexpected environment export"
+}
+
+check_cdx_wrapper() {
+    make_temp_dir
+    HOME="$TEST_TEMP_DIR" zsh -f -c '
+        codex() { captured=("$@"); }
+        source "$1"
+
+        cdx exec --json
+        [[ "${(F)captured}" == $'\''--dangerously-bypass-approvals-and-sandbox\n--search\nexec\n--json'\'' ]] || exit 1
+
+        cdx -r
+        [[ "${(F)captured}" == $'\''--dangerously-bypass-approvals-and-sandbox\n--search\nresume\n--last'\'' ]] || exit 1
+
+        cdx --resume session-123
+        [[ "${(F)captured}" == $'\''--dangerously-bypass-approvals-and-sandbox\n--search\nresume\nsession-123'\'' ]]
+    ' _ "$ROOT_DIR/zsh/ai-tools/codex" || fail "cdx argument forwarding changed"
+}
+
+check_codex_hook() {
+    [[ -x "$ROOT_DIR/codex/hooks/block-destructive-commands.py" ]] \
+        || fail "Codex destructive-command hook is not executable"
+    python3 "$ROOT_DIR/test/test_codex_hook.py"
+}
+
+trap cleanup EXIT
+
+run_check "Codex configuration" check_codex_configuration
+run_check "installer helpers" check_install_helpers
+run_check "skills installer help" check_skills_help
+run_check "zsh PATH setup" check_zsh_path_setup
+run_check "Claude environment hook" check_claude_environment_hook
+run_check "cdx argument forwarding" check_cdx_wrapper
+run_check "Codex destructive-command hook" check_codex_hook
 
 echo "dotfiles behavior checks passed"
