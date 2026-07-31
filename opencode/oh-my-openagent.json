@@ -27,11 +27,11 @@
       "variant": "xhigh"
     },
     "librarian": {
-      "model": "openai/gpt-5.6-luna",
+      "model": "openai/gpt-5.6-terra",
       "variant": "xhigh"
     },
     "explore": {
-      "model": "openai/gpt-5.6-luna",
+      "model": "openai/gpt-5.6-terra",
       "variant": "xhigh"
     },
     "multimodal-looker": {
@@ -55,7 +55,7 @@
       "variant": "high"
     },
     "sisyphus-junior": {
-      "model": "openai/gpt-5.6-luna",
+      "model": "openai/gpt-5.6-terra",
       "variant": "high"
     }
   },
@@ -77,11 +77,11 @@
       "variant": "high"
     },
     "quick": {
-      "model": "openai/gpt-5.6-luna",
+      "model": "openai/gpt-5.6-terra",
       "variant": "high"
     },
     "unspecified-low": {
-      "model": "openai/gpt-5.6-luna",
+      "model": "openai/gpt-5.6-terra",
       "variant": "high"
     },
     "unspecified-high": {
@@ -89,7 +89,7 @@
       "variant": "high"
     },
     "writing": {
-      "model": "openai/gpt-5.6-luna",
+      "model": "openai/gpt-5.6-terra",
       "variant": "high"
     }
   },
