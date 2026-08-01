@@ -25,6 +25,12 @@ fi
 if [[ -f "$HOME/.codex/config.toml" ]]; then
     perl -0pi -e 's/^(\s*)codex_hooks(\s*=\s*true\s*)$/${1}hooks${2}/mg' "$HOME/.codex/config.toml"
 
+    # Sol and Terra select multi-agent v2 through model metadata. Remove the
+    # obsolete table-local override without touching other enabled settings.
+    perl -0pi -e '
+        s{(^\[features\.multi_agent_v2\][ \t]*\n)((?:[ \t]*(?:\#.*)?\n)*)[ \t]*enabled[ \t]*=[ \t]*(?:true|false)[ \t]*\n}{$1$2}m;
+    ' "$HOME/.codex/config.toml"
+
     # Default Codex to yolo mode for existing copied configs.
     perl -0pi -e '
         if (!/^sandbox_mode\s*=/m) { s/\A/sandbox_mode = "danger-full-access"\n/ }

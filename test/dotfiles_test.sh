@@ -83,6 +83,50 @@ assert any("block-destructive-commands.py" in hook.get("command", "") for hook i
 PY
 }
 
+check_codex_installer_migration() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local live_config="$sandbox/home/.codex/config.toml"
+
+    mkdir -p "$fake_bin" "$(dirname "$live_config")"
+    : > "$fake_bin/codex"
+    chmod +x "$fake_bin/codex"
+    printf '%s\n' \
+        'model = "gpt-5.6-sol"' \
+        '[features.multi_agent_v2]' \
+        'enabled = true' \
+        'hide_spawn_agent_metadata = false' \
+        'tool_namespace = "agents"' \
+        '[mcp_servers.example]' \
+        'enabled = true' \
+        > "$live_config"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" bash -c '
+        set -Eeuo pipefail
+        header() { :; }
+        info() { :; }
+        warn() { :; }
+        create_symlink() {
+            mkdir -p "$(dirname "$2")"
+            ln -s "$1" "$2"
+        }
+        DOTFILES_DIR="$1"
+        source "$1/install/codex.sh"
+    ' _ "$ROOT_DIR"
+
+    LIVE_CONFIG="$live_config" python3 - <<'PY'
+import os
+from pathlib import Path
+import tomllib
+
+
+config = tomllib.loads(Path(os.environ["LIVE_CONFIG"]).read_text())
+assert "enabled" not in config["features"]["multi_agent_v2"]
+assert config["mcp_servers"]["example"]["enabled"] is True
+PY
+}
+
 check_install_helpers() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -192,6 +236,7 @@ check_codex_hook() {
 trap cleanup EXIT
 
 run_check "Codex configuration" check_codex_configuration
+run_check "Codex installer migration" check_codex_installer_migration
 run_check "installer helpers" check_install_helpers
 run_check "skills installer help" check_skills_help
 run_check "zsh PATH setup" check_zsh_path_setup
