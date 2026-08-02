@@ -22,6 +22,7 @@ PI_EXTENSIONS=(
     npm:pi-cursor-provider
     npm:pi-claude-bridge
     git:github.com/algal/pi-openai-server-compaction
+    https://github.com/calesennett/pi-codex-fast
     https://github.com/majesticlabs-dev/pi-fusion
 )
 

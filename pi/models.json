@@ -1,5 +1,18 @@
 {
   "providers": {
+    "openai-codex": {
+      "modelOverrides": {
+        "gpt-5.6-luna": {
+          "contextWindow": 272000
+        },
+        "gpt-5.6-sol": {
+          "contextWindow": 272000
+        },
+        "gpt-5.6-terra": {
+          "contextWindow": 272000
+        }
+      }
+    },
     "minimax": {
       "baseUrl": "https://api.minimax.io/v1",
       "api": "openai-completions",
@@ -29,21 +42,12 @@
       "apiKey": "KIMI_CODING_API_KEY",
       "models": [
         {
-          "id": "k2p6",
-          "name": "Kimi K2.6",
+          "id": "k3",
+          "name": "Kimi K3",
           "reasoning": true,
           "input": ["text", "image"],
-          "contextWindow": 262144,
-          "maxTokens": 32768,
-          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
-        },
-        {
-          "id": "k2p7",
-          "name": "Kimi K2.7",
-          "reasoning": true,
-          "input": ["text", "image"],
-          "contextWindow": 262144,
-          "maxTokens": 32768,
+          "contextWindow": 1048576,
+          "maxTokens": 131072,
           "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
         }
       ]

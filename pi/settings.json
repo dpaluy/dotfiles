@@ -2,6 +2,18 @@
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
+  "images": {
+    "blockImages": false
+  },
+  "terminal": {
+    "showImages": false
+  },
+  "hideThinkingBlock": true,
+  "quietStartup": true,
+  "theme": "catppuccin-macchiato",
+  "steeringMode": "all",
+  "followUpMode": "all",
+  "collapseChangelog": true,
   "packages": [
     "npm:pi-mcp-adapter",
     "https://github.com/davebcn87/pi-autoresearch",
@@ -15,7 +27,8 @@
     "npm:pi-xai-oauth",
     "npm:pi-cursor-provider",
     "npm:pi-claude-bridge",
-    "git:github.com/algal/pi-openai-server-compaction"
+    "git:github.com/algal/pi-openai-server-compaction",
+    "https://github.com/calesennett/pi-codex-fast"
   ],
   "extensions": [],
   "enabledModels": [
@@ -31,7 +44,5 @@
     "deepseek/deepseek-v4-flash",
     "deepseek/deepseek-v4-pro"
   ],
-  "lastChangelogVersion": "0.80.10",
-  "quietStartup": true,
-  "theme": "dark"
+  "lastChangelogVersion": "0.80.10"
 }
