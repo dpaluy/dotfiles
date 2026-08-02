@@ -15,24 +15,31 @@ Do not ask the user to choose a model unless the required model is unavailable.
 sandbox_mode = "danger-full-access"
 approval_policy = "never"
 
+[agents]
+enabled = true
+default_subagent_model = "gpt-5.6-terra"
+default_subagent_reasoning_effort = "high"
+max_concurrent_threads_per_session = 4
+max_depth = 1
+
 [features]
-unified_exec = true
-shell_snapshot = true
-default_mode_request_user_input = true
 apps = true
-personality = true
-multi_agent = true
-prevent_idle_sleep = true
+chronicle = true
+default_mode_request_user_input = true
 guardian_approval = false
-memories = true
 goals = true
+hooks = true
+js_repl = false
+memories = true
+multi_agent = true
+personality = true
+prevent_idle_sleep = true
+shell_snapshot = true
+unified_exec = true
 
 [features.multi_agent_v2]
 hide_spawn_agent_metadata = false
 tool_namespace = "agents"
-
-[agents]
-max_depth = 1
 
 [shell_environment_policy.set]
 OMX_LORE_COMMIT_GUARD = "0"
