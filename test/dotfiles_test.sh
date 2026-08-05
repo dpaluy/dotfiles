@@ -51,11 +51,34 @@ for key, expected in expected_defaults.items():
     assert actual == expected, f"codex config {key}: expected {expected!r}, got {actual!r}"
 
 assert "model_catalog_json" not in config, "Codex model catalog override must stay machine-local"
+agent_defaults = config["agents"]
+assert agent_defaults.get("default_subagent_model") == "gpt-5.6-luna"
+assert agent_defaults.get("default_subagent_reasoning_effort") == "high"
 multi_agent_v2 = config["features"]["multi_agent_v2"]
 assert multi_agent_v2.get("hide_spawn_agent_metadata") is False
 assert multi_agent_v2.get("tool_namespace") == "agents"
 assert "enabled" not in multi_agent_v2, "Sol selects multi-agent v2 through model metadata"
 
+expected_agents = {
+    "deep_worker": {
+        "model": "gpt-5.6-sol",
+        "model_reasoning_effort": "high",
+        "service_tier": "default",
+        "sandbox_mode": "workspace-write",
+    },
+    "fast_scan": {
+        "model": "gpt-5.6-luna",
+        "model_reasoning_effort": "medium",
+        "service_tier": "default",
+        "sandbox_mode": "read-only",
+    },
+    "routine_worker": {
+        "model": "gpt-5.6-luna",
+        "model_reasoning_effort": "high",
+        "service_tier": "default",
+        "sandbox_mode": "workspace-write",
+    },
+}
 agent_names = set()
 for path in sorted((root / "codex/agents").glob("*.toml")):
     agent = tomllib.loads(path.read_text())
@@ -64,10 +87,16 @@ for path in sorted((root / "codex/agents").glob("*.toml")):
     assert name not in agent_names, f"duplicate Codex agent name: {name}"
     assert agent.get("description"), f"{path}: missing description"
     assert agent.get("developer_instructions", "").strip(), f"{path}: missing instructions"
+    expected = expected_agents.get(name)
+    assert expected is not None, f"unexpected dotfiles-owned Codex agent: {name}"
+    for key, expected_value in expected.items():
+        actual = agent.get(key)
+        assert actual == expected_value, (
+            f"{path}: {key} expected {expected_value!r}, got {actual!r}"
+        )
     agent_names.add(name)
 
-fast_scan = tomllib.loads((root / "codex/agents/fast_scan.toml").read_text())
-assert fast_scan.get("sandbox_mode") == "read-only", "fast_scan must remain read-only"
+assert agent_names == set(expected_agents), "dotfiles-owned Codex agent inventory changed"
 
 hooks = json.loads((root / "codex/hooks.json").read_text())
 pre_tool_hooks = hooks.get("hooks", {}).get("PreToolUse", [])
