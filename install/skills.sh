@@ -19,6 +19,12 @@ USAGE
     exit 0
 fi
 
+# Keep qmd's packaged Agent Skill aligned with the installed qmd version.
+if command -v qmd &>/dev/null; then
+    qmd skill install --global --force
+    info "Installed qmd skill into ~/.agents/skills/qmd"
+fi
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Dotfiles skills (agents/skills/)
 # ─────────────────────────────────────────────────────────────────────────────

@@ -30,6 +30,27 @@ run_check() {
     echo "ok - $name"
 }
 
+check_qmd_skill_install() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local invocation="$sandbox/qmd-invocation"
+
+    mkdir -p "$fake_bin" "$sandbox/dotfiles"
+    cat > "$fake_bin/qmd" <<'SH'
+#!/usr/bin/env bash
+printf '%s\n' "$*" > "$QMD_INVOCATION"
+SH
+    chmod +x "$fake_bin/qmd"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$sandbox/dotfiles" QMD_INVOCATION="$invocation" \
+        "$ROOT_DIR/install/skills.sh" >/dev/null
+
+    [[ "$(<"$invocation")" == "skill install --global --force" ]] \
+        || fail "skills installer did not refresh the global qmd skill"
+}
+
 check_codex_configuration() {
     ROOT_DIR="$ROOT_DIR" python3 - <<'PY'
 import json
@@ -264,6 +285,7 @@ check_codex_hook() {
 
 trap cleanup EXIT
 
+run_check "qmd skill install" check_qmd_skill_install
 run_check "Codex configuration" check_codex_configuration
 run_check "Codex installer migration" check_codex_installer_migration
 run_check "installer helpers" check_install_helpers

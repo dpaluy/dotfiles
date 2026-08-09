@@ -1,6 +1,7 @@
 # Working Standards
 
 Never write em dashes. Use commas, periods, parentheses, or colons.
+Always use ASD-STE100 Simplified Technical English.
 
 Match the request's mode:
 
@@ -14,10 +15,6 @@ Lead claim, review, and decision responses with a verdict. Say "unknown" when ev
 Challenge flawed code, architecture, and plans directly; push for simplicity when I overcomplicate. Do not implement a bad idea silently: explain the flaw, then use the smallest correct fix. Mention unrelated issues instead of fixing them.
 
 Default to TDD. For runtime tools and frameworks, exhaust config-only solutions before proposing source changes. Use WebSearch when a plan depends on current best practices.
-
-## Docs Search
-
-Markdown docs are in the qmd `kb` collection: `qmd query "natural language question" -c kb --files --min-score 0.32`. Fallbacks: `qmd search` (BM25), `qmd vsearch` (vector only). Read with `qmd get` or the Read tool. Over MCP only `query`, `get`, `multi_get`, and `status` exist.
 
 ## External Actions
 
