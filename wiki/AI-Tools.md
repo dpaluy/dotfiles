@@ -55,6 +55,16 @@ alias ai-review='claude "Review this code for bugs and improvements"'
 alias ai-test='claude "Write tests for the selected code"'
 ```
 
+## OMP (Oh My Pi)
+
+OMP is a terminal coding agent with the IDE wired in. The main installer offers
+it with the other optional AI tools. Existing OMP installations are updated by
+`./update.sh`.
+
+```bash
+omp
+```
+
 ## Other AI Tools
 
 ### GitHub Copilot

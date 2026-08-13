@@ -9,6 +9,7 @@ install_claude=false
 install_codex=false
 install_gemini=false
 install_opencode=false
+install_omp=false
 install_pi=false
 install_qmd=false
 install_google_cli=false
@@ -21,6 +22,7 @@ command -v claude &>/dev/null && info "Claude Code already installed" || missing
 command -v codex &>/dev/null && info "OpenAI Codex CLI already installed" || missing_tools+=("OpenAI Codex CLI")
 command -v gemini &>/dev/null && info "Gemini CLI already installed" || missing_tools+=("Gemini CLI")
 command -v opencode &>/dev/null && info "OpenCode already installed" || missing_tools+=("OpenCode")
+command -v omp &>/dev/null && info "OMP already installed" || missing_tools+=("OMP (Oh My Pi)")
 command -v pi &>/dev/null && info "pi already installed" || missing_tools+=("pi (coding agent)")
 command -v qmd &>/dev/null && info "qmd already installed" || missing_tools+=("qmd (local markdown search)")
 command -v gws &>/dev/null && info "Google CLI already installed" || missing_tools+=("Google CLI")
@@ -40,6 +42,7 @@ elif has_gum; then
     [[ "$ai_choices" == *"Codex CLI"* ]] && install_codex=true
     [[ "$ai_choices" == *"Gemini CLI"* ]] && install_gemini=true
     [[ "$ai_choices" == *"OpenCode"* ]] && install_opencode=true
+    [[ "$ai_choices" == *"OMP (Oh My Pi)"* ]] && install_omp=true
     [[ "$ai_choices" == *"pi"* ]] && install_pi=true
     [[ "$ai_choices" == *"qmd"* ]] && install_qmd=true
     [[ "$ai_choices" == *"Google CLI"* ]] && install_google_cli=true
@@ -67,6 +70,7 @@ else
                     [[ "$tool" == *"Codex"* ]] && install_codex=true
                     [[ "$tool" == *"Gemini"* ]] && install_gemini=true
                     [[ "$tool" == "OpenCode" ]] && install_opencode=true
+                    [[ "$tool" == "OMP (Oh My Pi)" ]] && install_omp=true
                     [[ "$tool" == *"pi"* ]] && install_pi=true
                     [[ "$tool" == *"qmd"* ]] && install_qmd=true
                     [[ "$tool" == "Google CLI" ]] && install_google_cli=true
@@ -75,13 +79,14 @@ else
                 done
                 ;;
             [Nn]) ;;
-            [1-9])
-                selected="${missing_tools[$((choice - 1))]:-}"
-                if [[ -n "$selected" ]]; then
+            *)
+                if [[ "$choice" =~ ^[1-9][0-9]*$ ]] && (( choice <= ${#missing_tools[@]} )); then
+                    selected="${missing_tools[$((choice - 1))]:-}"
                     [[ "$selected" == "Claude Code" ]] && install_claude=true
                     [[ "$selected" == *"Codex"* ]] && install_codex=true
                     [[ "$selected" == *"Gemini"* ]] && install_gemini=true
                     [[ "$selected" == "OpenCode" ]] && install_opencode=true
+                    [[ "$selected" == "OMP (Oh My Pi)" ]] && install_omp=true
                     [[ "$selected" == *"pi"* ]] && install_pi=true
                     [[ "$selected" == *"qmd"* ]] && install_qmd=true
                     [[ "$selected" == "Google CLI" ]] && install_google_cli=true
@@ -91,7 +96,6 @@ else
                     warn "Unknown option: $choice"
                 fi
                 ;;
-            *) warn "Unknown option: $choice" ;;
         esac
     done
 fi
@@ -122,6 +126,11 @@ fi
 if $install_opencode; then
     info "Installing OpenCode..."
     run_remote_script bash https://opencode.ai/install
+fi
+
+if $install_omp; then
+    info "Installing OMP..."
+    run_remote_script sh https://omp.sh/install
 fi
 
 if $install_pi; then
@@ -254,7 +263,7 @@ fi
 source "$DOTFILES_DIR/install/pi.sh"
 
 # Offer CodexBar on macOS if any AI tools were installed
-if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_pi || $install_qmd || $install_google_cli || $install_droid || $install_kimi); then
+if [[ "$OSTYPE" == "darwin"* ]] && ($install_claude || $install_codex || $install_gemini || $install_opencode || $install_omp || $install_pi || $install_qmd || $install_google_cli || $install_droid || $install_kimi); then
     if brew list --cask steipete/tap/codexbar &>/dev/null; then
         info "CodexBar already installed"
     elif ask_yes_no "Install CodexBar (menu bar usage monitor for AI tools)?"; then

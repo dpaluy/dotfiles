@@ -166,6 +166,7 @@ Optional AI coding assistants (prompted during install):
 | [OpenAI Codex CLI](https://github.com/openai/codex) | OpenAI coding CLI |
 | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Google coding CLI |
 | [OpenCode](https://opencode.ai/) | Open-source coding CLI |
+| [OMP (Oh My Pi)](https://omp.sh/) | Coding agent with the IDE wired in |
 | [Kimi Code](https://www.kimi.com/code) | Kimi K2.5 coding CLI |
 | [Oh My OpenAgent](https://ohmyopenagent.com/) | Multi-agent orchestration plugin for OpenCode |
 | [Oh My Codex](https://github.com/Yeachan-Heo/oh-my-codex) | Structured workflows and skills for Codex CLI |

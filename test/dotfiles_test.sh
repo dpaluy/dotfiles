@@ -51,6 +51,67 @@ SH
         || fail "skills installer did not refresh the global qmd skill"
 }
 
+check_omp_install_selection() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local invocation="$sandbox/omp-invocation"
+
+    mkdir -p "$fake_bin"
+    cat > "$fake_bin/gum" <<'SH'
+#!/usr/bin/env bash
+if [[ "$1" == "choose" ]]; then
+    printf '%s\n' "OMP (Oh My Pi)"
+fi
+SH
+    chmod +x "$fake_bin/gum"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" OMP_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            run_remote_script() {
+                printf "%s %s\n" "$@" > "$OMP_INVOCATION"
+            }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "sh https://omp.sh/install" ]] \
+        || fail "OMP was not installed from the gum selection"
+
+    rm -f "$invocation"
+    printf '5\n' | HOME="$sandbox/home" PATH="/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" OMP_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            run_remote_script() {
+                printf "%s %s\n" "$@" > "$OMP_INVOCATION"
+            }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "sh https://omp.sh/install" ]] \
+        || fail "numeric AI tool selection did not install OMP"
+
+    rm -f "$invocation"
+    printf '10\n' | HOME="$sandbox/home" PATH="/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" OMP_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            run_remote_script() {
+                printf "%s %s\n" "$@" > "$OMP_INVOCATION"
+            }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "bash https://code.kimi.com/install.sh" ]] \
+        || fail "numeric AI tool selection did not support two-digit options"
+}
+
+
 check_codex_configuration() {
     ROOT_DIR="$ROOT_DIR" python3 - <<'PY'
 import json
@@ -285,6 +346,7 @@ check_codex_hook() {
 
 trap cleanup EXIT
 
+run_check "OMP installer selection" check_omp_install_selection
 run_check "qmd skill install" check_qmd_skill_install
 run_check "Codex configuration" check_codex_configuration
 run_check "Codex installer migration" check_codex_installer_migration
