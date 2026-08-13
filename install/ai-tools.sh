@@ -259,7 +259,8 @@ elif command -v codex &>/dev/null; then
     fi
 fi
 
-# pi extensions
+# OMP and pi extensions
+source "$DOTFILES_DIR/install/omp.sh"
 source "$DOTFILES_DIR/install/pi.sh"
 
 # Offer CodexBar on macOS if any AI tools were installed
