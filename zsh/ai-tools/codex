@@ -29,5 +29,5 @@ USAGE
             ;;
     esac
 
-    codex --dangerously-bypass-approvals-and-sandbox --search "$@"
+    codex --search "$@"
 }

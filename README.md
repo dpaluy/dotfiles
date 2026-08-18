@@ -190,7 +190,7 @@ Install custom skills to AI CLI tools:
 
 | Target | Path |
 |--------|------|
-| Codex | `~/.codex/skills/` |
+| Codex | `~/.agents/skills/` |
 | Claude | `~/.claude/skills/` |
 | Custom | User-specified path |
 

@@ -2,24 +2,22 @@ web_search = "live"
 suppress_unstable_features_warning = true
 personality = "pragmatic"
 model = "gpt-5.6-sol"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 model_verbosity = "low"
 service_tier = "default"
 
 developer_instructions = """
-Delegate only when useful: use fast_scan for targeted read-only exploration, routine_worker for ordinary bounded implementation, and deep_worker for complex or high-risk work.
+Delegate only when useful. Keep simple tasks on the main agent.
 Use plugin-specific agents only when their owning skill is active.
-Keep simple tasks on the main agent.
-Do not ask the user to choose a model unless the required model is unavailable.
+Keep product, permission, release, and other material approvals with the user.
 """
 
-sandbox_mode = "danger-full-access"
-approval_policy = "never"
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
 
 [agents]
 enabled = true
-default_subagent_model = "gpt-5.6-terra"
-default_subagent_reasoning_effort = "high"
+default_subagent_model = "gpt-5.6-sol"
 max_concurrent_threads_per_session = 4
 max_depth = 1
 

@@ -20,6 +20,16 @@ else
     info "Codex config already exists at ~/.codex/config.toml"
 fi
 
+# Named profile configs: copy, not symlink, for the same Codex limitation.
+for profile_config in "$DOTFILES_DIR/codex/"*.config.toml; do
+    [[ -f "$profile_config" ]] || continue
+    profile_name="$(basename "$profile_config")"
+    if [[ ! -f "$HOME/.codex/$profile_name" ]]; then
+        cp "$profile_config" "$HOME/.codex/$profile_name"
+        info "Copied Codex profile to ~/.codex/$profile_name"
+    fi
+done
+
 # Migrate deprecated hook feature flags while preserving native hook support.
 # Keep MCP, skills, prompts, AGENTS.md, and non-OMX hooks intact.
 if [[ -f "$HOME/.codex/config.toml" ]]; then
@@ -31,13 +41,12 @@ if [[ -f "$HOME/.codex/config.toml" ]]; then
         s{(^\[features\.multi_agent_v2\][ \t]*\n)((?:[ \t]*(?:\#.*)?\n)*)[ \t]*enabled[ \t]*=[ \t]*(?:true|false)[ \t]*\n}{$1$2}m;
     ' "$HOME/.codex/config.toml"
 
-    # Default Codex to yolo mode for existing copied configs.
+    # Use a writable project sandbox and ask before work needs broader access.
     perl -0pi -e '
-        if (!/^sandbox_mode\s*=/m) { s/\A/sandbox_mode = "danger-full-access"\n/ }
-        else { s/^sandbox_mode\s*=.*$/sandbox_mode = "danger-full-access"/mg }
-        if (!/^approval_policy\s*=/m) { s/\A/approval_policy = "never"\n/ }
-        else { s/^approval_policy\s*=.*$/approval_policy = "never"/mg }
-        s/^(\s*)guardian_approval\s*=\s*true\s*$/${1}guardian_approval = false/mg;
+        if (!/^sandbox_mode\s*=/m) { s/\A/sandbox_mode = "workspace-write"\n/ }
+        else { s/^sandbox_mode\s*=.*$/sandbox_mode = "workspace-write"/mg }
+        if (!/^approval_policy\s*=/m) { s/\A/approval_policy = "on-request"\n/ }
+        else { s/^approval_policy\s*=.*$/approval_policy = "on-request"/mg }
     ' "$HOME/.codex/config.toml"
 
     # Prefer ~/.codex/hooks.json over inline global hooks for this layer.
@@ -134,11 +143,20 @@ if [[ -d "$DOTFILES_DIR/codex/agents" ]]; then
     done
 fi
 
-# Skills: symlink each skill directory from dotfiles into ~/.codex/skills/
+# Skills: symlink Codex-specific skills into the Agent Skills standard path.
 if [[ -d "$DOTFILES_DIR/codex/skills" ]]; then
-    mkdir -p "$HOME/.codex/skills"
+    mkdir -p "$HOME/.agents/skills"
     for skill_dir in "$DOTFILES_DIR/codex/skills"/*/; do
+        [[ -d "$skill_dir" ]] || continue
         skill_name="$(basename "$skill_dir")"
-        create_symlink "$skill_dir" "$HOME/.codex/skills/$skill_name"
+        legacy_skill="$HOME/.codex/skills/$skill_name"
+        if [[ -L "$legacy_skill" ]]; then
+            legacy_target="$(readlink "$legacy_skill")"
+            if [[ "${legacy_target%/}" == "${skill_dir%/}" ]]; then
+                rm -f "$legacy_skill"
+                info "Removed legacy Codex skill link at ~/.codex/skills/$skill_name"
+            fi
+        fi
+        create_symlink "$skill_dir" "$HOME/.agents/skills/$skill_name"
     done
 fi
