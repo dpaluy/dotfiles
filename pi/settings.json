@@ -32,17 +32,6 @@
   ],
   "extensions": [],
   "enabledModels": [
-    "openai-codex/gpt-5.6-sol",
-    "openai-codex/gpt-5.6-terra",
-    "openai-codex/gpt-5.6-luna",
-    "kimi-coding/k3",
-    "xai-auth/grok-4.5",
-    "cursor/cursor-grok-4.5:high",
-    "cursor/cursor-grok-4.5-fast:high",
-    "kimi-coding/k2p7",
-    "zai-coding/glm-5.2",
-    "deepseek/deepseek-v4-flash",
-    "deepseek/deepseek-v4-pro"
   ],
   "lastChangelogVersion": "0.80.10"
 }
