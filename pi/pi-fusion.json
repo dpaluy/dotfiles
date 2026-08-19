@@ -1,4 +1,4 @@
 {
-  "architectModel": "claude-bridge/claude-opus-4-8",
+  "architectModel": "claude-bridge/claude-opus-5",
   "builderModel": "openai-codex/gpt-5.6-sol"
 }
