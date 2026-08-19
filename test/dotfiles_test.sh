@@ -81,7 +81,11 @@ SH
         || fail "OMP was not installed from the gum selection"
 
     rm -f "$invocation"
-    printf '5\n' | HOME="$sandbox/home" PATH="/usr/bin:/bin" \
+    mkdir -p "$sandbox/nobin"
+    for tool in bash mkdir dirname; do
+        ln -s "$(command -v "$tool")" "$sandbox/nobin/$tool"
+    done
+    printf '5\n' | HOME="$sandbox/home" PATH="$sandbox/nobin" \
         DOTFILES_DIR="$ROOT_DIR" OMP_INVOCATION="$invocation" \
         bash -c '
             source "$1/install/lib.sh"
@@ -96,7 +100,7 @@ SH
         || fail "numeric AI tool selection did not install OMP"
 
     rm -f "$invocation"
-    printf '10\n' | HOME="$sandbox/home" PATH="/usr/bin:/bin" \
+    printf '10\n' | HOME="$sandbox/home" PATH="$sandbox/nobin" \
         DOTFILES_DIR="$ROOT_DIR" OMP_INVOCATION="$invocation" \
         bash -c '
             source "$1/install/lib.sh"
