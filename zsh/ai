@@ -37,5 +37,5 @@ export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 # pi
 # ------------------------------------------------------------------------------
 
-alias pim='pi --models "openai-codex/*,cursor/*,xai-auth/*,kimi-coding/k3,claude-bridge/*,deepseek/*,zai/*"'
+alias pim='pi --models "openai-codex/*,cursor/*,xai-auth/*,kimi-coding/k3,kimi-coding/k3-256k,claude-bridge/*,deepseek/deepseek-v4-flash,deepseek/deepseek-v4-pro,zai/*"'
 
