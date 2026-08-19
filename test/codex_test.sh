@@ -57,6 +57,7 @@ assert config.get("approval_policy") == "on-request", (
     "codex config approval_policy must be on-request"
 )
 assert "model_catalog_json" not in config, "Codex model catalog override must stay machine-local"
+assert "material approvals" in config["developer_instructions"]
 agent_defaults = config["agents"]
 assert agent_defaults.get("default_subagent_model") == "gpt-5.6-sol"
 assert "default_subagent_reasoning_effort" not in agent_defaults, (
@@ -106,6 +107,16 @@ for path in sorted((root / "codex/agents").glob("*.toml")):
 
 assert agent_names == set(expected_agents), "dotfiles-owned Codex agent inventory changed"
 
+profile = tomllib.loads((root / "codex/sol-advisor.config.toml").read_text())
+assert profile == {"model": "gpt-5.6-sol", "model_reasoning_effort": "high"}
+
+skill_root = root / "codex/skills/orchestrate"
+assert (skill_root / "SKILL.md").is_file()
+assert (skill_root / "LICENSE").is_file()
+openai_yaml = (skill_root / "agents/openai.yaml").read_text()
+assert "allow_implicit_invocation: false" in openai_yaml
+assert "/Users/dimillian/" not in (root / "codex/skills/project-skill-audit/SKILL.md").read_text()
+
 hooks = json.loads((root / "codex/hooks.json").read_text())
 pre_tool_hooks = hooks.get("hooks", {}).get("PreToolUse", [])
 commands = [
@@ -126,13 +137,19 @@ check_codex_installer_migration() {
     local fake_bin="$sandbox/bin"
     local live_config="$sandbox/home/.codex/config.toml"
 
-    mkdir -p "$fake_bin" "$(dirname "$live_config")"
+    mkdir -p "$fake_bin" "$(dirname "$live_config")" "$sandbox/home/.codex/skills"
     : > "$fake_bin/codex"
     chmod +x "$fake_bin/codex"
+    ln -s "$ROOT_DIR/codex/skills/project-skill-audit" \
+        "$sandbox/home/.codex/skills/project-skill-audit"
+    mkdir -p "$sandbox/home/.codex/skills/orchestrate"
+    printf 'user owned\n' > "$sandbox/home/.codex/skills/orchestrate/SKILL.md"
     printf '%s\n' \
         'model = "gpt-5.6-sol"' \
         'sandbox_mode = "danger-full-access"' \
         'approval_policy = "never"' \
+        '[features]' \
+        'guardian_approval = true' \
         '[features.multi_agent_v2]' \
         'enabled = true' \
         'hide_spawn_agent_metadata = false' \
@@ -154,17 +171,24 @@ check_codex_installer_migration() {
         source "$1/install/codex.sh"
     ' _ "$ROOT_DIR"
 
-    LIVE_CONFIG="$live_config" python3 - <<'PY'
+    LIVE_CONFIG="$live_config" ROOT_DIR="$ROOT_DIR" HOME="$sandbox/home" python3 - <<'PY'
 import os
 from pathlib import Path
 import tomllib
 
 
+root = Path(os.environ["ROOT_DIR"])
+home = Path(os.environ["HOME"])
 config = tomllib.loads(Path(os.environ["LIVE_CONFIG"]).read_text())
-assert "enabled" not in config["features"]["multi_agent_v2"]
-assert config["mcp_servers"]["example"]["enabled"] is True
 assert config["sandbox_mode"] == "workspace-write"
 assert config["approval_policy"] == "on-request"
+assert config["features"]["guardian_approval"] is True
+assert "enabled" not in config["features"]["multi_agent_v2"]
+assert config["mcp_servers"]["example"]["enabled"] is True
+assert (home / ".codex/sol-advisor.config.toml").read_text() == (root / "codex/sol-advisor.config.toml").read_text()
+assert (home / ".agents/skills/orchestrate").is_symlink()
+assert not (home / ".codex/skills/project-skill-audit").exists()
+assert (home / ".codex/skills/orchestrate/SKILL.md").read_text() == "user owned\n"
 PY
 }
 
@@ -198,4 +222,4 @@ run_check "Codex installer migration" check_codex_installer_migration
 run_check "cdx argument forwarding" check_cdx_wrapper
 run_check "Codex destructive-command hook" check_codex_hook
 
-echo "codex behavior checks passed"
+echo "Codex behavior checks passed"
