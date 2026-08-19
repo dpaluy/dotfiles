@@ -51,42 +51,6 @@
           "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
         }
       ]
-    },
-    "zai-coding": {
-      "baseUrl": "https://api.z.ai/api/coding/paas/v4",
-      "api": "openai-completions",
-      "apiKey": "ZAI_API_KEY",
-      "compat": {
-        "supportsDeveloperRole": false,
-        "supportsReasoningEffort": false,
-        "thinkingFormat": "zai",
-        "maxTokensField": "max_tokens"
-      },
-      "models": [
-        {
-          "id": "glm-5.2",
-          "name": "GLM-5.2",
-          "reasoning": true,
-          "thinkingLevelMap": {
-            "minimal": null,
-            "low": "high",
-            "medium": "high",
-            "high": "high",
-            "xhigh": "max"
-          },
-          "input": ["text"],
-          "contextWindow": 1000000,
-          "maxTokens": 131072,
-          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
-          "compat": {
-            "supportsDeveloperRole": false,
-            "thinkingFormat": "zai",
-            "supportsReasoningEffort": true,
-            "zaiToolStream": true,
-            "maxTokensField": "max_tokens"
-          }
-        }
-      ]
     }
   }
 }
