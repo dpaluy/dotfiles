@@ -199,13 +199,13 @@ check_cdx_wrapper() {
         source "$1"
 
         cdx exec --json
-        [[ "${(F)captured}" == $'\''--search\nexec\n--json'\'' ]] || exit 1
+        [[ "${(F)captured}" == $'\''--dangerously-bypass-approvals-and-sandbox\n--search\nexec\n--json'\'' ]] || exit 1
 
         cdx -r
-        [[ "${(F)captured}" == $'\''--search\nresume\n--last'\'' ]] || exit 1
+        [[ "${(F)captured}" == $'\''--dangerously-bypass-approvals-and-sandbox\n--search\nresume\n--last'\'' ]] || exit 1
 
         cdx --resume session-123
-        [[ "${(F)captured}" == $'\''--search\nresume\nsession-123'\'' ]]
+        [[ "${(F)captured}" == $'\''--dangerously-bypass-approvals-and-sandbox\n--search\nresume\nsession-123'\'' ]]
     ' _ "$ROOT_DIR/zsh/ai-tools/codex" || fail "cdx argument forwarding changed"
 }
 

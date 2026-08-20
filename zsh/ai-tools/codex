@@ -7,6 +7,7 @@ cdx() {
         help|-h|--help)
             cat <<'USAGE' >&2
 Usage: cdx [codex args...]
+Runs Codex in YOLO mode, without approvals or sandboxing.
 Special: -r/--resume resumes the most recent session
          update -> npm install -g @openai/codex@latest
 USAGE
@@ -29,5 +30,5 @@ USAGE
             ;;
     esac
 
-    codex --search "$@"
+    codex --dangerously-bypass-approvals-and-sandbox --search "$@"
 }
