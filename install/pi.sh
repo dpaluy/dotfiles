@@ -24,6 +24,8 @@ PI_EXTENSIONS=(
     git:github.com/algal/pi-openai-server-compaction
     https://github.com/calesennett/pi-codex-fast
     https://github.com/majesticlabs-dev/pi-fusion
+    npm:pi-context-view
+    npm:@narumitw/pi-btw
 )
 
 if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y"; then
