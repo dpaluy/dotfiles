@@ -71,6 +71,7 @@ fi
 - `ruby/gemrc` → `~/.gemrc`
 - `npm/npmrc` → `~/.npmrc`
 - `uv/uv.toml` → `~/.config/uv/uv.toml`
+- `atuin/config.toml` → `~/.config/atuin/config.toml` (if atuin installed)
 - `pi/models.json` → `~/.pi/agent/models.json`
 - `pi/settings.json` → `~/.pi/agent/settings.json` (copied, not symlinked — pi writes runtime state into it)
 - `pi/pi-fusion.json` → `~/.pi/agent/pi-fusion.json`

@@ -226,6 +226,11 @@ create_symlink "$DOTFILES_DIR/uv/uv.toml" "$HOME/.config/uv/uv.toml"
 mkdir -p "$HOME/.config/ripgrep"
 create_symlink "$DOTFILES_DIR/ripgrep/config" "$HOME/.config/ripgrep/config"
 
+# Atuin (shell history + AI)
+if command -v atuin &>/dev/null; then
+    create_symlink "$DOTFILES_DIR/atuin/config.toml" "$HOME/.config/atuin/config.toml"
+fi
+
 # pi
 mkdir -p "$HOME/.pi/agent/themes"
 # models.json is copied (not symlinked) — pi writes real API keys into it at runtime

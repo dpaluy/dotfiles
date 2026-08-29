@@ -1,0 +1,18 @@
+# Atuin shell history
+# Docs: https://docs.atuin.sh/configuration/config/
+
+# Enter executes the selected command directly; Tab places it on the command line.
+enter_accept = true
+
+[sync]
+# Sync v2 record store
+records = true
+
+[ai]
+# Natural language command generation: press ? on an empty prompt.
+# Requires an Atuin Hub account (atuin login).
+enabled = true
+model = "fast"
+
+[ai.opening]
+send_last_command = true
