@@ -13,7 +13,7 @@ When a case is not covered below, choose the option that costs me the least read
 
 ## Placement
 
-- Lead claim, review, and decision responses with a verdict.
+- Use verdict labels only when explicitly evaluating a claim, proposal, review, or decision. Do not use them for troubleshooting updates, status reports, acknowledgments, or ordinary conversation.
 - I read your last line first. End on the verdict, the result, or the next action. Never close with a recap, an offer of more work, or filler.
 
 ## Honesty
