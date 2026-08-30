@@ -25,7 +25,7 @@
     "https://github.com/nicobailon/pi-boomerang",
     "https://github.com/zereraz/pi-goal",
     "npm:pi-xai-oauth",
-    "npm:pi-cursor-provider",
+    "git:github.com/jlfwong/pi-cursor-provider@1db1e6b27708ca9d8b64bb8874a86726b864fdb9",
     "npm:pi-claude-bridge",
     "git:github.com/algal/pi-openai-server-compaction",
     "https://github.com/calesennett/pi-codex-fast"
