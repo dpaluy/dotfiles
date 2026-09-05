@@ -1,8 +1,12 @@
 ---
 name: orchestrate
-description: Coordinate multiple agents on large-scope tasks. Use whenever the work is substantial; trivial tasks do not require this skill.
+description: Coordinate focused agents when the user requests parallel agent work or invokes orchestrate.
 ---
 
 # Orchestrate
 
-Remain available to the user while delegating substantive work. Run narrow, read-only scouts in parallel with `reasoning_effort: "low"` and `fork_turns: "none"`. Use `reasoning_effort: "medium"` for routine implementation and `"high"` for difficult work. Give each agent distinct ownership, prevent overlapping assignments, and instruct leaf workers not to delegate. Integrate the results and keep approvals with the user.
+Delegate independent work when it adds useful coverage or reduces elapsed time. Keep tightly coupled or trivial work local. Use the runtime's available agents and supported settings; choose context and effort for the subtask rather than forcing one model configuration.
+
+Give each agent a bounded task, distinct ownership, and a completion condition. Tell workers to preserve other changes and prevent overlapping edits. Keep further delegation within the user's authorized scope.
+
+Remain available to the user, collect worker results, resolve integration issues, and verify the requested outcome. Delegation is not completion and does not expand permission for external actions.

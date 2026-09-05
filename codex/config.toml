@@ -24,6 +24,7 @@ max_depth = 1
 [features]
 apps = true
 chronicle = true
+context_management.experimental_mode = true
 default_mode_request_user_input = true
 guardian_approval = false
 goals = true
