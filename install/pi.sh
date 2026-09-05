@@ -26,6 +26,7 @@ PI_EXTENSIONS=(
     https://github.com/majesticlabs-dev/pi-fusion
     npm:pi-context-view
     npm:@narumitw/pi-btw
+    npm:pi-open-tui
 )
 
 if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y"; then
