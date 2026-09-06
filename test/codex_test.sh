@@ -59,12 +59,12 @@ assert config.get("approval_policy") == "on-request", (
 assert "model_catalog_json" not in config, "Codex model catalog override must stay machine-local"
 assert "material approvals" in config["developer_instructions"]
 agent_defaults = config["agents"]
-assert agent_defaults.get("default_subagent_model") == "gpt-5.6-luna"
-assert agent_defaults.get("default_subagent_reasoning_effort") == "max"
+assert agent_defaults.get("default_subagent_model") == "gpt-5.6-sol"
+assert agent_defaults.get("default_subagent_reasoning_effort") == "medium"
 multi_agent_v2 = config["features"]["multi_agent_v2"]
 assert multi_agent_v2.get("hide_spawn_agent_metadata") is False
 assert multi_agent_v2.get("tool_namespace") == "agents"
-assert "enabled" not in multi_agent_v2, "Models select multi-agent v2 through model metadata"
+assert "enabled" not in multi_agent_v2, "Sol selects multi-agent v2 through model metadata"
 
 expected_agents = {
     "deep_worker": {
@@ -74,14 +74,14 @@ expected_agents = {
         "sandbox_mode": "workspace-write",
     },
     "fast_scan": {
-        "model": "gpt-5.6-luna",
-        "model_reasoning_effort": "max",
+        "model": "gpt-5.6-sol",
+        "model_reasoning_effort": "low",
         "service_tier": "default",
         "sandbox_mode": "read-only",
     },
     "routine_worker": {
-        "model": "gpt-5.6-luna",
-        "model_reasoning_effort": "max",
+        "model": "gpt-5.6-sol",
+        "model_reasoning_effort": "medium",
         "service_tier": "default",
         "sandbox_mode": "workspace-write",
     },
