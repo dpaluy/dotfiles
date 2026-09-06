@@ -42,7 +42,7 @@ root = Path(os.environ["ROOT_DIR"])
 config = tomllib.loads((root / "codex/config.toml").read_text())
 
 expected_defaults = {
-    "model": "gpt-5.6-sol",
+    "model": "gpt-6-astra",
     "model_reasoning_effort": "medium",
     "service_tier": "default",
 }
@@ -60,9 +60,7 @@ assert "model_catalog_json" not in config, "Codex model catalog override must st
 assert "material approvals" in config["developer_instructions"]
 agent_defaults = config["agents"]
 assert agent_defaults.get("default_subagent_model") == "gpt-5.6-sol"
-assert "default_subagent_reasoning_effort" not in agent_defaults, (
-    "default_subagent_reasoning_effort was removed from the codex config"
-)
+assert agent_defaults.get("default_subagent_reasoning_effort") == "medium"
 multi_agent_v2 = config["features"]["multi_agent_v2"]
 assert multi_agent_v2.get("hide_spawn_agent_metadata") is False
 assert multi_agent_v2.get("tool_namespace") == "agents"
@@ -70,7 +68,7 @@ assert "enabled" not in multi_agent_v2, "Sol selects multi-agent v2 through mode
 
 expected_agents = {
     "deep_worker": {
-        "model": "gpt-5.6-sol",
+        "model": "gpt-6-astra",
         "model_reasoning_effort": "high",
         "service_tier": "default",
         "sandbox_mode": "workspace-write",
@@ -107,8 +105,8 @@ for path in sorted((root / "codex/agents").glob("*.toml")):
 
 assert agent_names == set(expected_agents), "dotfiles-owned Codex agent inventory changed"
 
-profile = tomllib.loads((root / "codex/sol-advisor.config.toml").read_text())
-assert profile == {"model": "gpt-5.6-sol", "model_reasoning_effort": "high"}
+assert not (root / "codex/sol-advisor.config.toml").exists()
+assert "sol-advisor@sol-advisor" not in config.get("plugins", {})
 
 skill_root = root / "codex/skills/orchestrate"
 assert (skill_root / "SKILL.md").is_file()
@@ -185,7 +183,7 @@ assert config["approval_policy"] == "on-request"
 assert config["features"]["guardian_approval"] is True
 assert "enabled" not in config["features"]["multi_agent_v2"]
 assert config["mcp_servers"]["example"]["enabled"] is True
-assert (home / ".codex/sol-advisor.config.toml").read_text() == (root / "codex/sol-advisor.config.toml").read_text()
+assert not (home / ".codex/sol-advisor.config.toml").exists()
 assert (home / ".agents/skills/orchestrate").is_symlink()
 assert not (home / ".codex/skills/project-skill-audit").exists()
 assert (home / ".codex/skills/orchestrate/SKILL.md").read_text() == "user owned\n"

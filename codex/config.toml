@@ -22,9 +22,6 @@ default_subagent_reasoning_effort = "medium"
 max_concurrent_threads_per_session = 4
 max_depth = 1
 
-[plugins."sol-advisor@sol-advisor"]
-enabled = false
-
 [features]
 apps = true
 chronicle = true
