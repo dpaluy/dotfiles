@@ -1,13 +1,13 @@
 web_search = "live"
 suppress_unstable_features_warning = true
 personality = "pragmatic"
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_reasoning_effort = "medium"
 model_verbosity = "low"
 service_tier = "default"
 
 developer_instructions = """
-Delegate only when useful. Keep simple tasks on the main agent.
+Use the astra-orchestrate skill for substantial work with independent subtasks or a useful independent review. Keep simple or tightly coupled work on the main agent.
 Use plugin-specific agents only when their owning skill is active.
 Keep product, permission, release, and other material approvals with the user.
 """
@@ -18,8 +18,12 @@ approval_policy = "on-request"
 [agents]
 enabled = true
 default_subagent_model = "gpt-5.6-sol"
+default_subagent_reasoning_effort = "medium"
 max_concurrent_threads_per_session = 4
 max_depth = 1
+
+[plugins."sol-advisor@sol-advisor"]
+enabled = false
 
 [features]
 apps = true

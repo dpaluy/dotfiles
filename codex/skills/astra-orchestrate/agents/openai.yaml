@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astra Orchestrate"
+  short_description: "Coordinate focused workers with GPT-6 Astra"
+  default_prompt: "Use $astra-orchestrate to complete this task with GPT-6 Astra coordinating useful independent work."

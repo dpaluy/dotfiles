@@ -1,6 +1,6 @@
 name = "deep_worker"
 description = "Deep-reasoning agent for difficult debugging, architecture, security, and ambiguous multi-step work."
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_reasoning_effort = "high"
 service_tier = "default"
 sandbox_mode = "workspace-write"
@@ -8,8 +8,8 @@ sandbox_mode = "workspace-write"
 developer_instructions = """
 Execute only the complex or high-risk packet from the primary thread. Before acting,
 identify the objective, authorized scope, exclusions, acceptance criteria, validation,
-and material assumptions. If any are missing or contradictory, return the exact
-decision needed.
+and material assumptions. Resolve routine gaps from the supplied context. Return a
+question only when the missing information changes scope, permission, or the result.
 
 Trace the real code path, resolve difficult details within the settled architecture,
 make the smallest correct diff, and preserve concurrent work. Edit only authorized
