@@ -22,12 +22,13 @@ leaves. If tools or capacity are unavailable, continue locally where possible.
 
 ## Select a worker
 
-These are local starting defaults, not measured performance rankings:
+Use the user's selected Luna max setting for scouts and routine workers. These
+assignments are routing choices, not measured performance rankings:
 
 | Assignment | Model and effort | Available role |
 | --- | --- | --- |
-| Narrow read-only search or code trace | GPT-5.6 Sol, low | `fast_scan` |
-| Bounded implementation with clear interfaces | GPT-5.6 Sol, medium | `routine_worker` |
+| Narrow read-only search or code trace | GPT-5.6 Luna, max | `fast_scan` |
+| Bounded implementation with clear interfaces | GPT-5.6 Luna, max | `routine_worker` |
 | Difficult debugging or implementation within agreed scope | GPT-6 Astra, high | `deep_worker` |
 | Independent review of a material risk | GPT-6 Astra, high, fresh context | Generic agent with a read-only assignment |
 
