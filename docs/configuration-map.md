@@ -76,6 +76,7 @@ fi
 - `pi/settings.json` → `~/.pi/agent/settings.json` (copied, not symlinked — pi writes runtime state into it)
 - `pi/pi-fusion.json` → `~/.pi/agent/pi-fusion.json`
 - `majesticlabs-dev/pi-fusion` → installed as a Pi package via `install/pi.sh`
+- `dpaluy/pi-claude-bridge` → installed as a Pi package via `install/pi.sh` (replaces `npm:pi-claude-bridge`)
 - `praneybehl/omp-reflect` → installed at a pinned revision via `install/omp.sh`
 - `pi/AGENTS.md` → `~/.pi/agent/AGENTS.md` (if pi installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)

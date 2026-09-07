@@ -20,7 +20,7 @@ PI_EXTENSIONS=(
     https://github.com/nicobailon/pi-boomerang
     https://github.com/zereraz/pi-goal
     npm:pi-cursor-provider
-    npm:pi-claude-bridge
+    https://github.com/dpaluy/pi-claude-bridge
     git:github.com/algal/pi-openai-server-compaction
     https://github.com/calesennett/pi-codex-fast
     https://github.com/majesticlabs-dev/pi-fusion
@@ -30,6 +30,9 @@ PI_EXTENSIONS=(
 )
 
 if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y"; then
+    if pi list 2>/dev/null | grep -q 'npm:pi-claude-bridge'; then
+        spin "Removing npm:pi-claude-bridge" pi remove npm:pi-claude-bridge
+    fi
     for ext in "${PI_EXTENSIONS[@]}"; do
         ext_name="$(basename "$ext")"
         if pi list 2>/dev/null | grep -q "$ext_name"; then
