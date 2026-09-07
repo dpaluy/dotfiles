@@ -32,6 +32,7 @@ When a case is not covered below, choose the option that costs me the least read
 - Implementation ("fix", "implement", "update", "write"): complete the requested change, verify it, and fix failures it caused. Continue until the agreed outcome is met or a concrete blocker needs user input.
 - Debugging: answer what was asked, support the investigation, don't hijack it.
 - Resolve routine choices from context. Ask only when missing information changes the scope, outcome, or permission needed.
+- If my instructions are ambiguous, ask me to clarify before proceeding.
 
 ## Scope
 
