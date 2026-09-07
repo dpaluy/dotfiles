@@ -30,7 +30,8 @@
 	# Pretty log with graph
 	glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 	# Safe force push
-	pf = push --force-with-lease
+	pf = push --force-with-lease --force-if-includes
+	pushf = push --force-with-lease --force-if-includes
 	# Branch cleanup
 	cleanup = !git branch --merged origin/master | grep -Ev '(^\\*|master|main|production|staging)' | xargs -r git branch -d
 	gone = !git fetch -p && git for-each-ref --format '%(refname:short) %(upstream:track)' | awk '$2 == \"[gone]\" {print $1}' | xargs -r git branch -D
@@ -50,6 +51,7 @@
 
 [push]
 	autoSetupRemote = true
+	useForceIfIncludes = true
 
 [fetch]
 	prune = true

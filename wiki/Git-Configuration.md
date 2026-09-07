@@ -15,7 +15,7 @@ Git aliases and shared settings live in `git/config`. Each machine keeps a local
 | `git amend` | `commit --amend --no-edit` | Amend without editing message |
 | `git lg` | (graph log) | Pretty graph log of all branches |
 | `git glog` | (pretty format) | Colored graph log |
-| `git pf` | `push --force-with-lease` | Safe force push |
+| `git pf` / `git pushf` | `push --force-with-lease --force-if-includes` | Safe force push |
 | `git cleanup` | (script) | Delete merged branches |
 | `git gone` | (script) | Delete branches with deleted remote |
 | `git stash-all` | `stash save --include-untracked` | Stash including untracked files |
@@ -35,7 +35,8 @@ git undo
 
 ```bash
 git pf
-# Only force-pushes if no one else has pushed
+# or: git pushf
+# Only force-pushes if remote tip is still what you expect
 ```
 
 ### Clean Up Merged Branches
@@ -85,9 +86,10 @@ Always rebase when pulling (keeps history linear).
 ```ini
 [push]
     autoSetupRemote = true
+    useForceIfIncludes = true
 ```
 
-Automatically set upstream when pushing new branches.
+Automatically set upstream when pushing new branches. `--force-with-lease` also requires the remote-tracking ref to have integrated the remote tip.
 
 ### Fetch Behavior
 
