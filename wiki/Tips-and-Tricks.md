@@ -18,6 +18,7 @@ These plugins are enabled by default:
 | `docker` | Docker command completion |
 | `bundler` | Bundler shortcuts |
 | `rails` | Rails shortcuts |
+| `herdr` | Herdr helpers (installed via `herdr plugin install` when herdr is present) |
 
 ### Using `z` for Quick Navigation
 

@@ -97,6 +97,24 @@ if $install_herdr; then
 fi
 
 # ------------------------------------------------------------------------------
+# herdr Oh My Zsh plugin
+#
+# zsh/zshrc lists `herdr` in the Oh My Zsh plugins array. `herdr plugin install`
+# clones it into $ZSH_CUSTOM/plugins/herdr and registers the Herdr-side plugin
+# (sidebar toasts, reload-all keybinding). Skip when herdr is not present; the
+# zsh plugin is a no-op outside Herdr.
+# ------------------------------------------------------------------------------
+
+if command -v herdr &>/dev/null; then
+    if herdr plugin list 2>/dev/null | grep -q 'herdr-ohmyzsh'; then
+        info "herdr-ohmyzsh plugin already installed"
+    else
+        spin "Installing herdr-ohmyzsh plugin" herdr plugin install -y robbyrussell/herdr-ohmyzsh
+        info "herdr-ohmyzsh plugin installed"
+    fi
+fi
+
+# ------------------------------------------------------------------------------
 # tmux config + companions (tmux.conf, sesh, gitmux)
 #
 # tmux.conf, sesh (session manager), and gitmux (git status in the tmux status

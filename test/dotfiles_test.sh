@@ -116,6 +116,52 @@ SH
 }
 
 
+check_herdr_ohmyzsh_plugin_install() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local invocation="$sandbox/herdr-invocation"
+
+    mkdir -p "$fake_bin" "$sandbox/home"
+    touch "$sandbox/home/.tmux.conf"
+
+    for tool in tmux sesh gitmux; do
+        printf '#!/usr/bin/env bash\n' > "$fake_bin/$tool"
+        chmod +x "$fake_bin/$tool"
+    done
+
+    cat > "$fake_bin/herdr" <<'SH'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >> "$HERDR_INVOCATION"
+if [[ "$*" == "plugin list" ]]; then
+    [[ -n "${HERDR_PLUGIN_LIST:-}" ]] && printf '%s\n' "$HERDR_PLUGIN_LIST"
+fi
+SH
+    chmod +x "$fake_bin/herdr"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" HERDR_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            source "$1/install/multiplexer.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == $'plugin list\nplugin install -y robbyrussell/herdr-ohmyzsh' ]] \
+        || fail "herdr-ohmyzsh plugin was not installed"
+
+    rm -f "$invocation"
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" HERDR_INVOCATION="$invocation" \
+        HERDR_PLUGIN_LIST='- ohmyzsh.shell (Oh My Zsh) enabled [github:robbyrussell/herdr-ohmyzsh@abc]' \
+        bash -c '
+            source "$1/install/lib.sh"
+            source "$1/install/multiplexer.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "plugin list" ]] \
+        || fail "herdr-ohmyzsh plugin was reinstalled when already present"
+}
+
 check_install_helpers() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -202,6 +248,7 @@ check_claude_environment_hook() {
 trap cleanup EXIT
 
 run_check "OMP installer selection" check_omp_install_selection
+run_check "herdr-ohmyzsh plugin install" check_herdr_ohmyzsh_plugin_install
 run_check "qmd skill install" check_qmd_skill_install
 run_check "installer helpers" check_install_helpers
 run_check "skills installer help" check_skills_help

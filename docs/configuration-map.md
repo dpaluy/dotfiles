@@ -28,7 +28,7 @@ install/
 ├── linux.sh            ← System packages, fonts
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── cli-tools.sh        ← Optional CLI tools (Google CLI, etc.)
-├── multiplexer.sh      ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux)
+├── multiplexer.sh      ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux) + herdr-ohmyzsh plugin
 ├── ai-tools.sh         ← AI tool selection + installation orchestrator
 ├── omp.sh             ← OMP plugins
 ├── mcp.sh              ← MCP server registration (qmd, Perplexity)
@@ -78,6 +78,7 @@ fi
 - `majesticlabs-dev/pi-fusion` → installed as a Pi package via `install/pi.sh`
 - `dpaluy/pi-claude-bridge` → installed as a Pi package via `install/pi.sh` (replaces `npm:pi-claude-bridge`)
 - `praneybehl/omp-reflect` → installed at a pinned revision via `install/omp.sh`
+- `robbyrussell/herdr-ohmyzsh` → installed via `install/multiplexer.sh` (`herdr plugin install`) when herdr is present
 - `pi/AGENTS.md` → `~/.pi/agent/AGENTS.md` (if pi installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
 - `~/.claude/shaping-skills/*` → `~/.claude/skills/*` (cloned from github.com/rjs/shaping-skills via `install/skills.sh`)

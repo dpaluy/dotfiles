@@ -32,6 +32,7 @@ plugins=(
     bundler
     rails
     kamal
+    herdr
 )
 
 # Load Oh My Zsh

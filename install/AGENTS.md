@@ -12,7 +12,7 @@ install/
 ├── linux.sh        ← Linux: packages, gum, fonts (Debian/Fedora/Arch)
 ├── common.sh       ← Cross-platform: Oh My Zsh, plugins, Atuin, shell
 ├── cli-tools.sh    ← Optional CLI tools (gh-dash)
-├── multiplexer.sh  ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux)
+├── multiplexer.sh  ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux) + herdr-ohmyzsh plugin
 ├── ai-tools.sh     ← AI tool selection + installation orchestrator
 ├── omp.sh          ← OMP plugin installation
 ├── mcp.sh          ← MCP server registration (qmd, Perplexity)
