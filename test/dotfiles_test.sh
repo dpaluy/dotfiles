@@ -246,6 +246,10 @@ check_hunk_install_contract() {
         || fail "linux installer is missing hunk"
     grep -q 'hunk update' "$ROOT_DIR/update.sh" \
         || fail "update.sh does not update hunk"
+    grep -q '^mode = "split"' "$ROOT_DIR/hunk/config.toml" \
+        || fail "hunk config is missing split view"
+    grep -q 'hunk/config.toml' "$ROOT_DIR/install/symlinks.sh" \
+        || fail "symlinks installer does not link hunk config"
 }
 
 check_claude_environment_hook() {

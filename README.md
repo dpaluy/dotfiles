@@ -59,6 +59,8 @@ cd ~/dotfiles
 │   └── bindings.conf
 ├── worktrunk/
 │   └── config.toml                    # Worktrunk worktree manager config
+├── hunk/
+│   └── config.toml                    # Hunk terminal diff viewer (split view)
 ├── pi/
 │   ├── models.json                    # pi custom models
 │   └── settings.json                  # pi defaults + enabled model shortlist

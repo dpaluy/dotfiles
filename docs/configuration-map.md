@@ -68,6 +68,7 @@ fi
 - `opencode/opencode.json` → merged into `~/.config/opencode/opencode.json` (local file, shared defaults preserved)
 - `gh-dash/config.yml` → `~/.config/gh-dash/config.yml`
 - `worktrunk/config.toml` → `~/.config/worktrunk/config.toml` (if wt installed)
+- `hunk/config.toml` → `~/.config/hunk/config.toml` (if hunk installed)
 - `ruby/gemrc` → `~/.gemrc`
 - `npm/npmrc` → `~/.npmrc`
 - `uv/uv.toml` → `~/.config/uv/uv.toml`

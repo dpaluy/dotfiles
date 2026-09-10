@@ -212,6 +212,12 @@ if command -v wt &>/dev/null; then
     create_symlink "$DOTFILES_DIR/worktrunk/config.toml" "$HOME/.config/worktrunk/config.toml"
 fi
 
+# Hunk (review-first terminal diff viewer)
+if command -v hunk &>/dev/null || [[ -x "$HOME/.hunk/bin/hunk" ]]; then
+    mkdir -p "$HOME/.config/hunk"
+    create_symlink "$DOTFILES_DIR/hunk/config.toml" "$HOME/.config/hunk/config.toml"
+fi
+
 # npm
 create_symlink "$DOTFILES_DIR/npm/npmrc" "$HOME/.npmrc"
 

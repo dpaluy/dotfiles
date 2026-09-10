@@ -1,0 +1,11 @@
+# Hunk — review-first terminal diff viewer
+# https://hunk.dev
+# Symlinked to: ~/.config/hunk/config.toml
+
+mode = "split"
+theme = "catppuccin-mocha"
+line_numbers = true
+wrap_lines = false
+menu_bar = true
+# Keep view-preference prompts off so quit-to-save cannot dirty this file.
+prompt_save_view_preferences = false

@@ -72,7 +72,7 @@ git branches
 
 ## Hunk
 
-[Hunk](https://hunk.dev) is the review-first terminal diff viewer. Installer puts it on PATH (`brew install hunk` on macOS, `https://hunk.dev/install.sh` on Linux). Delta stays the Git pager.
+[Hunk](https://hunk.dev) is the review-first terminal diff viewer. Installer puts it on PATH (`brew install hunk` on macOS, `https://hunk.dev/install.sh` on Linux). Delta stays the Git pager. Shared config is `hunk/config.toml` (split view, Catppuccin Mocha), symlinked to `~/.config/hunk/config.toml`.
 
 ```bash
 hunk diff          # review working tree, including untracked files
