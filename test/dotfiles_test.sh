@@ -227,6 +227,27 @@ check_zsh_path_setup() {
         || fail "zshenv/zprofile did not preserve one mise shim entry"
 }
 
+check_hunk_path_setup() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+
+    mkdir -p "$sandbox/.hunk/bin"
+    HOME="$sandbox" PATH="/usr/bin:/bin" zsh -f -c '
+        source "$1"
+        [[ ":$PATH:" == *":$HOME/.hunk/bin:"* ]] || exit 1
+    ' _ "$ROOT_DIR/zsh/path" \
+        || fail "zsh/path did not prepend ~/.hunk/bin"
+}
+
+check_hunk_install_contract() {
+    grep -q '^brew "hunk"' "$ROOT_DIR/Brewfile" \
+        || fail "Brewfile is missing hunk"
+    grep -q 'https://hunk.dev/install.sh --no-modify-path' "$ROOT_DIR/install/linux.sh" \
+        || fail "linux installer is missing hunk"
+    grep -q 'hunk update' "$ROOT_DIR/update.sh" \
+        || fail "update.sh does not update hunk"
+}
+
 check_claude_environment_hook() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -253,6 +274,8 @@ run_check "qmd skill install" check_qmd_skill_install
 run_check "installer helpers" check_install_helpers
 run_check "skills installer help" check_skills_help
 run_check "zsh PATH setup" check_zsh_path_setup
+run_check "hunk PATH setup" check_hunk_path_setup
+run_check "hunk install contract" check_hunk_install_contract
 run_check "Claude environment hook" check_claude_environment_hook
 
 echo "dotfiles behavior checks passed"
