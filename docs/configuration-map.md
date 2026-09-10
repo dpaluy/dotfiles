@@ -117,7 +117,7 @@ fi
 - Public (this repo): Shareable configurations
 - Private (`~/.local/dotfiles/`): `exports.local`, `ai.local`, etc.
 
-**PATH Management** (`zsh/path`): Uses `path_prepend()` and `path_append()` helpers to avoid duplicates. Never hardcode version-specific paths—mise handles language versions.
+**PATH Management** (`zsh/path`): Uses `path_prepend()` and `path_append()` helpers to avoid duplicates. Never hardcode version-specific paths—mise handles language versions. Linux hunk installs live in `~/.hunk/bin`; Homebrew hunk is already on PATH.
 
 ## Intent Interpretation
 

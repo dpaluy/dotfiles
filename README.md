@@ -24,6 +24,7 @@ cd ~/dotfiles
 - **tmux** terminal multiplexer
 - **Ghostty** terminal configuration
 - **Delta** for beautiful git diffs
+- **Hunk** for review-first terminal diffs
 - **Worktrunk** for git worktree management (AI agent workflows)
 
 ## Structure
@@ -84,7 +85,7 @@ cd ~/dotfiles
 
 ### macOS (via Homebrew)
 
-- Development: git, neovim, tmux, lazygit, gh, worktrunk
+- Development: git, neovim, tmux, lazygit, gh, worktrunk, hunk
 - Search: fzf, fd, ripgrep
 - Shell: starship, atuin
 - Utilities: jq, gum, git-delta
@@ -94,6 +95,7 @@ cd ~/dotfiles
 
 - Core: zsh, git, curl, neovim, tmux
 - Search: fzf, fd, ripgrep
+- Git TUIs: lazygit, hunk
 - Shell history: atuin
 - Shared runtime via mise: Bun
 
@@ -126,6 +128,7 @@ EOF
 | `g` | git |
 | `gst` | git status -sb |
 | `lg` | lazygit |
+| `hd` | hunk diff |
 | `glog` | Pretty git log graph |
 | `git pf` | Push with force-with-lease |
 | `git undo` | Soft reset last commit |

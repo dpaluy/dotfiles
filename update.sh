@@ -131,6 +131,16 @@ if command -v omp &>/dev/null; then
     run_remote_script sh https://omp.sh/install
 fi
 
+# ==============================================================================
+# Hunk
+# ==============================================================================
+
+if command -v hunk &>/dev/null; then
+    header "Hunk"
+    info "Updating hunk..."
+    hunk update || warn "hunk update failed"
+fi
+
 
 # ==============================================================================
 # npm Global Packages

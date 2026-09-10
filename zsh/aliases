@@ -66,6 +66,7 @@ alias gf='git fetch'
 alias gwc='git whatchanged -p --abbrev-commit --pretty=medium'
 alias ghistory='git log --follow -p'
 alias lg='lazygit'
+alias hd='hunk diff'
 
 # Worktrunk (git worktree manager)
 alias wts='wt switch'

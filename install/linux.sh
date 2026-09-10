@@ -89,6 +89,19 @@ else
     info "diffnav already installed"
 fi
 
+# Install hunk (review-first terminal diff viewer)
+if command -v hunk &> /dev/null || [[ -x "$HOME/.hunk/bin/hunk" ]]; then
+    info "hunk already installed"
+else
+    info "Installing hunk..."
+    if run_remote_script sh https://hunk.dev/install.sh --no-modify-path; then
+        export PATH="$HOME/.hunk/bin:$PATH"
+        info "hunk installed — run 'hunk diff' to review changes"
+    else
+        warn "hunk installation failed. Try manually: curl -fsSL https://hunk.dev/install.sh | sh"
+    fi
+fi
+
 # Install lazygit
 if ! command -v lazygit &> /dev/null; then
     info "Installing lazygit..."

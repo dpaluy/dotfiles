@@ -70,6 +70,18 @@ git branches
 # Shows branches sorted by last commit date
 ```
 
+## Hunk
+
+[Hunk](https://hunk.dev) is the review-first terminal diff viewer. Installer puts it on PATH (`brew install hunk` on macOS, `https://hunk.dev/install.sh` on Linux). Delta stays the Git pager.
+
+```bash
+hunk diff          # review working tree, including untracked files
+hunk show          # review the latest commit
+hd                 # alias for hunk diff
+```
+
+Update with `hunk update` (also run by `./update.sh`).
+
 ## Git Settings
 
 ### Pull Behavior

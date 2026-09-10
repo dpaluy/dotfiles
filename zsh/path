@@ -65,6 +65,9 @@ path_prepend "$HOME/.npm-global/bin"
 path_prepend "$HOME/.cache/.bun/bin"
 path_prepend "$HOME/.bun/bin"
 
+# Hunk (Linux install script; Homebrew hunk is already on PATH)
+path_prepend "$HOME/.hunk/bin"
+
 # ------------------------------------------------------------------------------
 # Trusted binstubs (macOS pattern)
 # mkdir .git/safe in the root of repositories you trust

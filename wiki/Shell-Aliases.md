@@ -47,6 +47,8 @@ All shell aliases defined in `zsh/aliases`.
 | `gf` | `git fetch` | Fetch from remote |
 | `gwc` | `git whatchanged -p` | Show what changed with patches |
 | `ghistory` | `git log --follow -p` | Show file history |
+| `lg` | `lazygit` | Terminal git UI |
+| `hd` | `hunk diff` | Review-first terminal diff |
 
 ## Safety Aliases
 
