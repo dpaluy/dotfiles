@@ -8,37 +8,24 @@ if command -v pi &>/dev/null; then
     create_symlink "$DOTFILES_DIR/pi/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
 fi
 
-PI_EXTENSIONS=(
-    https://github.com/davebcn87/pi-autoresearch
-    npm:pi-side-chat
-    npm:pi-mcp-adapter
-    npm:pi-subagents
-    npm:pi-xai-oauth
-    https://github.com/jhochenbaum/pi-autoresearch-studio
-    npm:pi-web-access
-    npm:@ff-labs/pi-fff
-    https://github.com/nicobailon/pi-boomerang
-    https://github.com/zereraz/pi-goal
-    npm:pi-cursor-provider
-    https://github.com/dpaluy/pi-claude-bridge
-    git:github.com/algal/pi-openai-server-compaction
-    https://github.com/calesennett/pi-codex-fast
-    https://github.com/majesticlabs-dev/pi-fusion
-    npm:pi-context-view
-    npm:@narumitw/pi-btw
-    npm:pi-open-tui
-)
-
 if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y"; then
+    # Pi requires Node.js. Read the shared settings so package sources and pins
+    # cannot drift between the installer and the active configuration.
+    pi_extensions="$(node -e '
+        const settings = require(process.argv[1]);
+        for (const source of settings.packages) {
+            if (typeof source !== "string") throw new Error("Expected a Pi package source string");
+            console.log(source);
+        }
+    ' "$DOTFILES_DIR/pi/settings.json")"
     if pi list 2>/dev/null | grep -q 'npm:pi-claude-bridge'; then
         spin "Removing npm:pi-claude-bridge" pi remove npm:pi-claude-bridge
     fi
-    for ext in "${PI_EXTENSIONS[@]}"; do
+    while IFS= read -r ext; do
+        [[ -n "$ext" ]] || continue
         ext_name="$(basename "$ext")"
-        if pi list 2>/dev/null | grep -q "$ext_name"; then
-            info "$ext_name already installed"
-        else
-            spin "Installing $ext_name" pi install "$ext"
-        fi
-    done
+        # A source in `pi list` can still be missing from disk. Let Pi ensure
+        # the package is installed instead of matching a partial package name.
+        spin "Installing $ext_name" pi install "$ext"
+    done <<< "$pi_extensions"
 fi
