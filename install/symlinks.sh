@@ -20,7 +20,7 @@ ensure_zsh_wrapper() {
     if [[ ! -f "$wrapper" ]] || { [[ -L "$wrapper" ]] && [[ "$wrapper" -ef "$DOTFILES_DIR/zsh/$name" ]]; }; then
         input=/dev/null
     fi
-    if grep -Eq "^[[:space:]]*(source|\.)[[:space:]]+.*[/]zsh[/]$name[\"']?[[:space:]]*(#.*)?$" "$input"; then
+    if grep -Eq "^[[:space:]]*(source|\.)[[:space:]]+.*[/]zsh[/]${name}[\"']?[[:space:]]*(#.*)?$" "$input"; then
         has_source=true
     fi
     DOTFILES_WRAPPER_ROOT="$DOTFILES_DIR" DOTFILES_WRAPPER_NAME="$name" \
