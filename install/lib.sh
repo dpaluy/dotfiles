@@ -228,14 +228,20 @@ run_remote_script() {
     local url="$2"
     shift 2
 
-    local script
-    script="$(mktemp)"
-    download_file "$url" "$script"
+    local script status
+    script="$(mktemp)" || return "$?"
+    if download_file "$url" "$script"; then
+        :
+    else
+        status=$?
+        rm -f "$script"
+        return "$status"
+    fi
 
     if "$interpreter" "$script" "$@"; then
         rm -f "$script"
     else
-        local status=$?
+        status=$?
         rm -f "$script"
         return "$status"
     fi

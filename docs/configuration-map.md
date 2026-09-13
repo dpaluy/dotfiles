@@ -74,7 +74,7 @@ fi
 - `uv/uv.toml` → `~/.config/uv/uv.toml`
 - `atuin/config.toml` → `~/.config/atuin/config.toml` (if atuin installed)
 - `pi/models.json` → `~/.pi/agent/models.json`
-- `pi/settings.json` → `~/.pi/agent/settings.json` (copied, not symlinked — pi writes runtime state into it)
+- `pi/settings.json` → `~/.pi/agent/settings.json` (symlinked; Pi settings changes update the tracked file)
 - `pi/pi-fusion.json` → `~/.pi/agent/pi-fusion.json`
 - `majesticlabs-dev/pi-fusion` → installed as a Pi package via `install/pi.sh`
 - `dpaluy/pi-claude-bridge` → installed as a Pi package via `install/pi.sh` (replaces `npm:pi-claude-bridge`)

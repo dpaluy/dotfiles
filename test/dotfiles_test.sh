@@ -146,7 +146,7 @@ SH
             source "$1/install/multiplexer.sh"
         ' _ "$ROOT_DIR" >/dev/null
 
-    [[ "$(<"$invocation")" == $'plugin list\nplugin install -y robbyrussell/herdr-ohmyzsh' ]] \
+    [[ "$(<"$invocation")" == $'plugin list\nplugin install robbyrussell/herdr-ohmyzsh -y' ]] \
         || fail "herdr-ohmyzsh plugin was not installed"
 
     rm -f "$invocation"
@@ -199,6 +199,118 @@ check_install_helpers() {
         compgen -G "${6}.backup.*" >/dev/null
     ' _ "$ROOT_DIR/install/lib.sh" "$checksums" "$artifact" "$bad_checksums" \
         "$source_file" "$destination"
+}
+
+check_remote_script_failure_handling() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+
+    HOME="$sandbox/home" PATH="/usr/bin:/bin" bash -c '
+        set -Eeuo pipefail
+        source "$1"
+        download_status=22
+        interpreter_status=0
+        interpreter_called=false
+        downloaded_script=""
+
+        download_file() {
+            downloaded_script="$2"
+            printf "partial download\n" > "$2"
+            return "$download_status"
+        }
+        test_interpreter() {
+            interpreter_called=true
+            [[ -f "$1" && "$2" == "--example" ]] || return 99
+            return "$interpreter_status"
+        }
+
+        if run_remote_script test_interpreter https://example.invalid/install.sh --example; then
+            echo "Failed download was reported as successful" >&2
+            exit 1
+        else
+            [[ "$?" == 22 ]]
+        fi
+        [[ "$interpreter_called" == false && ! -e "$downloaded_script" ]]
+
+        download_status=0
+        interpreter_status=7
+        if run_remote_script test_interpreter https://example.invalid/install.sh --example; then
+            exit 1
+        else
+            [[ "$?" == 7 ]]
+        fi
+        [[ "$interpreter_called" == true && ! -e "$downloaded_script" ]]
+
+        interpreter_status=0
+        run_remote_script test_interpreter https://example.invalid/install.sh --example
+        [[ ! -e "$downloaded_script" ]]
+    ' _ "$ROOT_DIR/install/lib.sh"
+}
+
+check_wrapper_and_pi_settings_preservation() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    mkdir -p "$sandbox/home/.config/git" "$sandbox/home/.pi/agent" "$sandbox/bin"
+    ln -s "$ROOT_DIR" "$sandbox/renamed-checkout"
+    printf '#!/bin/sh\nexit 1\n' > "$sandbox/bin/gh"
+    chmod +x "$sandbox/bin/gh"
+    printf 'export LOCAL_ENV=keep\n' > "$sandbox/home/.zshenv"
+    printf 'export LOCAL_PROFILE=keep\n' > "$sandbox/profile"
+    ln -s "$sandbox/profile" "$sandbox/home/.zprofile"
+    printf 'export DOTFILES_DIR="/old/checkout"\nsource "/old/checkout/zsh/zshrc"\nexport LOCAL_RC=keep\n' > "$sandbox/home/.zshrc"
+    printf '[user]\n\tname = Local Name\n[include]\n\tpath = /private/gitconfig\n' > "$sandbox/home/.config/git/config"
+    printf '{"theme":"local-old"}\n' > "$sandbox/home/.pi/agent/settings.json"
+
+    HOME="$sandbox/home" PATH="$sandbox/bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$sandbox/renamed-checkout" bash -c '
+        set -Eeuo pipefail
+        source "$1/install/lib.sh"
+        OS=macos
+        source "$1/install/symlinks.sh" >/dev/null
+        for name in zshenv zprofile zshrc; do
+            [[ ! -L "$HOME/.$name" ]]
+            cp "$HOME/.$name" "$HOME/.$name.expected"
+        done
+        cp "$HOME/.config/git/config" "$HOME/git.expected"
+        source "$1/install/symlinks.sh" >/dev/null
+        for name in zshenv zprofile zshrc; do
+            cmp "$HOME/.$name" "$HOME/.$name.expected"
+            grep -qF "source \"$DOTFILES_DIR/zsh/$name\"" "$HOME/.$name"
+        done
+        grep -q "LOCAL_ENV=keep" "$HOME/.zshenv"
+        grep -q "LOCAL_PROFILE=keep" "$HOME/.zprofile"
+        grep -q "LOCAL_RC=keep" "$HOME/.zshrc"
+        ! grep -q /old/checkout "$HOME/.zshrc"
+        cmp "$HOME/.config/git/config" "$HOME/git.expected"
+        [[ "$(git config --file "$HOME/.config/git/config" user.name)" == "Local Name" ]]
+        [[ "$(git config --file "$HOME/.config/git/config" --get-all include.path)" == "$DOTFILES_DIR/git/config"$'\''\n'\''/private/gitconfig ]]
+        [[ -L "$HOME/.pi/agent/settings.json" ]]
+        [[ "$HOME/.pi/agent/settings.json" -ef "$DOTFILES_DIR/pi/settings.json" ]]
+        grep -q "local-old" "$HOME/.pi/agent/"settings.json.backup.*
+    ' _ "$ROOT_DIR"
+    [[ "$(<"$sandbox/profile")" == "export LOCAL_PROFILE=keep" ]]
+}
+
+check_pi_package_sources() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    mkdir -p "$sandbox/pi"
+    printf '%s\n' '{"packages":["git:github.com/example/provider@pinned","https://github.com/majesticlabs-dev/pi-fusion"]}' > "$sandbox/pi/settings.json"
+    HOME="$sandbox/home" DOTFILES_DIR="$sandbox" PI_INVOCATION="$sandbox/invocation" bash -c '
+        set -Eeuo pipefail
+        create_symlink() { :; }
+        ask_yes_no() { return 0; }
+        spin() { shift; "$@"; }
+        pi() {
+            if [[ "$1" == list ]]; then
+                printf "%s\n" "https://github.com/majesticlabs-dev/pi-fusion"
+            else
+                printf "%s\n" "$*" >> "$PI_INVOCATION"
+            fi
+        }
+        source "$1/install/pi.sh"
+    ' _ "$ROOT_DIR"
+    [[ "$(<"$sandbox/invocation")" == $'install git:github.com/example/provider@pinned\ninstall https://github.com/majesticlabs-dev/pi-fusion' ]]
 }
 
 check_skills_help() {
@@ -276,6 +388,9 @@ run_check "OMP installer selection" check_omp_install_selection
 run_check "herdr-ohmyzsh plugin install" check_herdr_ohmyzsh_plugin_install
 run_check "qmd skill install" check_qmd_skill_install
 run_check "installer helpers" check_install_helpers
+run_check "remote script failure handling" check_remote_script_failure_handling
+run_check "wrapper and Pi settings preservation" check_wrapper_and_pi_settings_preservation
+run_check "Pi package sources" check_pi_package_sources
 run_check "skills installer help" check_skills_help
 run_check "zsh PATH setup" check_zsh_path_setup
 run_check "hunk PATH setup" check_hunk_path_setup

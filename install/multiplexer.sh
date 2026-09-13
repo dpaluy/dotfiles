@@ -109,7 +109,7 @@ if command -v herdr &>/dev/null; then
     if herdr plugin list 2>/dev/null | grep -q 'herdr-ohmyzsh'; then
         info "herdr-ohmyzsh plugin already installed"
     else
-        spin "Installing herdr-ohmyzsh plugin" herdr plugin install -y robbyrussell/herdr-ohmyzsh
+        spin "Installing herdr-ohmyzsh plugin" herdr plugin install robbyrussell/herdr-ohmyzsh -y
         info "herdr-ohmyzsh plugin installed"
     fi
 fi

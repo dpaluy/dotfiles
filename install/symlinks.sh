@@ -9,86 +9,62 @@ info "Creating symlinks..."
 
 # Zsh environment - use a wrapper so machine-local additions remain possible.
 # .zshenv is loaded by interactive and non-interactive zsh processes.
-create_zshenv_wrapper() {
-    local wrapper="$HOME/.zshenv"
+ensure_zsh_wrapper() {
+    local name="$1"
+    local wrapper="$HOME/.$name"
+    local input="$wrapper" tmp has_source=false
+    tmp="$(mktemp)" || return "$?"
 
-    if [[ -f "$wrapper" && ! -L "$wrapper" ]] && grep -q "source.*dotfiles/zsh/zshenv" "$wrapper" 2>/dev/null; then
-        info "Zsh environment wrapper already configured"
-        return 0
+    # A direct link to the shared script becomes a source-only wrapper.
+    # Other local files and linked wrappers retain their existing contents.
+    if [[ ! -f "$wrapper" ]] || { [[ -L "$wrapper" ]] && [[ "$wrapper" -ef "$DOTFILES_DIR/zsh/$name" ]]; }; then
+        input=/dev/null
     fi
-
-    backup_if_exists "$wrapper"
-
-    cat > "$wrapper" << EOF
-#!/usr/bin/env zsh
-# ~/.zshenv - Environment shared by interactive and non-interactive shells
-export DOTFILES_DIR="$DOTFILES_DIR"
-source "$DOTFILES_DIR/zsh/zshenv"
-
-# Machine-specific environment additions below
-EOF
-
-    info "Created ~/.zshenv wrapper"
+    if grep -Eq "^[[:space:]]*(source|\.)[[:space:]]+.*[/]zsh[/]$name[\"']?[[:space:]]*(#.*)?$" "$input"; then
+        has_source=true
+    fi
+    DOTFILES_WRAPPER_ROOT="$DOTFILES_DIR" DOTFILES_WRAPPER_NAME="$name" \
+        DOTFILES_WRAPPER_HAS_SOURCE="$has_source" awk '
+        BEGIN {
+            root = ENVIRON["DOTFILES_WRAPPER_ROOT"]
+            name = ENVIRON["DOTFILES_WRAPPER_NAME"]
+            pattern = "^[[:space:]]*(source|\\.)[[:space:]]+.*[/]zsh[/]" name "[\"\047]?[[:space:]]*(#.*)?$"
+            if (ENVIRON["DOTFILES_WRAPPER_HAS_SOURCE"] != "true") {
+                print "export DOTFILES_DIR=\"" root "\""
+                print "source \"" root "/zsh/" name "\""
+                configured = root_set = 1
+            }
+        }
+        /^[[:space:]]*export[[:space:]]+DOTFILES_DIR=/ {
+            if (!root_set++) print "export DOTFILES_DIR=\"" root "\""
+            next
+        }
+        $0 ~ pattern {
+            if (!configured++) {
+                if (!root_set++) print "export DOTFILES_DIR=\"" root "\""
+                print "source \"" root "/zsh/" name "\""
+            }
+            next
+        }
+        { print }
+    ' "$input" > "$tmp" || { rm -f "$tmp"; return 1; }
+    if [[ ! -L "$wrapper" ]] && cmp -s "$tmp" "$wrapper"; then
+        rm -f "$tmp"
+    else
+        mv -f "$tmp" "$wrapper"
+    fi
+    info "Configured ~/.$name wrapper"
 }
 
-create_zshenv_wrapper
+ensure_zsh_wrapper zshenv
 
 # Login shells load /etc/zprofile after .zshenv. On macOS, path_helper can move
 # system paths ahead of mise, so reapply the shared environment afterward.
-ensure_zprofile_source() {
-    local profile="$HOME/.zprofile"
-    local source_line="source \"$DOTFILES_DIR/zsh/zprofile\""
-
-    if [[ -f "$profile" ]] && grep -qF "$source_line" "$profile" 2>/dev/null; then
-        info "Zsh login environment already configured"
-        return 0
-    fi
-
-    if [[ -s "$profile" ]]; then
-        printf '\n%s\n' "$source_line" >> "$profile"
-    else
-        printf '%s\n' "$source_line" > "$profile"
-    fi
-
-    info "Configured ~/.zprofile login environment"
-}
-
-ensure_zprofile_source
+ensure_zsh_wrapper zprofile
 
 # Zsh - use wrapper pattern (local file sources dotfiles)
 # This allows external tools (mise, atuin, fzf) to safely append their init lines
-create_zshrc_wrapper() {
-    local wrapper="$HOME/.zshrc"
-
-    # Skip if valid wrapper already exists
-    if [[ -f "$wrapper" && ! -L "$wrapper" ]] && grep -q "source.*dotfiles/zsh/zshrc" "$wrapper" 2>/dev/null; then
-        info "Zsh wrapper already configured"
-        return 0
-    fi
-
-    # Backup existing (symlink or file)
-    backup_if_exists "$wrapper"
-
-    # Create wrapper
-    cat > "$wrapper" << EOF
-#!/usr/bin/env zsh
-# ~/.zshrc - Local shell config (not version controlled)
-# Source dotfiles
-export DOTFILES_DIR="$DOTFILES_DIR"
-source "$DOTFILES_DIR/zsh/zshrc"
-
-# Tool additions below (mise, atuin, fzf, etc.)
-# -----------------------------------------------
-
-# Keep non-interactive wrapper commands from failing when the sourced dotfiles
-# end on an optional missing-file check.
-true
-EOF
-
-    info "Created ~/.zshrc wrapper"
-}
-
-create_zshrc_wrapper
+ensure_zsh_wrapper zshrc
 
 # Git (XDG style)
 # Use a local wrapper file as the live config and include the shared dotfiles
@@ -104,24 +80,25 @@ create_git_config_wrapper() {
     mkdir -p "$HOME/.config/git"
 
     if [[ -f "$wrapper" && ! -L "$wrapper" ]]; then
-        if grep -qF "path = $include_path" "$wrapper" 2>/dev/null \
-            || { [[ "$DOTFILES_DIR" == "$HOME/dotfiles" ]] && grep -qF "path = $legacy_include_path" "$wrapper" 2>/dev/null; }; then
-            info "Git wrapper already configured"
-            return 0
-        fi
+        local configured_path
+        while IFS= read -r configured_path; do
+            if [[ "$configured_path" == "$include_path" ]] \
+                || { [[ "$DOTFILES_DIR" == "$HOME/dotfiles" ]] && [[ "$configured_path" == "$legacy_include_path" ]]; }; then
+                info "Git wrapper already configured"
+                return 0
+            fi
+        done < <(git config --file "$wrapper" --get-all include.path || true)
     fi
 
-    backup_if_exists "$wrapper"
-
-    cat > "$wrapper" << EOF
-# ~/.config/git/config - Local machine Git config
-# Shared settings are pulled from dotfiles; machine-specific settings belong here.
-
-[include]
-    path = $include_path
-
-# Machine-specific settings below
-EOF
+    local tmp
+    tmp="$(mktemp)" || return "$?"
+    git config --file "$tmp" --add include.path "$include_path"
+    # Shared defaults go first so existing machine settings still take priority.
+    if [[ -f "$wrapper" ]] && ! { [[ -L "$wrapper" ]] && [[ "$wrapper" -ef "$include_path" ]]; }; then
+        printf '\n' >> "$tmp"
+        cat "$wrapper" >> "$tmp"
+    fi
+    mv -f "$tmp" "$wrapper"
 
     info "Created ~/.config/git/config wrapper"
 }
@@ -246,17 +223,8 @@ if [[ ! -f "$HOME/.pi/agent/models.json" ]]; then
 else
     info "$HOME/.pi/agent/models.json already exists, skipping"
 fi
-# settings.json is copied (not symlinked) — pi writes runtime state into it,
-# which would otherwise dirty the tracked dotfiles file.
-if [[ -L "$HOME/.pi/agent/settings.json" ]]; then
-    rm -f "$HOME/.pi/agent/settings.json"
-fi
-if [[ ! -f "$HOME/.pi/agent/settings.json" ]]; then
-    cp "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
-    info "Created ~/.pi/agent/settings.json (pi writes runtime state here)"
-else
-    info "$HOME/.pi/agent/settings.json already exists, skipping"
-fi
+# Use the shared settings directly, including package and model selections.
+create_symlink "$DOTFILES_DIR/pi/settings.json" "$HOME/.pi/agent/settings.json"
 create_symlink "$DOTFILES_DIR/pi/pi-fusion.json" "$HOME/.pi/agent/pi-fusion.json"
 create_symlink "$DOTFILES_DIR/pi/themes/catppuccin-macchiato.json" "$HOME/.pi/agent/themes/catppuccin-macchiato.json"
 
