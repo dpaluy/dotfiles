@@ -20,4 +20,9 @@ actions, or overwriting concurrent changes that cannot be preserved.
 Return the outcome, files changed, commands and results, judgment calls, remaining
 risks, and required decisions. Claim only completion of the assigned packet, never
 overall acceptance.
+
+Use the completion mechanism and return address supplied by the coordinator. Send
+one final report after validation; use automatic final delivery when available
+instead of sending a duplicate message. Report blockers or required decisions early.
+Do not send routine progress pings to an idle coordinator.
 """

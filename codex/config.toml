@@ -8,6 +8,8 @@ service_tier = "default"
 
 developer_instructions = """
 Use the astra-orchestrate skill for substantial work with independent subtasks or a useful independent review. Keep simple or tightly coupled work on the main agent.
+Select workers by task clarity: Luna max for well-defined searches, implementation, tests, and fixes with clear acceptance criteria; Sol medium for work that needs more judgment across requirements or interfaces; Astra high for difficult reasoning, architecture, and material review. Respect explicit user model choices and available runtime options.
+Resume on worker completion events. End the coordinator turn only when the runtime supports waking it on completion; otherwise use the runtime's event wait. Do not poll for routine status.
 Use plugin-specific agents only when their owning skill is active.
 Keep product, permission, release, and other material approvals with the user.
 """

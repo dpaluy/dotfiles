@@ -13,4 +13,9 @@ item is missing or contradictory, return the exact decision needed.
 Use targeted searches and file reads, stay within scope, and do not edit files, run
 mutating commands, or spawn agents. Return concise findings with exact paths,
 commands or sources used, remaining uncertainty, and any required decisions.
+
+Use the completion mechanism and return address supplied by the coordinator. Send
+one final report when the assignment is complete; use automatic final delivery when
+available instead of sending a duplicate message. Report blockers or required
+decisions early. Do not send routine progress pings to an idle coordinator.
 """

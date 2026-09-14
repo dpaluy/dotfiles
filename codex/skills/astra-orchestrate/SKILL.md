@@ -1,6 +1,6 @@
 ---
 name: astra-orchestrate
-description: Coordinate substantial work with GPT-6 Astra when independent subtasks or a separate review justify agents. Keep simple edits and tightly coupled work on the main agent.
+description: Coordinate substantial work with GPT-6 Astra, select workers by task, and resume on completion events. Keep simple edits and tightly coupled work on the main agent.
 ---
 
 # Astra Orchestration
@@ -16,29 +16,36 @@ Delegate when a bounded task can run beside useful work on the main agent, or wh
 an independent review can resolve a material risk. Keep small edits, sequential
 investigations, and routine Git operations local. Do not create agents to fill slots.
 
-Use the available concurrency limit as a ceiling. The current configuration permits
-four workers in addition to the main agent, with one delegation level. Workers are
-leaves. If tools or capacity are unavailable, continue locally where possible.
+Read the runtime's available tools, models, roles, and concurrency limit. Use that
+limit as a ceiling. Workers are leaves. If delegation is unavailable, continue
+locally where possible.
 
 ## Select a worker
 
-Use the user's selected Luna max setting for scouts and routine workers. These
-assignments are routing choices, not measured performance rankings:
+Select the model by task clarity and required judgment. Use Luna max by default
+for well-defined work with clear acceptance criteria, including implementation,
+tests, and fixes. Use Sol when work needs more judgment across requirements or
+interfaces. Use Astra for difficult reasoning, architecture, and material review.
+These are local routing choices, not measured performance rankings. An explicit
+user model choice takes precedence.
 
-| Assignment | Model and effort | Available role |
+| Assignment | Default model | Starting effort |
 | --- | --- | --- |
-| Narrow read-only search or code trace | GPT-5.6 Luna, max | `fast_scan` |
-| Bounded implementation with clear interfaces | GPT-5.6 Luna, max | `routine_worker` |
-| Difficult debugging or implementation within agreed scope | GPT-6 Astra, high | `deep_worker` |
-| Independent review of a material risk | GPT-6 Astra, high, fresh context | Generic agent with a read-only assignment |
+| Well-defined search, code trace, or mechanical edit | `gpt-5.6-luna` | max |
+| Well-defined implementation, tests, or fixes with clear acceptance criteria | `gpt-5.6-luna` | max |
+| Work requiring judgment across requirements or interfaces | `gpt-5.6-sol` | medium |
+| Difficult debugging or ambiguous implementation within agreed scope | `gpt-6-astra` | high |
+| Independent review of a material risk | `gpt-6-astra`, fresh context | high |
 
 Keep the primary session at medium effort by default. Raise effort for demonstrated
 complexity when the runtime permits it. Do not require high or ultra for ordinary
 coordination. Respect the user's model selection and the runtime's supported options.
 
 Inspect the available role metadata before selecting a role. If a role is absent or
-pins a different model, use a generic agent with an explicit supported model and
-effort. Do not use a plugin role unless its owning skill is active. A requested
+pins a different model or effort, use a generic agent with an explicit supported
+model and effort. In particular, do not select a Luna-pinned `routine_worker` for
+a Sol assignment. Do not change installed role configuration to route one task.
+Do not use a plugin role unless its owning skill is active. A requested
 read-only behavior is not proof of an enforced sandbox.
 
 ## Give a complete assignment
@@ -46,6 +53,8 @@ read-only behavior is not proof of an enforced sandbox.
 Prefer `fork_turns: "none"` for scouts, independent reviews, and self-contained
 implementation. Include the objective, relevant paths, known interface contracts,
 acceptance criteria, and essential user, tool, and permission constraints.
+Include the coordinator's return address, the supported completion mechanism, and
+the checkout path. Specify whether the worker may commit or perform external actions.
 
 Use inherited history only when earlier decisions are needed. Full-history forks
 inherit the parent's model and effort and do not accept overrides in this runtime.
@@ -60,10 +69,39 @@ Assign exact files or a distinct read-only question. Tell each worker:
   to the main agent. Delegation grants no additional authority.
 - Return the result, paths changed or inspected, checks run and their outcomes, and
   unresolved issues. Report completion only for your assignment.
+- Send one completion report through the agreed mechanism after checks finish.
+  Report a blocker or required decision early. Do not send routine progress pings
+  to wake an idle coordinator. If final results are delivered automatically, use
+  that delivery instead of sending a duplicate completion message.
 
 Set shared interfaces before parallel edits. Give one owner to each shared file.
 Do not investigate the same question while a scout owns it. Workers may send useful
 findings directly to teammates without creating more agents.
+
+## Dispatch and resume on completion
+
+Prefer this sequence: plan, dispatch, yield, receive completion, integrate.
+Use subagents for subtasks of the current request. Create a separate user-visible
+task only when the user explicitly requests one and the runtime permits it.
+
+Before dispatch, verify how completion reaches the coordinator. A message tool's
+existence does not prove that it wakes an ended turn. For an explicitly requested
+separate task, give the worker the actual coordinator task ID and an available
+message tool that starts a follow-up turn. Never invent IDs or callback APIs.
+
+Continue useful independent work after dispatch. When no independent work remains:
+
+- If the runtime explicitly supports resuming an ended coordinator turn on worker
+  completion, record the pending assignment and return address in the handoff,
+  then end the turn. State that work is pending, not complete. Resume when the
+  completion event arrives.
+- If wakeup after turn end is unavailable or unknown, keep the turn active with
+  the runtime's event wait, such as `wait_agent`. Use bounded waits within the
+  session's limits. This is a fallback, not proof of cross-turn wakeup support.
+
+Do not run repeated status reads, timer sleeps, or scheduled checks to simulate
+completion events. Use a status read only to diagnose a missing event, a failure,
+or an explicit user status request. Follow any runtime-required dispatch check.
 
 ## Integrate and finish
 
@@ -82,9 +120,12 @@ and relevant checks are complete, or state the exact blocker and required decisi
 
 ## Basis
 
-Adapted from the role, context, and ownership ideas in Eric Provencher's
-[Practical multi-agent orchestration in Codex](https://x.com/pvncher/status/2080707291603407077).
-The Astra coordinator, mixed-model defaults, and review rules are local choices.
+Adapted from the completion-driven workflow in the supplied
+[Create Agent Prompt Guide](chatgpt-conversation://6aa713b0-52f0-83ea-a159-d80fbdb6d302),
+which references [Eric Provencher's post](https://x.com/pvncher/status/2098841379837260144).
+The supplied guide was truncated and the post could not be fetched during this
+revision. Treat the guide as workflow intent; verify tool behavior in the runtime.
+The model routing and effort defaults above are local choices.
 [OpenAI's Astra guidance](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra)
 supports explicit delegation criteria, scope-aware follow-through, and proportional
 verification. Review model and tool availability when the runtime changes.
