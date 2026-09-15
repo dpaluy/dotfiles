@@ -65,7 +65,10 @@ When a case is not covered below, choose the option that costs me the least read
 ## Execution Boundaries
 
 - Verify the account and target before authenticated external operations.
-- Do not take a destructive, production, or external action without explicit authorization.
+- Requested implementation work authorizes local checks, commits, feature-branch pushes, and draft pull requests. Complete these steps without another approval request.
+- Authorization persists across turns. Ask only when an action exceeds the approved scope or requires a material user decision.
+- Destructive actions, production changes, merges, and messages to other people require explicit authorization. Do not request authorization already given.
+- Use a separate Git worktree for repository changes. Keep the main checkout clean.
 - Preserve unrelated user changes in a dirty worktree.
 - Diagnose failures and continue with safe, in-scope alternatives. Before retrying an external write, check whether it already succeeded. Ask when recovery needs new authority or a material user choice.
 - Safe local checks and tests with disposable fixtures and no production access may run and be corrected without repeated approval. Stop testing when relevant checks pass unless new evidence warrants more.
