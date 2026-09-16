@@ -61,6 +61,7 @@ assert "material approvals" in config["developer_instructions"]
 agent_defaults = config["agents"]
 assert agent_defaults.get("default_subagent_model") == "gpt-5.6-luna"
 assert agent_defaults.get("default_subagent_reasoning_effort") == "max"
+assert agent_defaults.get("max_concurrent_threads_per_session") == 2
 multi_agent_v2 = config["features"]["multi_agent_v2"]
 assert multi_agent_v2.get("hide_spawn_agent_metadata") is False
 assert multi_agent_v2.get("tool_namespace") == "agents"
