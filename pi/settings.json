@@ -32,7 +32,8 @@
     "https://github.com/majesticlabs-dev/pi-fusion",
     "npm:pi-context-view",
     "npm:@narumitw/pi-btw",
-    "npm:pi-open-tui"
+    "npm:pi-open-tui",
+    "npm:@howaboua/pi-codex-imagegen"
   ],
   "extensions": [],
   "enabledModels": [
