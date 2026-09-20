@@ -60,6 +60,7 @@ When a case is not covered below, choose the option that costs me the least read
 - Use `rg` for source code, filenames, and exact-text search.
 - Use the qmd skill for indexed Markdown and knowledge-base search.
 - Use the search, read, edit, and execution tools in the current session. Do not assume tool names or integrations.
+- In Pi, treat a repository's `spawn_agent` instruction as the native `subagent` tool when the exact requested model, thinking level, role boundary, and task packet can be preserved. This is not a standalone-task fallback. If the repository names an agent adapter file that Pi does not discover as an agent, tell the selected subagent to read that adapter before work.
 - Run environment-dependent shell commands as `zsh -lc 'source ~/.zshrc && <command>'`.
 
 ## Execution Boundaries

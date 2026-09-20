@@ -1,7 +1,7 @@
 {
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.6-sol",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "medium",
   "images": {
     "blockImages": false
   },
@@ -35,11 +35,44 @@
     "https://github.com/majesticlabs-dev/pi-fusion",
     "npm:pi-context-view",
     "npm:@narumitw/pi-btw",
+    "npm:@monotykamary/pi-vcc",
     "npm:pi-open-tui",
     "npm:@howaboua/pi-codex-imagegen",
     "npm:@dpaluy/pi-jev-compact"
   ],
   "extensions": [],
+  "subagents": {
+    "agentOverrides": {
+      "oracle": {
+        "model": "kimi-coding/k3",
+        "thinking": "max",
+        "defaultContext": "fresh"
+      },
+      "worker": {
+        "model": "cursor/cursor-grok-4.6",
+        "thinking": "high"
+      },
+      "reviewer": {
+        "model": "openai-codex/gpt-6-astra",
+        "thinking": "high"
+      },
+      "researcher": {
+        "model": "openai-codex/gpt-5.6-sol",
+        "thinking": "xhigh"
+      },
+      "scout": {
+        "model": "openai-codex/gpt-5.6-terra",
+        "thinking": "high"
+      },
+      "delegate": {
+        "model": "openai-codex/gpt-5.6-terra",
+        "thinking": "high"
+      }
+    }
+  },
+  "pi-codex-fast": {
+    "enabled": false
+  },
   "enabledModels": [],
-  "lastChangelogVersion": "0.86.0"
+  "lastChangelogVersion": "0.86.1"
 }
