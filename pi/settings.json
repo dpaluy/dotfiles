@@ -14,6 +14,9 @@
   "steeringMode": "all",
   "followUpMode": "all",
   "collapseChangelog": true,
+  "jevCompact": {
+    "enabled": true
+  },
   "packages": [
     "npm:pi-mcp-adapter",
     "https://github.com/davebcn87/pi-autoresearch",
@@ -33,7 +36,8 @@
     "npm:pi-context-view",
     "npm:@narumitw/pi-btw",
     "npm:pi-open-tui",
-    "npm:@howaboua/pi-codex-imagegen"
+    "npm:@howaboua/pi-codex-imagegen",
+    "npm:@dpaluy/pi-jev-compact"
   ],
   "extensions": [],
   "enabledModels": [
