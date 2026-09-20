@@ -40,7 +40,6 @@
     "npm:@dpaluy/pi-jev-compact"
   ],
   "extensions": [],
-  "enabledModels": [
-  ],
-  "lastChangelogVersion": "0.80.10"
+  "enabledModels": [],
+  "lastChangelogVersion": "0.86.0"
 }
