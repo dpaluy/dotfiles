@@ -60,11 +60,11 @@
         "thinking": "xhigh"
       },
       "scout": {
-        "model": "openai-codex/gpt-6-terra",
+        "model": "openai-codex/gpt-6-luna",
         "thinking": "high"
       },
       "delegate": {
-        "model": "openai-codex/gpt-6-terra",
+        "model": "openai-codex/gpt-6-luna",
         "thinking": "high"
       }
     }
