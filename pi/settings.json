@@ -45,8 +45,7 @@
     "agentOverrides": {
       "oracle": {
         "model": "kimi-coding/k3",
-        "thinking": "max",
-        "defaultContext": "fresh"
+        "thinking": "max"
       },
       "worker": {
         "model": "cursor/cursor-grok-4.6",
@@ -70,9 +69,6 @@
       }
     }
   },
-  "pi-codex-fast": {
-    "enabled": false
-  },
   "enabledModels": [],
-  "lastChangelogVersion": "0.86.1"
+  "lastChangelogVersion": "0.87.0"
 }
