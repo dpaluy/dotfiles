@@ -29,7 +29,6 @@
     "https://github.com/zereraz/pi-goal",
     "npm:pi-xai-oauth",
     "git:github.com/jlfwong/pi-cursor-provider@1db1e6b27708ca9d8b64bb8874a86726b864fdb9",
-    "https://github.com/dpaluy/pi-claude-bridge",
     "git:github.com/algal/pi-openai-server-compaction",
     "https://github.com/calesennett/pi-codex-fast",
     "https://github.com/majesticlabs-dev/pi-fusion",
@@ -38,7 +37,8 @@
     "npm:@monotykamary/pi-vcc",
     "npm:pi-open-tui",
     "npm:@howaboua/pi-codex-imagegen",
-    "npm:@dpaluy/pi-jev-compact"
+    "npm:@dpaluy/pi-jev-compact",
+    "npm:pi-claude-bridge"
   ],
   "extensions": [],
   "subagents": {

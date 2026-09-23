@@ -18,9 +18,6 @@ if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y
             console.log(source);
         }
     ' "$DOTFILES_DIR/pi/settings.json")"
-    if pi list 2>/dev/null | grep -q 'npm:pi-claude-bridge'; then
-        spin "Removing npm:pi-claude-bridge" pi remove npm:pi-claude-bridge
-    fi
     while IFS= read -r ext; do
         [[ -n "$ext" ]] || continue
         ext_name="$(basename "$ext")"
