@@ -4,11 +4,11 @@
     "effort": "high"
   },
   "analyst": {
-    "model": "openai-codex/gpt-5.6-sol",
+    "model": "openai-codex/gpt-6-sol",
     "effort": "xhigh"
   },
   "builder": {
-    "model": "openai-codex/gpt-5.6-sol",
+    "model": "openai-codex/gpt-6-sol",
     "effort": "high"
   }
 }

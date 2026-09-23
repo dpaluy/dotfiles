@@ -31,9 +31,9 @@ user model choice takes precedence.
 
 | Assignment | Default model | Starting effort |
 | --- | --- | --- |
-| Well-defined search, code trace, or mechanical edit | `gpt-5.6-luna` | max |
-| Well-defined implementation, tests, or fixes with clear acceptance criteria | `gpt-5.6-luna` | max |
-| Work requiring judgment across requirements or interfaces | `gpt-5.6-sol` | medium |
+| Well-defined search, code trace, or mechanical edit | `gpt-6-luna` | max |
+| Well-defined implementation, tests, or fixes with clear acceptance criteria | `gpt-6-luna` | max |
+| Work requiring judgment across requirements or interfaces | `gpt-6-sol` | medium |
 | Difficult debugging or ambiguous implementation within agreed scope | `gpt-6-astra` | high |
 | Independent review of a material risk | `gpt-6-astra`, fresh context | high |
 

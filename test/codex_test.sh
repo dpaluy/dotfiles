@@ -59,7 +59,7 @@ assert config.get("approval_policy") == "on-request", (
 assert "model_catalog_json" not in config, "Codex model catalog override must stay machine-local"
 assert "material approvals" in config["developer_instructions"]
 agent_defaults = config["agents"]
-assert agent_defaults.get("default_subagent_model") == "gpt-5.6-luna"
+assert agent_defaults.get("default_subagent_model") == "gpt-6-luna"
 assert agent_defaults.get("default_subagent_reasoning_effort") == "max"
 assert agent_defaults.get("max_concurrent_threads_per_session") == 2
 multi_agent_v2 = config["features"]["multi_agent_v2"]
@@ -75,13 +75,13 @@ expected_agents = {
         "sandbox_mode": "workspace-write",
     },
     "fast_scan": {
-        "model": "gpt-5.6-luna",
+        "model": "gpt-6-luna",
         "model_reasoning_effort": "max",
         "service_tier": "default",
         "sandbox_mode": "read-only",
     },
     "routine_worker": {
-        "model": "gpt-5.6-luna",
+        "model": "gpt-6-luna",
         "model_reasoning_effort": "max",
         "service_tier": "default",
         "sandbox_mode": "workspace-write",
@@ -144,7 +144,7 @@ check_codex_installer_migration() {
     mkdir -p "$sandbox/home/.codex/skills/orchestrate"
     printf 'user owned\n' > "$sandbox/home/.codex/skills/orchestrate/SKILL.md"
     printf '%s\n' \
-        'model = "gpt-5.6-sol"' \
+        'model = "gpt-6-sol"' \
         'sandbox_mode = "danger-full-access"' \
         'approval_policy = "never"' \
         '[features]' \
