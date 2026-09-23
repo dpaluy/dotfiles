@@ -116,6 +116,66 @@ SH
 }
 
 
+check_collie_install_selection() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local invocation="$sandbox/collie-invocation"
+
+    mkdir -p "$fake_bin"
+    cat > "$fake_bin/gum" <<'SH'
+#!/usr/bin/env bash
+if [[ "$1" == "choose" ]]; then
+    for option in "$@"; do
+        [[ "$option" != "Collie (mobile agent dashboard)" ]] || printf '%s\n' "$option"
+    done
+fi
+SH
+    chmod +x "$fake_bin/gum"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" COLLIE_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            run_remote_script() { printf "%s %s\n" "$@" > "$COLLIE_INVOCATION"; }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "sh https://colliepwa.dev/install.sh" ]] \
+        || fail "Collie was not installed from the gum selection"
+
+    rm -f "$invocation"
+    mkdir -p "$sandbox/nobin"
+    for tool in bash mkdir dirname; do
+        ln -s "$(command -v "$tool")" "$sandbox/nobin/$tool"
+    done
+    printf '11\n' | HOME="$sandbox/home" PATH="$sandbox/nobin" \
+        DOTFILES_DIR="$ROOT_DIR" COLLIE_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            run_remote_script() { printf "%s %s\n" "$@" > "$COLLIE_INVOCATION"; }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "sh https://colliepwa.dev/install.sh" ]] \
+        || fail "numeric AI tool selection did not install Collie"
+
+    rm -f "$invocation"
+    printf '#!/usr/bin/env bash\n' > "$fake_bin/collie"
+    chmod +x "$fake_bin/collie"
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" COLLIE_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            run_remote_script() { printf "%s %s\n" "$@" > "$COLLIE_INVOCATION"; }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+    [[ ! -e "$invocation" ]] || fail "Collie installer ran when already installed"
+}
+
 check_herdr_ohmyzsh_plugin_install() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -385,6 +445,7 @@ check_claude_environment_hook() {
 trap cleanup EXIT
 
 run_check "OMP installer selection" check_omp_install_selection
+run_check "Collie installer selection" check_collie_install_selection
 run_check "herdr-ohmyzsh plugin install" check_herdr_ohmyzsh_plugin_install
 run_check "qmd skill install" check_qmd_skill_install
 run_check "installer helpers" check_install_helpers

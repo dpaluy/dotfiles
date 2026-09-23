@@ -15,6 +15,7 @@ install_qmd=false
 install_google_cli=false
 install_droid=false
 install_kimi=false
+install_collie=false
 
 # Detect which tools are already installed
 missing_tools=()
@@ -28,6 +29,7 @@ command -v qmd &>/dev/null && info "qmd already installed" || missing_tools+=("q
 command -v gws &>/dev/null && info "Google CLI already installed" || missing_tools+=("Google CLI")
 command -v droid &>/dev/null && info "droid already installed" || missing_tools+=("Droid")
 command -v kimi-cli &>/dev/null && info "Kimi Code already installed" || missing_tools+=("Kimi Code")
+command -v collie &>/dev/null && info "Collie already installed" || missing_tools+=("Collie (mobile agent dashboard)")
 
 if [[ ${#missing_tools[@]} -eq 0 ]]; then
     info "All AI coding assistants already installed"
@@ -48,6 +50,7 @@ elif has_gum; then
     [[ "$ai_choices" == *"Google CLI"* ]] && install_google_cli=true
     [[ "$ai_choices" == *"Droid"* ]] && install_droid=true
     [[ "$ai_choices" == *"Kimi Code"* ]] && install_kimi=true
+    [[ "$ai_choices" == *"Collie (mobile agent dashboard)"* ]] && install_collie=true
 
     if [[ -z "$ai_choices" ]]; then
         info "Skipping AI coding assistants"
@@ -76,6 +79,7 @@ else
                     [[ "$tool" == "Google CLI" ]] && install_google_cli=true
                     [[ "$tool" == "Droid" ]] && install_droid=true
                     [[ "$tool" == "Kimi Code" ]] && install_kimi=true
+                    [[ "$tool" == "Collie (mobile agent dashboard)" ]] && install_collie=true
                 done
                 ;;
             [Nn]) ;;
@@ -92,6 +96,7 @@ else
                     [[ "$selected" == "Google CLI" ]] && install_google_cli=true
                     [[ "$selected" == "Droid" ]] && install_droid=true
                     [[ "$selected" == "Kimi Code" ]] && install_kimi=true
+                    [[ "$selected" == "Collie (mobile agent dashboard)" ]] && install_collie=true
                 else
                     warn "Unknown option: $choice"
                 fi
@@ -172,6 +177,15 @@ fi
 if $install_kimi; then
     info "Installing Kimi Code..."
     run_remote_script bash https://code.kimi.com/install.sh
+fi
+
+if $install_collie; then
+    info "Installing Collie..."
+    if run_remote_script sh https://colliepwa.dev/install.sh; then
+        info "Collie does not start automatically. Read its security guide before running 'collie start'."
+    else
+        warn "Collie installation failed. See https://github.com/AltanS/collie/blob/main/docs/install.md"
+    fi
 fi
 
 # Agent Browser — headless browser automation for AI agents (Rust native binary)

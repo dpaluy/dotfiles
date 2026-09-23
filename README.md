@@ -177,6 +177,7 @@ Optional AI coding assistants (prompted during install):
 | [Oh My Codex](https://github.com/Yeachan-Heo/oh-my-codex) | Structured workflows and skills for Codex CLI |
 | [pi](https://github.com/mariozechner/pi-coding-agent) | Coding agent |
 | [qmd](https://github.com/tobilu/qmd) | Local markdown search (installed with Bun) |
+| [Collie](https://github.com/AltanS/collie) | Mobile dashboard for terminal agents (install only, service setup is manual) |
 
 | Function | Description |
 |----------|-------------|
