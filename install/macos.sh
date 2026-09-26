@@ -50,11 +50,67 @@ else
     spin "Installing JetBrainsMono Nerd Font" brew install --cask font-jetbrains-mono-nerd-font
 fi
 
-# Ask about MartianMono
-if brew list --cask font-martian-mono-nerd-font &>/dev/null; then
-    info "MartianMono Nerd Font already installed"
-elif ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
+install_martian=false
+install_monaspace=false
+
+missing_fonts=()
+brew list --cask font-martian-mono-nerd-font &>/dev/null && info "MartianMono Nerd Font already installed" || missing_fonts+=("MartianMono Nerd Font")
+brew list --cask font-monaspace &>/dev/null && info "Monaspace already installed" || missing_fonts+=("Monaspace")
+
+if [[ ${#missing_fonts[@]} -eq 0 ]]; then
+    info "All optional fonts already installed"
+elif has_gum; then
+    font_choices=$(gum choose --no-limit \
+        --header "Select fonts to install (Space to select, Enter to confirm):" \
+        --cursor-prefix "[ ] " \
+        --selected-prefix "[x] " \
+        "${missing_fonts[@]}" || true)
+
+    [[ "$font_choices" == *"MartianMono Nerd Font"* ]] && install_martian=true
+    [[ "$font_choices" == *"Monaspace"* ]] && install_monaspace=true
+
+    if [[ -z "$font_choices" ]]; then
+        info "Skipping optional fonts"
+    fi
+else
+    echo "Which fonts would you like to install?"
+    for i in "${!missing_fonts[@]}"; do
+        echo "  $((i + 1))) ${missing_fonts[$i]}"
+    done
+    echo "  A) All"
+    echo "  N) None"
+    echo ""
+    read -r -p "Enter choices (e.g., 1 2 or A for all): " -a font_choices
+
+    for choice in "${font_choices[@]}"; do
+        case "$choice" in
+            [Aa])
+                for font in "${missing_fonts[@]}"; do
+                    [[ "$font" == "MartianMono Nerd Font" ]] && install_martian=true
+                    [[ "$font" == "Monaspace" ]] && install_monaspace=true
+                done
+                ;;
+            [Nn]) ;;
+            [1-9])
+                selected="${missing_fonts[$((choice - 1))]:-}"
+                if [[ -n "$selected" ]]; then
+                    [[ "$selected" == "MartianMono Nerd Font" ]] && install_martian=true
+                    [[ "$selected" == "Monaspace" ]] && install_monaspace=true
+                else
+                    warn "Unknown option: $choice"
+                fi
+                ;;
+            *) warn "Unknown option: $choice" ;;
+        esac
+    done
+fi
+
+if $install_martian; then
     spin "Installing MartianMono Nerd Font" brew install --cask font-martian-mono-nerd-font
+fi
+
+if $install_monaspace; then
+    spin "Installing Monaspace" brew install --cask font-monaspace
 fi
 
 # ==============================================================================

@@ -234,10 +234,62 @@ else
     info "JetBrainsMono Nerd Font installed"
 fi
 
-# Ask about MartianMono
-if fc-list | grep -qi "MartianMono Nerd Font"; then
-    info "MartianMono Nerd Font already installed"
-elif ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
+install_martian=false
+install_monaspace=false
+
+missing_fonts=()
+fc-list | grep -qi "MartianMono Nerd Font" && info "MartianMono Nerd Font already installed" || missing_fonts+=("MartianMono Nerd Font")
+fc-list | grep -qi "Monaspace Neon" && info "Monaspace already installed" || missing_fonts+=("Monaspace")
+
+if [[ ${#missing_fonts[@]} -eq 0 ]]; then
+    info "All optional fonts already installed"
+elif has_gum; then
+    font_choices=$(gum choose --no-limit \
+        --header "Select fonts to install (Space to select, Enter to confirm):" \
+        --cursor-prefix "[ ] " \
+        --selected-prefix "[x] " \
+        "${missing_fonts[@]}" || true)
+
+    [[ "$font_choices" == *"MartianMono Nerd Font"* ]] && install_martian=true
+    [[ "$font_choices" == *"Monaspace"* ]] && install_monaspace=true
+
+    if [[ -z "$font_choices" ]]; then
+        info "Skipping optional fonts"
+    fi
+else
+    echo "Which fonts would you like to install?"
+    for i in "${!missing_fonts[@]}"; do
+        echo "  $((i + 1))) ${missing_fonts[$i]}"
+    done
+    echo "  A) All"
+    echo "  N) None"
+    echo ""
+    read -r -p "Enter choices (e.g., 1 2 or A for all): " -a font_choices
+
+    for choice in "${font_choices[@]}"; do
+        case "$choice" in
+            [Aa])
+                for font in "${missing_fonts[@]}"; do
+                    [[ "$font" == "MartianMono Nerd Font" ]] && install_martian=true
+                    [[ "$font" == "Monaspace" ]] && install_monaspace=true
+                done
+                ;;
+            [Nn]) ;;
+            [1-9])
+                selected="${missing_fonts[$((choice - 1))]:-}"
+                if [[ -n "$selected" ]]; then
+                    [[ "$selected" == "MartianMono Nerd Font" ]] && install_martian=true
+                    [[ "$selected" == "Monaspace" ]] && install_monaspace=true
+                else
+                    warn "Unknown option: $choice"
+                fi
+                ;;
+            *) warn "Unknown option: $choice" ;;
+        esac
+    done
+fi
+
+if $install_martian; then
     info "Installing MartianMono Nerd Font..."
     mkdir -p "$FONT_DIR"
     download_file https://github.com/ryanoasis/nerd-fonts/releases/latest/download/MartianMono.tar.xz /tmp/MartianMono.tar.xz
@@ -245,4 +297,14 @@ elif ask_yes_no "Install MartianMono Nerd Font as an alternative?" "n"; then
     rm /tmp/MartianMono.tar.xz
     fc-cache -fv
     info "MartianMono Nerd Font installed"
+fi
+
+if $install_monaspace; then
+    info "Installing Monaspace..."
+    mkdir -p "$FONT_DIR/monaspace"
+    download_file https://github.com/githubnext/monaspace/releases/download/v1.400/monaspace-static-v1.400.zip /tmp/monaspace.zip
+    unzip -qo /tmp/monaspace.zip '*.otf' -d "$FONT_DIR/monaspace"
+    rm /tmp/monaspace.zip
+    fc-cache -fv
+    info "Monaspace installed"
 fi
