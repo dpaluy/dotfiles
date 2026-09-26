@@ -43,6 +43,7 @@ tags
 # Build & Dependencies
 # ------------------------------------------------------------------------------
 
+.worktrees/
 node_modules/
 vendor/
 .bundle/

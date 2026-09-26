@@ -1,8 +1,8 @@
 # Worktrunk User Configuration
 # Symlinked to: ~/.config/worktrunk/config.toml
 
-# Worktree path template — sibling directories (default)
-# worktree-path = "{{ repo_path }}/../{{ repo }}.{{ branch | sanitize }}"
+# Keep worktrees inside their repository, not beside projects in ~/Projects.
+worktree-path = "{{ repo_path }}/.worktrees/{{ branch | sanitize }}"
 
 # ------------------------------------------------------------------------------
 # Hooks — run for all repositories
