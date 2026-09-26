@@ -178,6 +178,7 @@ Optional AI coding assistants (prompted during install):
 | [pi](https://github.com/mariozechner/pi-coding-agent) | Coding agent |
 | [qmd](https://github.com/tobilu/qmd) | Local markdown search (installed with Bun) |
 | [Collie](https://github.com/AltanS/collie) | Mobile dashboard for terminal agents (install only, service setup is manual) |
+| [Open Code Review](https://github.com/alibaba/open-code-review) | AI code review CLI (`ocr`) |
 
 | Function | Description |
 |----------|-------------|

@@ -165,6 +165,14 @@ if command -v npm &> /dev/null && [[ ${#NPM_GLOBALS[@]} -gt 0 ]]; then
     done
 fi
 
+# postinstall downloads the runtime; do not pass --ignore-scripts.
+# Update only after an explicit install.
+if command -v ocr &>/dev/null && command -v npm &>/dev/null; then
+    header "Open Code Review"
+    info "Updating Open Code Review..."
+    npm install -g @alibaba-group/open-code-review || warn "Open Code Review update failed"
+fi
+
 # ==============================================================================
 # bun Global Packages
 # ==============================================================================

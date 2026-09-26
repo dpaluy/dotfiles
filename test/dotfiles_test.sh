@@ -208,6 +208,77 @@ SH
     [[ ! -e "$invocation" ]] || fail "Collie installer ran when already installed"
 }
 
+check_ocr_install_selection() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local invocation="$sandbox/ocr-invocation"
+
+    mkdir -p "$fake_bin"
+    cat > "$fake_bin/gum" <<'SH'
+#!/usr/bin/env bash
+if [[ "$1" == "choose" ]]; then
+    for option in "$@"; do
+        [[ "$option" != "Open Code Review (ocr)" ]] || printf '%s\n' "$option"
+    done
+fi
+SH
+    cat > "$fake_bin/npm" <<'SH'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >> "$OCR_NPM_INVOCATION"
+SH
+    chmod +x "$fake_bin/gum" "$fake_bin/npm"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" OCR_NPM_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            ensure_node() { return 0; }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "install -g @alibaba-group/open-code-review" ]] \
+        || fail "Open Code Review was not installed from the gum selection"
+
+    rm -f "$invocation"
+    mkdir -p "$sandbox/nobin"
+    for tool in bash mkdir dirname; do
+        ln -s "$(command -v "$tool")" "$sandbox/nobin/$tool"
+    done
+    cp "$fake_bin/npm" "$sandbox/nobin/npm"
+    printf '12\n' | HOME="$sandbox/home" PATH="$sandbox/nobin" \
+        DOTFILES_DIR="$ROOT_DIR" OCR_NPM_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            ensure_node() { return 0; }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$invocation")" == "install -g @alibaba-group/open-code-review" ]] \
+        || fail "numeric AI tool selection did not install Open Code Review"
+
+    rm -f "$invocation"
+    printf '#!/usr/bin/env bash\n' > "$fake_bin/ocr"
+    chmod +x "$fake_bin/ocr"
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" OCR_NPM_INVOCATION="$invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            ensure_node() { return 0; }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+    [[ ! -e "$invocation" ]] || fail "Open Code Review installer ran when already installed"
+
+    grep -q 'npm install -g @alibaba-group/open-code-review' "$ROOT_DIR/update.sh" \
+        || fail "update.sh does not update Open Code Review"
+    if grep 'open-code-review' "$ROOT_DIR/update.sh" | grep -q -- '--ignore-scripts'; then
+        fail "update.sh updates Open Code Review with --ignore-scripts"
+    fi
+}
+
 check_herdr_ohmyzsh_plugin_install() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -478,6 +549,7 @@ trap cleanup EXIT
 
 run_check "OMP installer selection" check_omp_install_selection
 run_check "Collie installer selection" check_collie_install_selection
+run_check "Open Code Review installer selection" check_ocr_install_selection
 run_check "Pi global install replaces npx wrapper" check_pi_global_install
 run_check "herdr-ohmyzsh plugin install" check_herdr_ohmyzsh_plugin_install
 run_check "qmd skill install" check_qmd_skill_install

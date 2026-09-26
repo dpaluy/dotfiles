@@ -16,6 +16,7 @@ install_google_cli=false
 install_droid=false
 install_kimi=false
 install_collie=false
+install_ocr=false
 
 # Detect which tools are already installed
 missing_tools=()
@@ -34,6 +35,7 @@ command -v gws &>/dev/null && info "Google CLI already installed" || missing_too
 command -v droid &>/dev/null && info "droid already installed" || missing_tools+=("Droid")
 command -v kimi-cli &>/dev/null && info "Kimi Code already installed" || missing_tools+=("Kimi Code")
 command -v collie &>/dev/null && info "Collie already installed" || missing_tools+=("Collie (mobile agent dashboard)")
+command -v ocr &>/dev/null && info "Open Code Review already installed" || missing_tools+=("Open Code Review (ocr)")
 
 if [[ ${#missing_tools[@]} -eq 0 ]]; then
     info "All AI coding assistants already installed"
@@ -55,6 +57,7 @@ elif has_gum; then
     [[ "$ai_choices" == *"Droid"* ]] && install_droid=true
     [[ "$ai_choices" == *"Kimi Code"* ]] && install_kimi=true
     [[ "$ai_choices" == *"Collie (mobile agent dashboard)"* ]] && install_collie=true
+    [[ "$ai_choices" == *"Open Code Review"* ]] && install_ocr=true
 
     if [[ -z "$ai_choices" ]]; then
         info "Skipping AI coding assistants"
@@ -84,6 +87,7 @@ else
                     [[ "$tool" == "Droid" ]] && install_droid=true
                     [[ "$tool" == "Kimi Code" ]] && install_kimi=true
                     [[ "$tool" == "Collie (mobile agent dashboard)" ]] && install_collie=true
+                    [[ "$tool" == "Open Code Review (ocr)" ]] && install_ocr=true
                 done
                 ;;
             [Nn]) ;;
@@ -101,6 +105,7 @@ else
                     [[ "$selected" == "Droid" ]] && install_droid=true
                     [[ "$selected" == "Kimi Code" ]] && install_kimi=true
                     [[ "$selected" == "Collie (mobile agent dashboard)" ]] && install_collie=true
+                    [[ "$selected" == "Open Code Review (ocr)" ]] && install_ocr=true
                 else
                     warn "Unknown option: $choice"
                 fi
@@ -195,6 +200,17 @@ if $install_collie; then
         info "Collie does not start automatically. Read its security guide before running 'collie start'."
     else
         warn "Collie installation failed. See https://github.com/AltanS/collie/blob/main/docs/install.md"
+    fi
+fi
+
+if $install_ocr; then
+    if ensure_node; then
+        info "Installing Open Code Review..."
+        # postinstall fetches the runtime when the platform package is absent.
+        # npm/npmrc allowlists this package so npm 11 runs that script.
+        npm install -g @alibaba-group/open-code-review || warn "Open Code Review installation failed. Try manually: npm install -g @alibaba-group/open-code-review"
+    else
+        warn "npm not found and mise unavailable. Install Node.js manually."
     fi
 fi
 

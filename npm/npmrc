@@ -1,1 +1,1 @@
-allow-scripts=@google/genai,protobufjs
+allow-scripts=@google/genai,protobufjs,@alibaba-group/open-code-review
