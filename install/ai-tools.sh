@@ -24,7 +24,11 @@ command -v codex &>/dev/null && info "OpenAI Codex CLI already installed" || mis
 command -v gemini &>/dev/null && info "Gemini CLI already installed" || missing_tools+=("Gemini CLI")
 command -v opencode &>/dev/null && info "OpenCode already installed" || missing_tools+=("OpenCode")
 command -v omp &>/dev/null && info "OMP already installed" || missing_tools+=("OMP (Oh My Pi)")
-command -v pi &>/dev/null && info "pi already installed" || missing_tools+=("pi (coding agent)")
+if [[ -f "$HOME/.local/bin/pi" ]] && grep -q '^package="@earendil-works/pi-coding-agent"$' "$HOME/.local/bin/pi"; then
+    missing_tools+=("pi (coding agent)")
+else
+    command -v pi &>/dev/null && info "pi already installed" || missing_tools+=("pi (coding agent)")
+fi
 command -v qmd &>/dev/null && info "qmd already installed" || missing_tools+=("qmd (local markdown search)")
 command -v gws &>/dev/null && info "Google CLI already installed" || missing_tools+=("Google CLI")
 command -v droid &>/dev/null && info "droid already installed" || missing_tools+=("Droid")
@@ -141,7 +145,13 @@ fi
 if $install_pi; then
     if ensure_node; then
         info "Installing pi..."
-        npm install -g @earendil-works/pi-coding-agent
+        if npm install -g --ignore-scripts @earendil-works/pi-coding-agent; then
+            if [[ -f "$HOME/.local/bin/pi" ]] && grep -q '^package="@earendil-works/pi-coding-agent"$' "$HOME/.local/bin/pi"; then
+                rm "$HOME/.local/bin/pi"
+            fi
+        else
+            warn "pi installation failed"
+        fi
     else
         warn "npm not found and mise unavailable. Install Node.js manually."
     fi

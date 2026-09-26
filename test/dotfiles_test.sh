@@ -116,6 +116,38 @@ SH
 }
 
 
+check_pi_global_install() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local wrapper="$sandbox/home/.local/bin/pi"
+    mkdir -p "$fake_bin" "$(dirname "$wrapper")"
+    printf '%s\n' '#!/bin/bash' 'package="@earendil-works/pi-coding-agent"' > "$wrapper"
+    chmod +x "$wrapper"
+    cat > "$fake_bin/gum" <<'SH'
+#!/usr/bin/env bash
+[[ "$1" != "choose" ]] || printf '%s\n' 'pi (coding agent)'
+SH
+    cat > "$fake_bin/npm" <<'SH'
+#!/usr/bin/env bash
+printf '%s\n' "$*" > "$PI_NPM_INVOCATION"
+SH
+    chmod +x "$fake_bin/gum" "$fake_bin/npm"
+
+    HOME="$sandbox/home" PATH="$fake_bin:$sandbox/home/.local/bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" PI_NPM_INVOCATION="$sandbox/npm-invocation" \
+        bash -c '
+            source "$1/install/lib.sh"
+            ensure_node() { return 0; }
+            ask_yes_no() { return 1; }
+            source "$1/install/ai-tools.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+
+    [[ "$(<"$sandbox/npm-invocation")" == "install -g --ignore-scripts @earendil-works/pi-coding-agent" ]] \
+        || fail "Pi installer did not use the global npm install"
+    [[ ! -e "$wrapper" ]] || fail "Pi installer left the Omarchy npx wrapper in PATH"
+}
+
 check_collie_install_selection() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -446,6 +478,7 @@ trap cleanup EXIT
 
 run_check "OMP installer selection" check_omp_install_selection
 run_check "Collie installer selection" check_collie_install_selection
+run_check "Pi global install replaces npx wrapper" check_pi_global_install
 run_check "herdr-ohmyzsh plugin install" check_herdr_ohmyzsh_plugin_install
 run_check "qmd skill install" check_qmd_skill_install
 run_check "installer helpers" check_install_helpers

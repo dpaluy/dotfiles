@@ -157,17 +157,12 @@ NPM_GLOBALS=(
 if command -v npm &> /dev/null && [[ ${#NPM_GLOBALS[@]} -gt 0 ]]; then
     header "npm Global Packages"
     for pkg in "${NPM_GLOBALS[@]}"; do
-        spin "Installing/updating $pkg" npm install -g "$pkg"
+        spin "Installing/updating $pkg" npm install -g --ignore-scripts "$pkg"
+        if [[ "$pkg" == "@earendil-works/pi-coding-agent" && -f "$HOME/.local/bin/pi" ]] &&
+            grep -q '^package="@earendil-works/pi-coding-agent"$' "$HOME/.local/bin/pi"; then
+            rm "$HOME/.local/bin/pi"
+        fi
     done
-fi
-
-# ==============================================================================
-# pi
-# ==============================================================================
-
-if command -v pi &> /dev/null; then
-    header "pi"
-    spin "Updating pi" pi update
 fi
 
 # ==============================================================================
