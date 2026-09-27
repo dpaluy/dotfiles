@@ -46,7 +46,7 @@ When a case is not covered below, choose the option that costs me the least read
 - Read the code and guidance needed for the change. Reuse current context; expand inspection when dependencies or uncertainty require it.
 - Trace the real code path before you accept a diagnosis.
 - Use a regression test for bugs and meaningful tests for changed behavior. Match validation to risk; documentation and simple config edits usually need structural checks.
-- Test observable behavior, not implementation details.
+- Test observable behavior, not implementation details. Do not add tests that read source files and assert strings, mirror configuration values, or count files merely to confirm an edit. Run the actual code or configuration consumer and assert meaningful behavior. Reuse existing validation instead of duplicating it. Omit tests that detect no additional failures.
 - Report pre-existing failures separately from failures your change introduced.
 - Build in small increments that work end to end. Keep existing behavior functional at each step.
 - Check existing dependencies, APIs, and types before you write custom code or add a package.

@@ -44,6 +44,7 @@ When a case is not covered below, choose the option that costs me the least read
 ## Code
 
 - Use regression tests for bugs and meaningful tests for changed behavior. Match validation to risk.
+- Test observable behavior, not implementation details. Do not add tests that read source files and assert strings, mirror configuration values, or count files merely to confirm an edit. Run the actual code or configuration consumer and assert meaningful behavior. Reuse existing validation instead of duplicating it. Omit tests that detect no additional failures.
 - For runtime tools and frameworks, exhaust config-only solutions before proposing source changes.
 - Never add a co-author line to a commit message.
 
