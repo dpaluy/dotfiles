@@ -1,12 +1,16 @@
 ---
 name: agent-browser
-description: Use the agent-browser CLI for website interaction, rendered content extraction, and browser testing when a browser session is needed.
+description: Use the agent-browser CLI for website interaction, rendered content extraction, and browser testing when headless browsing can complete the task. Use Chrome DevTools MCP instead for headed demos, existing browser authentication, and real-browser diagnostics.
 allowed-tools: Bash(npx agent-browser:*), Bash(agent-browser:*)
 ---
 
 # Browser Automation with agent-browser
 
-Use an available purpose-built read or search tool when it can answer the request. Use this CLI when the task needs a browser and the user has not selected another browser tool.
+Honor the user's requested tool or interaction method. Use an available purpose-built read or search tool when it can answer the request without browser interaction.
+
+Use this CLI when headless browsing can complete the task. Use Chrome DevTools MCP for headed demonstrations, opening links with existing browser authentication, and diagnostics in the real browser. Verify the connected browser, target tab, and account before authenticated actions. Do not assume a named agent-browser session shares the user's Chrome authentication.
+
+Use Cua Driver for native applications, desktop controls, browser controls outside page content, or UI that browser tools cannot reach. An explicit GUI-only request excludes DOM/CDP and application APIs. Do not switch to foreground desktop input without authorization.
 
 Use a task-specific named session to avoid interfering with other work:
 
