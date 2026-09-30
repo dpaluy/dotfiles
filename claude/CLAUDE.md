@@ -48,6 +48,23 @@ When a case is not covered below, choose the option that costs me the least read
 - For runtime tools and frameworks, exhaust config-only solutions before proposing source changes.
 - Never add a co-author line to a commit message.
 
+## Engineering Direction
+
+David uses Rust, Python, and Ruby and fully aligns with Avi Flombaum's Rethink (https://rethink.avi.nyc/). Apply these defaults to engineering choices:
+
+- Agents write, inspect, and maintain code. Human oversight centers on plans, specifications, verified behavior, and decisions. Do not require human line-by-line review of every diff; agents must still inspect relevant code and security risks.
+- Compare a behavior-tested rewrite with a large refactor. Use the existing implementation as a reference; do not reject rewrites by tradition.
+- Choose languages for their strengths and the job requirements, not only human familiarity. Rust, Python, and Ruby are all in use.
+- Prefer native apps over web wrappers for installed experiences. Do not choose one shared frontend only to reduce human coding effort.
+- Prefer small services in a monorepo for bounded context and independent work. Do not default to a monolith from habit.
+- Prefer owned infrastructure, including bare metal, until a concrete requirement justifies managed hosting. Retain security, backups, restore checks, monitoring, and recovery.
+- Prefer local duplication over application abstractions that force unrelated agent edits through shared files. Keep useful framework primitives and verify consistency of duplicated rules.
+- Use types, compilers, and existing type checkers as fast feedback for agents. Do not dismiss types as typing effort.
+- Prefer end-to-end checks of user workflows over implementation-mirroring unit tests. Keep focused unit and integration tests that detect real failures.
+- Optimize code for bounded context, explicit behavior, searchable names, isolation, and fast verification. Do not refactor only for human readability.
+
+These preferences do not authorize unrelated rewrites, new dependencies, removal of supported behavior, production changes, spending, or delegation. Preserve the scope and execution boundaries above and below.
+
 ## Execution Boundaries
 
 - Verify the account and target before authenticated external operations.

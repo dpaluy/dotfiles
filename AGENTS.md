@@ -20,7 +20,7 @@ Shared configuration for macOS and Linux. Private values belong in `~/.local/dot
 
 - For installer changes, use [install/AGENTS.md](install/AGENTS.md).
 - For configuration destinations, wrapper behavior, or shell loading order, use [docs/configuration-map.md](docs/configuration-map.md).
-- Shared agent defaults live in `codex/AGENTS.md`, `pi/AGENTS.md`, `opencode/AGENTS.md`, and `claude/CLAUDE.md`. Preserve tool-specific differences.
+- Shared agent defaults live in `codex/AGENTS.md`, `pi/AGENTS.md`, `opencode/AGENTS.md`, and `claude/CLAUDE.md`. Their Engineering Direction sections record David's agent-first preferences across Rust, Python, and Ruby. Keep that direction consistent and preserve tool-specific differences.
 - Repository-owned skills live in `agents/skills/` and `codex/skills/`. Keep skill descriptions narrow and read supporting references only when relevant.
 
 ## Validation
