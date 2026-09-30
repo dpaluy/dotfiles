@@ -15,15 +15,15 @@
   },
   "agents": {
     "sisyphus": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "xhigh"
     },
     "hephaestus": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "high"
     },
     "oracle": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "xhigh"
     },
     "librarian": {
@@ -35,23 +35,23 @@
       "variant": "xhigh"
     },
     "multimodal-looker": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "high"
     },
     "prometheus": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "xhigh"
     },
     "metis": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "xhigh"
     },
     "momus": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "xhigh"
     },
     "atlas": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "high"
     },
     "sisyphus-junior": {
@@ -61,19 +61,19 @@
   },
   "categories": {
     "visual-engineering": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "high"
     },
     "ultrabrain": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "xhigh"
     },
     "deep": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "high"
     },
     "artistry": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "high"
     },
     "quick": {
@@ -85,7 +85,7 @@
       "variant": "high"
     },
     "unspecified-high": {
-      "model": "openai/gpt-6-sol",
+      "model": "openai/gpt-6.1-sol",
       "variant": "high"
     },
     "writing": {

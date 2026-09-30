@@ -1,6 +1,6 @@
 {
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6-astra",
+  "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "medium",
   "images": {
     "blockImages": false
@@ -48,7 +48,7 @@
         "thinking": "max"
       },
       "worker": {
-        "model": "cursor/cursor-grok-4.6",
+        "model": "cursor/cursor-grok-4.7",
         "thinking": "high"
       },
       "reviewer": {
@@ -56,7 +56,7 @@
         "thinking": "high"
       },
       "researcher": {
-        "model": "openai-codex/gpt-6-sol",
+        "model": "openai-codex/gpt-6.1-sol",
         "thinking": "xhigh"
       },
       "scout": {

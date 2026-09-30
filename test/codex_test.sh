@@ -144,7 +144,7 @@ check_codex_installer_migration() {
     mkdir -p "$sandbox/home/.codex/skills/orchestrate"
     printf 'user owned\n' > "$sandbox/home/.codex/skills/orchestrate/SKILL.md"
     printf '%s\n' \
-        'model = "gpt-6-sol"' \
+        'model = "gpt-6.1-sol"' \
         'sandbox_mode = "danger-full-access"' \
         'approval_policy = "never"' \
         '[features]' \
