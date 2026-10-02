@@ -195,7 +195,7 @@ TOML
                 mkdir -p "$HOME/.pi/agent"
                 if [[ -f "$pi_mcp" ]]; then
                     jq --arg shell "$perplexity_mcp_shell" \
-                        '.mcpServers.perplexity = {"command":"zsh","args":["-lc",$shell],"directTools":true}' \
+                        '.mcpServers.perplexity = {"command":"zsh","args":["-lc",$shell],"exposure":"direct"}' \
                         "$pi_mcp" > "$pi_mcp.tmp" && mv "$pi_mcp.tmp" "$pi_mcp"
                 else
                     cat > "$pi_mcp" <<JSON
@@ -204,7 +204,7 @@ TOML
     "perplexity": {
       "command": "zsh",
       "args": ["-lc", "$perplexity_mcp_shell"],
-      "directTools": true
+      "exposure": "direct"
     }
   }
 }

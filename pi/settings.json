@@ -18,7 +18,6 @@
     "enabled": true
   },
   "packages": [
-    "npm:pi-mcp-adapter",
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-side-chat",
     "npm:pi-subagents",
@@ -40,7 +39,6 @@
     "npm:@dpaluy/pi-jev-compact",
     "npm:pi-claude-bridge"
   ],
-  "extensions": [],
   "subagents": {
     "agentOverrides": {
       "oracle": {
@@ -70,5 +68,5 @@
     }
   },
   "enabledModels": [],
-  "lastChangelogVersion": "0.87.1"
+  "lastChangelogVersion": "1.0.0"
 }
