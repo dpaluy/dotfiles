@@ -188,29 +188,29 @@ TOML
             fi
         fi
 
-        # pi — configure a shell wrapper so it reads the private AI env at launch
+        # pi — hosted Perplexity MCP endpoint; reads PERPLEXITY_API_KEY from the environment
         if [[ "${perplexity_choices:-}" == *"pi"* ]]; then
             pi_mcp="$HOME/.pi/agent/mcp.json"
             if command -v jq &>/dev/null; then
                 mkdir -p "$HOME/.pi/agent"
                 if [[ -f "$pi_mcp" ]]; then
-                    jq --arg shell "$perplexity_mcp_shell" \
-                        '.mcpServers.perplexity = {"command":"zsh","args":["-lc",$shell],"exposure":"direct"}' \
+                    jq --arg auth 'Bearer ${PERPLEXITY_API_KEY}' \
+                        '.mcpServers.perplexity = {"url":"https://api.perplexity.ai/mcp","headers":{"Authorization":$auth},"exposure":"direct"}' \
                         "$pi_mcp" > "$pi_mcp.tmp" && mv "$pi_mcp.tmp" "$pi_mcp"
                 else
                     cat > "$pi_mcp" <<JSON
 {
   "mcpServers": {
     "perplexity": {
-      "command": "zsh",
-      "args": ["-lc", "$perplexity_mcp_shell"],
+      "url": "https://api.perplexity.ai/mcp",
+      "headers": {"Authorization": "Bearer \${PERPLEXITY_API_KEY}"},
       "exposure": "direct"
     }
   }
 }
 JSON
                 fi
-                info "Configured Perplexity MCP for pi using the private AI environment"
+                info "Configured Perplexity MCP for pi using the hosted endpoint"
             else
                 warn "jq not found — cannot register Perplexity MCP with pi"
             fi
