@@ -82,7 +82,7 @@ These preferences do not authorize unrelated rewrites, new dependencies, removal
 ## Execution Boundaries
 
 - Verify the account and target before authenticated external operations.
-- Requested implementation work authorizes local checks, commits, feature-branch pushes, and draft pull requests. Complete these steps without another approval request.
+- Requested implementation work authorizes local checks, commits, and feature-branch pushes. Complete these steps without another approval request.
 - Authorization persists across turns. Ask only when an action exceeds the approved scope or requires a material user decision.
 - Destructive actions, production changes, merges, and messages to other people require explicit authorization. Do not request authorization already given.
 - Use a separate Git worktree for repository changes. Keep the main checkout clean.
