@@ -33,7 +33,8 @@
     "npm:@monotykamary/pi-vcc",
     "npm:pi-open-tui",
     "npm:@howaboua/pi-codex-imagegen",
-    "npm:pi-claude-bridge"
+    "npm:pi-claude-bridge",
+    "npm:pi-you-should-know"
   ],
   "subagents": {
     "agentOverrides": {
@@ -64,5 +65,5 @@
     }
   },
   "enabledModels": [],
-  "lastChangelogVersion": "1.0.2"
+  "lastChangelogVersion": "1.0.4"
 }
