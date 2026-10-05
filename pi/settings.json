@@ -42,11 +42,11 @@
         "thinking": "max"
       },
       "worker": {
-        "model": "cursor/cursor-grok-4.7",
+        "model": "cursor/grok-4.7-fast",
         "thinking": "high"
       },
       "reviewer": {
-        "model": "openai-codex/gpt-6-astra",
+        "model": "openai-codex/gpt-6.1-sol",
         "thinking": "high"
       },
       "researcher": {
@@ -64,5 +64,5 @@
     }
   },
   "enabledModels": [],
-  "lastChangelogVersion": "1.0.0"
+  "lastChangelogVersion": "1.0.2"
 }

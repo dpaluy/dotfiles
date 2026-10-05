@@ -1,6 +1,6 @@
 {
   "architect": {
-    "model": "claude-bridge/claude-opus-5",
+    "model": "claude-bridge/claude-opus-5.5",
     "effort": "high"
   },
   "analyst": {
@@ -9,6 +9,6 @@
   },
   "builder": {
     "model": "openai-codex/gpt-6.1-sol",
-    "effort": "high"
+    "effort": "medium"
   }
 }
