@@ -14,9 +14,6 @@
   "steeringMode": "all",
   "followUpMode": "all",
   "collapseChangelog": true,
-  "jevCompact": {
-    "enabled": true
-  },
   "packages": [
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-side-chat",
@@ -36,7 +33,6 @@
     "npm:@monotykamary/pi-vcc",
     "npm:pi-open-tui",
     "npm:@howaboua/pi-codex-imagegen",
-    "npm:@dpaluy/pi-jev-compact",
     "npm:pi-claude-bridge"
   ],
   "subagents": {
