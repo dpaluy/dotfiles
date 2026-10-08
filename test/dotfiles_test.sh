@@ -458,7 +458,7 @@ check_pi_package_sources() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
     mkdir -p "$sandbox/pi"
-    printf '%s\n' '{"packages":["git:github.com/example/provider@pinned","https://github.com/majesticlabs-dev/pi-fusion"]}' > "$sandbox/pi/settings.json"
+    printf '%s\n' '{"packages":["git:github.com/example/provider@pinned","https://github.com/example/pi-pkg"]}' > "$sandbox/pi/settings.json"
     HOME="$sandbox/home" DOTFILES_DIR="$sandbox" PI_INVOCATION="$sandbox/invocation" bash -c '
         set -Eeuo pipefail
         create_symlink() { :; }
@@ -466,14 +466,14 @@ check_pi_package_sources() {
         spin() { shift; "$@"; }
         pi() {
             if [[ "$1" == list ]]; then
-                printf "%s\n" "https://github.com/majesticlabs-dev/pi-fusion"
+                printf "%s\n" "https://github.com/example/pi-pkg"
             else
                 printf "%s\n" "$*" >> "$PI_INVOCATION"
             fi
         }
         source "$1/install/pi.sh"
     ' _ "$ROOT_DIR"
-    [[ "$(<"$sandbox/invocation")" == $'install git:github.com/example/provider@pinned\ninstall https://github.com/majesticlabs-dev/pi-fusion' ]]
+    [[ "$(<"$sandbox/invocation")" == $'install git:github.com/example/provider@pinned\ninstall https://github.com/example/pi-pkg' ]]
 }
 
 check_skills_help() {
