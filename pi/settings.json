@@ -17,7 +17,6 @@
   "packages": [
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-side-chat",
-    "npm:pi-subagents",
     "https://github.com/jhochenbaum/pi-autoresearch-studio",
     "npm:pi-web-access",
     "npm:@ff-labs/pi-fff",
@@ -34,36 +33,9 @@
     "npm:@howaboua/pi-codex-imagegen",
     "npm:pi-claude-bridge",
     "npm:pi-you-should-know",
-    "git:github.com/dpaluy/pi-auto-handoff"
+    "git:github.com/dpaluy/pi-auto-handoff",
+    "npm:pi-subagent-manager"
   ],
-  "subagents": {
-    "agentOverrides": {
-      "oracle": {
-        "model": "kimi-coding/k3",
-        "thinking": "max"
-      },
-      "worker": {
-        "model": "cursor/grok-4.7-fast",
-        "thinking": "high"
-      },
-      "reviewer": {
-        "model": "openai-codex/gpt-6.1-sol",
-        "thinking": "high"
-      },
-      "researcher": {
-        "model": "openai-codex/gpt-6.1-sol",
-        "thinking": "xhigh"
-      },
-      "scout": {
-        "model": "openai-codex/gpt-6-luna",
-        "thinking": "high"
-      },
-      "delegate": {
-        "model": "openai-codex/gpt-6-luna",
-        "thinking": "high"
-      }
-    }
-  },
   "enabledModels": [],
   "lastChangelogVersion": "1.0.4"
 }

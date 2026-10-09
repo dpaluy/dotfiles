@@ -1,0 +1,5 @@
+name: coder
+thinkingLevel: high
+models:
+  - openai-codex/gpt-6.1-sol
+  - kimi-coding/k3

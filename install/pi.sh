@@ -3,6 +3,23 @@
 # pi Extensions
 #
 
+install_pi_subagent_manager_config() {
+    local src="$DOTFILES_DIR/pi/subagent-manager"
+    local dest="$HOME/.pi/agent/subagent-manager"
+    [[ -d "$src" ]] || return 0
+
+    # Existing manager configuration belongs to the user.
+    if [[ -e "$dest" || -L "$dest" ]]; then
+        info "pi-subagent-manager config already exists, skipping"
+        return 0
+    fi
+
+    # Package rejects symlinked settings paths; copy defaults on first install.
+    mkdir -p "$(dirname "$dest")"
+    cp -R "$src" "$dest"
+    info "Installed pi-subagent-manager defaults"
+}
+
 if command -v pi &>/dev/null; then
     mkdir -p "$HOME/.pi/agent"
     create_symlink "$DOTFILES_DIR/pi/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
@@ -25,4 +42,9 @@ if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y
         # the package is installed instead of matching a partial package name.
         spin "Installing $ext_name" pi install "$ext"
     done <<< "$pi_extensions"
+fi
+
+if command -v pi &>/dev/null; then
+    # Create defaults only when no manager configuration exists.
+    install_pi_subagent_manager_config
 fi

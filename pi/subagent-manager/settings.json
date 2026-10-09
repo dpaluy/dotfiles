@@ -1,0 +1,13 @@
+{
+  "subagentMode": "orchestration",
+  "widgetMode": "full",
+  "nerdFontIcons": true,
+  "loaderStyle": "circle",
+  "costDisplay": "pi-status",
+  "finalRecap": true,
+  "modelSelection": "pick-first-available",
+  "toolFiltering": "allowed",
+  "maxLevels": 3,
+  "maxConcurrent": 16,
+  "maxThreads": 64
+}

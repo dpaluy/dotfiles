@@ -53,7 +53,6 @@ When a case is not covered below, choose the option that costs me the least read
 - Check callers and consumers before you change a shared API or component.
 - Remove a compatibility path only after you verify that no supported consumer, persisted data, or migration needs it. Do not add one without a concrete requirement.
 - For runtime tools and frameworks, exhaust config-only solutions before proposing source changes.
-- Never add a co-author line to a commit message.
 
 ## Engineering Direction
 

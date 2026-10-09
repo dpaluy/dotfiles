@@ -1,0 +1,5 @@
+name: researcher
+thinkingLevel: high
+models:
+  - openai-codex/gpt-6.1-sol
+  - zai/glm-5.3-flash
