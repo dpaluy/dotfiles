@@ -1,5 +1,5 @@
 name: tasker
-thinkingLevel: low
+thinkingLevel: max
 models:
   - openai-codex/gpt-6-luna
   - zai/glm-5.3-flash

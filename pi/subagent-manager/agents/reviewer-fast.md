@@ -5,7 +5,6 @@ thinkingLevel: low
 color: warning
 models:
   - zai/glm-5.3-flash
-  - opencode-go/glm-5.3-flash
 tools:
   allow:
     - read
