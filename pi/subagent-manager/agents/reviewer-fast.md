@@ -1,7 +1,7 @@
 ---
 name: reviewer-fast
 description: Fast, cheap correctness pass over a scoped diff or files. Surfaces obvious defects quickly. Not for deep security audits, implementation, or style quotas — use reviewer for thorough review.
-thinkingLevel: low
+thinkingLevel: max
 color: warning
 models:
   - zai/glm-5.3-flash
