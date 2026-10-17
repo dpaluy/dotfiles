@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 #
-# MCP Server Registration (qmd, Perplexity)
+# MCP Server Registration (fsearch, qmd, Perplexity)
 # Registers MCP servers with installed AI coding assistants
 #
+
+# fsearch has a separate module so installation can be checked without restarting qmd.
+source "$DOTFILES_DIR/install/fsearch.sh"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # qmd MCP daemon — register with all installed AI tools

@@ -15,7 +15,8 @@ install/
 ├── multiplexer.sh  ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux) + herdr-ohmyzsh plugin
 ├── ai-tools.sh     ← AI tool selection + installation orchestrator
 ├── omp.sh          ← OMP plugin installation
-├── mcp.sh          ← MCP server registration (qmd, Perplexity)
+├── mcp.sh          ← MCP server registration (fsearch, qmd, Perplexity)
+├── fsearch.sh      ← macOS fsearch release installation + MCP registration
 ├── skills.sh       ← Agent skills setup (dotfiles + external repos)
 ├── symlinks.sh     ← Config links/wrappers (zsh, git, ghostty, etc.)
 ├── claude.sh       ← Claude Code config (CLAUDE.md, hooks, settings.json)
