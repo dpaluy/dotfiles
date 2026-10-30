@@ -1,5 +1,5 @@
 {
-  "subagentMode": "orchestration",
+  "subagentMode": "opportunistic",
   "widgetMode": "full",
   "nerdFontIcons": true,
   "loaderStyle": "circle",
