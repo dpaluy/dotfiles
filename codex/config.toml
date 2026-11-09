@@ -1,13 +1,12 @@
 web_search = "live"
 suppress_unstable_features_warning = true
-personality = "pragmatic"
 model = "gpt-6-astra"
 model_reasoning_effort = "medium"
 model_verbosity = "low"
 service_tier = "default"
 
 developer_instructions = """
-Use the astra-orchestrate skill for substantial work with independent subtasks or a useful independent review. Keep simple or tightly coupled work on the main agent.
+Delegate only when the user explicitly authorizes delegation. Keep simple or tightly coupled work on the main agent.
 Select workers by task clarity: Luna max for well-defined searches, implementation, tests, and fixes with clear acceptance criteria; Sol medium for work that needs more judgment across requirements or interfaces; Astra high for difficult reasoning, architecture, and material review. Respect explicit user model choices and available runtime options.
 Resume on worker completion events. End the coordinator turn only when the runtime supports waking it on completion; otherwise use the runtime's event wait. Do not poll for routine status.
 Use plugin-specific agents only when their owning skill is active.
@@ -18,34 +17,22 @@ sandbox_mode = "workspace-write"
 approval_policy = "on-request"
 
 [agents]
-enabled = true
 default_subagent_model = "gpt-6-luna"
 default_subagent_reasoning_effort = "max"
 max_concurrent_threads_per_session = 2
 max_depth = 1
 
 [features]
-apps = true
 chronicle = true
-context_management.experimental_mode = true
 default_mode_request_user_input = true
 guardian_approval = false
-goals = true
 hooks = true
-js_repl = false
 memories = true
-multi_agent = true
-personality = true
 prevent_idle_sleep = true
-shell_snapshot = true
-unified_exec = true
 
 [features.multi_agent_v2]
 hide_spawn_agent_metadata = false
 tool_namespace = "agents"
-
-[shell_environment_policy.set]
-OMX_LORE_COMMIT_GUARD = "0"
 
 [mcp_servers.qmd]
 url = "http://localhost:8181/mcp"
