@@ -7,7 +7,7 @@
   "finalRecap": true,
   "modelSelection": "pick-first-available",
   "toolFiltering": "allowed",
-  "maxLevels": 3,
-  "maxConcurrent": 16,
+  "maxLevels": 2,
+  "maxConcurrent": 4,
   "maxThreads": 64
 }
