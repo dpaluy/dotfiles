@@ -29,10 +29,11 @@
     "npm:pi-claude-bridge",
     "npm:pi-you-should-know",
     "git:github.com/dpaluy/pi-auto-handoff",
-    "npm:pi-subagent-manager"
+    "npm:pi-subagent-manager",
+    "npm:pi-intercom"
   ],
   "enabledModels": [],
-  "lastChangelogVersion": "1.5.0",
+  "lastChangelogVersion": "1.5.2",
   "extensionChangelogVersions": {
     "{\"source\":\"https://github.com/davebcn87/pi-autoresearch\",\"scope\":\"user\"}": "1.9.0",
     "{\"source\":\"npm:pi-side-chat\",\"scope\":\"user\"}": "0.4.0",
@@ -40,7 +41,7 @@
     "{\"source\":\"https://github.com/nicobailon/pi-boomerang\",\"scope\":\"user\"}": "0.7.0",
     "{\"source\":\"npm:pi-xai-oauth\",\"scope\":\"user\"}": "1.7.3",
     "{\"source\":\"git:github.com/algal/pi-openai-server-compaction\",\"scope\":\"user\"}": "0.1.0",
-    "{\"source\":\"npm:pi-context-view\",\"scope\":\"user\"}": "0.8.3",
+    "{\"source\":\"npm:pi-context-view\",\"scope\":\"user\"}": "0.8.4",
     "{\"source\":\"npm:@narumitw/pi-btw\",\"scope\":\"user\"}": "0.63.5",
     "{\"source\":\"npm:pi-open-tui\",\"scope\":\"user\"}": "0.4.4",
     "{\"source\":\"npm:@howaboua/pi-codex-imagegen\",\"scope\":\"user\"}": "0.0.13",
