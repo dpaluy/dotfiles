@@ -18,4 +18,8 @@ All sources in `pi/settings.json` are unpinned. Run `pi update --extensions` to 
 
 ## Validation
 
-Against package 1.4.3 and Pi 1.5.2 on macOS, the offline `smoke` command passed execution and native UI surface checks (interactive TTY behavior was not tested). The offline `chaos` suite failed scenario 9: reviewer returned `Acknowledged.` and the integrator was skipped. Full crash-recovery acceptance is therefore not established; investigate upstream before relying on unattended production work. No login service is configured.
+Run `bash test/pi_durable_subagents_test.sh` from the repository root. It exercises the installed package and Pi offline, using disposable fixtures with no live model requests.
+
+Against package 1.4.3 and Pi 1.5.2 on macOS, smoke checks and all nine recovery scenarios passed, including host termination and recovery. No duplicate runs, lost results, or restarted-from-scratch sessions were observed. Interactive TTY behavior was not tested. No login service is configured.
+
+The stock 1.4.3 chaos harness has a Pi 1.5 compatibility bug: it counts a persisted aborted assistant turn as a scripted provider response. After host termination in scenario 9, that advances the cursor past `REVIEW: accept`, returning `Acknowledged.` and skipping the integrator. The check copies the installed package to a temporary directory and excludes aborted turns from that test-only cursor. Runtime code and acceptance assertions remain unchanged; the installed package is not patched. The wrapper fails explicitly if upstream changes the affected code, so reassess it after updates rather than silently retaining an obsolete correction.
