@@ -457,72 +457,64 @@ check_wrapper_and_pi_settings_preservation() {
 check_pi_package_sources() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
-    mkdir -p "$sandbox/pi/subagent-manager/agents" "$sandbox/home/.pi/agent/agents" "$sandbox/home/.pi/agent/pi-subagents"
-    printf '%s\n' '{"packages":["git:github.com/example/provider@pinned","https://github.com/example/pi-pkg"]}' > "$sandbox/pi/settings.json"
-    printf '%s\n' '{"subagentMode":"opportunistic","costDisplay":"pi-status"}' > "$sandbox/pi/subagent-manager/settings.json"
-    printf '%s\n' 'name: coder' 'thinkingLevel: high' > "$sandbox/pi/subagent-manager/agents/coder.yml"
-    printf '%s\n' 'name: writer' > "$sandbox/pi/subagent-manager/agents/writer.yml"
-    printf '%s\n' 'legacy review' > "$sandbox/home/.pi/agent/pi-subagent-review.json"
-    printf '%s\n' 'legacy backup' > "$sandbox/home/.pi/agent/settings.json.pre-subagents-fix-old"
-    printf '%s\n' 'legacy agent' > "$sandbox/home/.pi/agent/agents/designer.md"
-    printf '%s\n' 'legacy package' > "$sandbox/home/.pi/agent/pi-subagents/custom.md"
-    HOME="$sandbox/home" DOTFILES_DIR="$sandbox" PI_INVOCATION="$sandbox/invocation" bash -c '
+    mkdir -p "$sandbox/pi/agents" "$sandbox/pi/durable-subagents" \
+        "$sandbox/home/.pi/agent/agents" "$sandbox/home/.pi/agent/subagent-manager"
+    printf '%s\n' '{"packages":["npm:pi-durable-subagents","git:github.com/example/provider@pinned"]}' > "$sandbox/pi/settings.json"
+    printf '%s\n' '{"onQuit":"pause","pools":{"coder":["provider/model:medium"]}}' > "$sandbox/pi/durable-subagents/config.json"
+    printf '%s\n' 'Pi instructions' > "$sandbox/pi/AGENTS.md"
+    printf '%s\n' 'durable coder' > "$sandbox/pi/agents/coder.md"
+    printf '%s\n' 'shared designer' > "$sandbox/pi/agents/designer.md"
+    printf '%s\n' 'local designer' > "$sandbox/home/.pi/agent/agents/designer.md"
+    printf '%s\n' 'legacy settings' > "$sandbox/home/.pi/agent/subagent-manager/settings.json"
+    HOME="$sandbox/home" DSA_HOME="$sandbox/state" DOTFILES_DIR="$sandbox" PI_INVOCATION="$sandbox/invocation" bash -c '
         set -Eeuo pipefail
-        create_symlink() { :; }
+        create_symlink() { ln -s "$1" "$2"; }
         ask_yes_no() { return 0; }
         spin() { shift; "$@"; }
-        info() { :; }
         pi() { printf "%s\n" "$*" >> "$PI_INVOCATION"; }
         source "$1/install/pi.sh"
     ' _ "$ROOT_DIR"
-    [[ "$(<"$sandbox/invocation")" == $'install git:github.com/example/provider@pinned\ninstall https://github.com/example/pi-pkg' ]] \
+    [[ "$(<"$sandbox/invocation")" == $'install npm:pi-durable-subagents\ninstall git:github.com/example/provider@pinned' ]] \
         || fail "pi installer did not install only declared sources"
-    cmp "$sandbox/pi/subagent-manager/settings.json" "$sandbox/home/.pi/agent/subagent-manager/settings.json" \
-        || fail "manager settings were not installed"
-    cmp "$sandbox/pi/subagent-manager/agents/coder.yml" "$sandbox/home/.pi/agent/subagent-manager/agents/coder.yml" \
-        || fail "manager agent override was not installed"
+    cmp "$sandbox/pi/durable-subagents/config.json" "$sandbox/state/config.json" \
+        || fail "durable config was not installed into DSA_HOME"
+    [[ "$sandbox/home/.pi/agent/agents/coder.md" -ef "$sandbox/pi/agents/coder.md" ]] \
+        || fail "durable agent was not linked"
+    [[ "$(<"$sandbox/home/.pi/agent/agents/designer.md")" == 'local designer' ]] \
+        || fail "existing agent was overwritten"
 
-    # Repeat with user configuration, then decline extension updates.
-    printf '%s\n' 'user settings' > "$sandbox/home/.pi/agent/subagent-manager/settings.json"
-    printf '%s\n' 'user coder' > "$sandbox/home/.pi/agent/subagent-manager/agents/coder.yml"
-    printf '%s\n' 'custom agent' > "$sandbox/home/.pi/agent/subagent-manager/agents/local.md"
-    rm "$sandbox/home/.pi/agent/subagent-manager/agents/writer.yml"
-    mkdir -p "$sandbox/before"
-    cp -R "$sandbox/home/.pi/agent" "$sandbox/before/agent"
-    HOME="$sandbox/home" DOTFILES_DIR="$sandbox" bash -c '
+    # Repeat with a redirected runtime config and legacy files; preserve both.
+    printf '%s\n' 'user config' > "$sandbox/local-config"
+    rm "$sandbox/state/config.json"
+    ln -s "$sandbox/local-config" "$sandbox/state/config.json"
+    cp -R "$sandbox/home/.pi/agent" "$sandbox/before"
+    HOME="$sandbox/home" DSA_HOME="$sandbox/state" DOTFILES_DIR="$sandbox" bash -c '
         set -Eeuo pipefail
         create_symlink() { :; }
         ask_yes_no() { return 1; }
-        info() { :; }
         pi() { echo "Unexpected pi invocation: $*" >&2; return 1; }
         source "$1/install/pi.sh"
     ' _ "$ROOT_DIR"
-    diff -r "$sandbox/before/agent" "$sandbox/home/.pi/agent" \
-        || fail "installer changed existing Pi files when updates were declined"
-    [[ "$(<"$sandbox/home/.pi/agent/agents/designer.md")" == 'legacy agent' ]] \
-        || fail "legacy agent was not preserved"
-    [[ "$(<"$sandbox/home/.pi/agent/pi-subagents/custom.md")" == 'legacy package' ]] \
-        || fail "legacy package files were not preserved"
-    [[ "$(<"$sandbox/home/.pi/agent/pi-subagent-review.json")" == 'legacy review' ]] \
-        || fail "legacy review config was not preserved"
-    [[ "$(<"$sandbox/home/.pi/agent/settings.json.pre-subagents-fix-old")" == 'legacy backup' ]] \
-        || fail "legacy settings backup was not preserved"
+    diff -r "$sandbox/before" "$sandbox/home/.pi/agent" \
+        || fail "installer changed existing Pi files"
+    [[ -L "$sandbox/state/config.json" && "$(<"$sandbox/local-config")" == 'user config' ]] \
+        || fail "installer changed redirected durable configuration"
 
-    # A redirected destination must also remain untouched.
-    mv "$sandbox/home/.pi/agent/subagent-manager" "$sandbox/redirected"
-    ln -s "$sandbox/redirected" "$sandbox/home/.pi/agent/subagent-manager"
-    HOME="$sandbox/home" DOTFILES_DIR="$sandbox" bash -c '
+    # Default state location is independent of the Pi agent directory.
+    HOME="$sandbox/default-home" DSA_HOME="" DOTFILES_DIR="$sandbox" bash -c '
         set -Eeuo pipefail
         create_symlink() { :; }
         ask_yes_no() { return 1; }
-        info() { :; }
         pi() { return 1; }
         source "$1/install/pi.sh"
     ' _ "$ROOT_DIR"
-    [[ -L "$sandbox/home/.pi/agent/subagent-manager" ]] \
-        || fail "existing manager symlink was replaced"
-    diff -r "$sandbox/before/agent/subagent-manager" "$sandbox/redirected" \
-        || fail "installer changed redirected manager configuration"
+    cmp "$sandbox/pi/durable-subagents/config.json" "$sandbox/default-home/.pi/durable-subagents/config.json" \
+        || fail "default durable config location was incorrect"
+    node -e '
+        const {packages} = require(process.argv[1]);
+        if (!packages.includes("npm:pi-durable-subagents") ||
+            packages.some(p => /pi-subagent-manager|pi-subagents$/.test(p))) process.exit(1);
+    ' "$ROOT_DIR/pi/settings.json" || fail "shared settings must load only the durable subagent provider"
 }
 
 check_skills_help() {

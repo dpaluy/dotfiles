@@ -1,0 +1,47 @@
+{
+  "onQuit": "pause",
+  "pools": {
+    "architect": [
+      "openai-codex/gpt-6-astra:medium",
+      "kimi-coding/k3:medium"
+    ],
+    "coder": [
+      "openai-codex/gpt-6.1-sol:medium",
+      "kimi-coding/k3:medium"
+    ],
+    "researcher": [
+      "zai/glm-5.3-flash:high",
+      "openai-codex/gpt-6-luna:high"
+    ],
+    "reviewer": [
+      "openai-codex/gpt-6.1-sol:high",
+      "kimi-coding/k3:high"
+    ],
+    "tasker": [
+      "openai-codex/gpt-6-luna:max",
+      "zai/glm-5.3-flash:max"
+    ],
+    "writer": [
+      "openai-codex/gpt-6.1-sol:medium"
+    ],
+    "designer": [
+      "kimi-coding/k3:xhigh",
+      "openai-codex/gpt-6.1-sol:xhigh"
+    ],
+    "reviewer-fast": [
+      "zai/glm-5.3-flash:max"
+    ]
+  },
+  "providers": {
+    "openai-codex": {
+      "slots": 4
+    },
+    "kimi-coding": {
+      "slots": 4
+    },
+    "zai": {
+      "slots": 4
+    }
+  },
+  "writerLock": "queue"
+}

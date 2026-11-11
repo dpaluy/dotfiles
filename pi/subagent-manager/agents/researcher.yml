@@ -1,5 +1,0 @@
-name: researcher
-thinkingLevel: high
-models:
-  - zai/glm-5.3-flash
-  - openai-codex/gpt-6-luna

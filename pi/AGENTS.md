@@ -30,7 +30,9 @@
 
 ## Tools
 - Use `rg` for source, filenames, and exact-text search; use qmd for indexed Markdown and knowledge-base search.
-- In Pi, treat a repository's `spawn_agent` instruction as `agent_spawn` from pi-subagent-manager when the exact requested model, thinking level, role boundary, and task packet can be preserved. This is not a standalone-task fallback. If the repository names an agent adapter file that Pi does not discover as an agent, tell the selected subagent to read that adapter before work.
+- Use only pi-durable-subagents for delegation. Discover roles with `subagents({ action: "agents" })`; translate repository `spawn_agent` instructions to its `subagents` tool only when the exact requested model, thinking level, role boundary, and task packet can be preserved. This is not a standalone-task fallback. If the repository names an undiscovered agent adapter, tell the selected subagent to read it before work.
+- Delegate opportunistically for independent parallel, long-running, or very large work; do small straightforward tasks yourself. Start at most four calls at once. Nested subagents are unsupported. Use `context: "fork"` for inherited conversation or `"fresh"` for independent work. Runs are asynchronous: end your turn rather than polling; completion and questions wake the originating session. Use `send` for steering, answers, and follow-ups.
+- Normal quit pauses durable workflows by default; use `resume` to continue. Background jobs that must continue after normal quit need `onQuit: "continue"` in their own DSA_HOME config. Crash recovery does not make external side effects exactly-once.
 
 ## Operations
 - Never add a co-author line to a commit message.

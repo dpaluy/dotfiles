@@ -1,5 +1,0 @@
-name: architect
-thinkingLevel: medium
-models:
-  - openai-codex/gpt-6-astra
-  - kimi-coding/k3

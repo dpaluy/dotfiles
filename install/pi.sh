@@ -3,21 +3,22 @@
 # pi Extensions
 #
 
-install_pi_subagent_manager_config() {
-    local src="$DOTFILES_DIR/pi/subagent-manager"
-    local dest="$HOME/.pi/agent/subagent-manager"
-    [[ -d "$src" ]] || return 0
-
-    # Existing manager configuration belongs to the user.
-    if [[ -e "$dest" || -L "$dest" ]]; then
-        info "pi-subagent-manager config already exists, skipping"
-        return 0
+install_pi_durable_subagents_config() {
+    local src dest agent
+    src="$DOTFILES_DIR/pi/durable-subagents/config.json"
+    dest="${DSA_HOME:-$HOME/.pi/durable-subagents}/config.json"
+    # Runtime configuration and existing agent definitions belong to the user.
+    if [[ -f "$src" && ! -e "$dest" && ! -L "$dest" ]]; then
+        mkdir -p "$(dirname "$dest")"
+        cp "$src" "$dest"
     fi
-
-    # Package rejects symlinked settings paths; copy defaults on first install.
-    mkdir -p "$(dirname "$dest")"
-    cp -R "$src" "$dest"
-    info "Installed pi-subagent-manager defaults"
+    mkdir -p "$HOME/.pi/agent/agents"
+    for agent in "$DOTFILES_DIR"/pi/agents/*.md; do
+        [[ -f "$agent" ]] || continue
+        dest="$HOME/.pi/agent/agents/$(basename "$agent")"
+        [[ -e "$dest" || -L "$dest" ]] && continue
+        create_symlink "$agent" "$dest"
+    done
 }
 
 if command -v pi &>/dev/null; then
@@ -45,6 +46,6 @@ if command -v pi &>/dev/null && ask_yes_no "Install or update pi extensions?" "y
 fi
 
 if command -v pi &>/dev/null; then
-    # Create defaults only when no manager configuration exists.
-    install_pi_subagent_manager_config
+    # Leave legacy manager configuration and durable runtime state untouched.
+    install_pi_durable_subagents_config
 fi
