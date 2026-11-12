@@ -1,5 +1,5 @@
 {
-  "defaultProvider": "openai-codex",
+  "defaultProvider": "openai",
   "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "medium",
   "images": {
@@ -31,5 +31,6 @@
     "git:github.com/dpaluy/pi-auto-handoff",
     "npm:pi-durable-subagents",
     "npm:pi-intercom"
-  ]
+  ],
+  "deviceId": "88a0be87-9b74-4623-8ecc-856c597bbc32"
 }
