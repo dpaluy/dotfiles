@@ -1,7 +1,7 @@
 name = "fast_scan"
 description = "Quick read-only agent for searches, codebase exploration, targeted file reads, and lightweight analysis."
 model = "gpt-6-luna"
-model_reasoning_effort = "max"
+model_reasoning_effort = "high"
 service_tier = "default"
 sandbox_mode = "read-only"
 

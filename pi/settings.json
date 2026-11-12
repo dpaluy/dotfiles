@@ -31,18 +31,5 @@
     "git:github.com/dpaluy/pi-auto-handoff",
     "npm:pi-durable-subagents",
     "npm:pi-intercom"
-  ],
-  "enabledModels": [],
-  "lastChangelogVersion": "1.5.2",
-  "extensionChangelogVersions": {
-    "{\"source\":\"https://github.com/davebcn87/pi-autoresearch\",\"scope\":\"user\"}": "1.9.0",
-    "{\"source\":\"npm:pi-side-chat\",\"scope\":\"user\"}": "0.4.0",
-    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
-    "{\"source\":\"npm:pi-xai-oauth\",\"scope\":\"user\"}": "1.7.3",
-    "{\"source\":\"npm:pi-context-view\",\"scope\":\"user\"}": "0.8.4",
-    "{\"source\":\"npm:pi-open-tui\",\"scope\":\"user\"}": "0.4.4",
-    "{\"source\":\"npm:@howaboua/pi-codex-imagegen\",\"scope\":\"user\"}": "0.0.13",
-    "{\"source\":\"npm:pi-you-should-know\",\"scope\":\"user\"}": "0.2.1",
-    "{\"source\":\"git:github.com/dpaluy/pi-auto-handoff\",\"scope\":\"user\"}": "0.3.0"
-  }
+  ]
 }

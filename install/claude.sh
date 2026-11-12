@@ -121,7 +121,7 @@ if command -v jq &>/dev/null; then
             ([(.env // {}) | to_entries[] | select($legacy[.key] == .value)] | length == 0)
             and .model != "claude-sonnet-4-6"
             and .env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS == "1"
-            and (.attribution | type == "object")' "$settings" &>/dev/null; then
+            and (.attribution | type == "object" and has("sessionUrl"))' "$settings" &>/dev/null; then
         already_configured=true
     fi
 
@@ -134,7 +134,8 @@ if command -v jq &>/dev/null; then
             | .env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
             | if .model == "claude-sonnet-4-6" then del(.model) else . end
             | .attribution = ((.attribution // {}) | if type == "object" then . else {} end
-                | .commit //= "" | .pr //= "")' \
+                | .commit //= "" | .pr //= ""
+                | if has("sessionUrl") then . else .sessionUrl = false end)' \
             "$settings" > "$settings.tmp" && mv "$settings.tmp" "$settings"
         info "Claude Code settings applied"
     fi

@@ -41,13 +41,30 @@ if [[ -f "$HOME/.codex/config.toml" ]]; then
         s{(^\[features\.multi_agent_v2\][ \t]*\n)((?:[ \t]*(?:\#.*)?\n)*)[ \t]*enabled[ \t]*=[ \t]*(?:true|false)[ \t]*\n}{$1$2}m;
     ' "$HOME/.codex/config.toml"
 
-    # Use a writable project sandbox and ask before work needs broader access.
-    perl -0pi -e '
-        if (!/^sandbox_mode\s*=/m) { s/\A/sandbox_mode = "workspace-write"\n/ }
-        else { s/^sandbox_mode\s*=.*$/sandbox_mode = "workspace-write"/mg }
-        if (!/^approval_policy\s*=/m) { s/\A/approval_policy = "on-request"\n/ }
-        else { s/^approval_policy\s*=.*$/approval_policy = "on-request"/mg }
-    ' "$HOME/.codex/config.toml"
+    # One policy for the copied config: the first install copies it, and later
+    # runs never rewrite it silently. Managed keys (model, effort, sandbox,
+    # approvals and their reviewer, developer instructions, subagent defaults) that drifted from
+    # dotfiles are listed and synced only on confirmation, after a backup.
+    # Machine-local content such as project trust and MCP servers is untouched.
+    if command -v python3 &>/dev/null; then
+        codex_config_drift="$(python3 "$DOTFILES_DIR/install/codex-config-sync.py" \
+            "$DOTFILES_DIR/codex/config.toml" "$HOME/.codex/config.toml" 2>/dev/null || true)"
+        if [[ -n "$codex_config_drift" ]]; then
+            warn "Codex settings differ from dotfiles:"
+            while IFS= read -r codex_drift_line; do
+                warn "  $codex_drift_line"
+            done <<< "$codex_config_drift"
+            if ask_yes_no "Sync these Codex settings from dotfiles (a backup is kept)?"; then
+                python3 "$DOTFILES_DIR/install/codex-config-sync.py" \
+                    "$DOTFILES_DIR/codex/config.toml" "$HOME/.codex/config.toml" --apply >/dev/null \
+                    && info "Synced managed Codex settings into ~/.codex/config.toml"
+            else
+                info "Left ~/.codex/config.toml unchanged"
+            fi
+        fi
+    else
+        warn "python3 not found, skipping Codex config drift check"
+    fi
 
     # Prefer ~/.codex/hooks.json over inline global hooks for this layer.
     # This removes the known codebase-memory hook block that triggers Codex's

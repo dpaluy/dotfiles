@@ -1,13 +1,13 @@
 web_search = "live"
 suppress_unstable_features_warning = true
-model = "gpt-6-astra"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "medium"
 model_verbosity = "low"
 service_tier = "default"
 
 developer_instructions = """
-Delegate only when the user explicitly authorizes delegation. Keep simple or tightly coupled work on the main agent.
-Select workers by task clarity: Luna max for well-defined searches, implementation, tests, and fixes with clear acceptance criteria; Sol medium for work that needs more judgment across requirements or interfaces; Astra high for difficult reasoning, architecture, and material review. Respect explicit user model choices and available runtime options.
+Delegate independent parallel, long-running, or very large work without asking. Keep simple or tightly coupled work on the main agent.
+Select workers by task clarity: fast_scan (Luna high) for searches and read-only scans; routine_worker (Luna max) for well-defined implementation, tests, and fixes with clear acceptance criteria; judgment_worker (Sol medium) for work that needs more judgment across requirements or interfaces; deep_worker (Astra high) for difficult reasoning, architecture, and material review. Respect explicit user model choices and available runtime options.
 Resume on worker completion events. End the coordinator turn only when the runtime supports waking it on completion; otherwise use the runtime's event wait. Do not poll for routine status.
 Use plugin-specific agents only when their owning skill is active.
 Keep product, permission, release, and other material approvals with the user.
@@ -15,18 +15,17 @@ Keep product, permission, release, and other material approvals with the user.
 
 sandbox_mode = "workspace-write"
 approval_policy = "on-request"
+approvals_reviewer = "auto_review"
 
 [agents]
 default_subagent_model = "gpt-6-luna"
-default_subagent_reasoning_effort = "max"
+default_subagent_reasoning_effort = "high"
 max_concurrent_threads_per_session = 2
-max_depth = 1
 
 [features]
 chronicle = true
 default_mode_request_user_input = true
-guardian_approval = false
-hooks = true
+guardian_approval = true
 memories = true
 prevent_idle_sleep = true
 

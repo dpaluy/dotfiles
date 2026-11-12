@@ -18,8 +18,8 @@
       "kimi-coding/k3:high"
     ],
     "tasker": [
-      "openai-codex/gpt-6-luna:max",
-      "zai/glm-5.3-flash:max"
+      "openai-codex/gpt-6-luna:high",
+      "zai/glm-5.3-flash:high"
     ],
     "writer": [
       "openai-codex/gpt-6.1-sol:medium"
@@ -29,7 +29,7 @@
       "openai-codex/gpt-6.1-sol:xhigh"
     ],
     "reviewer-fast": [
-      "zai/glm-5.3-flash:max"
+      "zai/glm-5.3-flash:high"
     ]
   },
   "providers": {

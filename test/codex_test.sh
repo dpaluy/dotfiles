@@ -42,7 +42,7 @@ root = Path(os.environ["ROOT_DIR"])
 config = tomllib.loads((root / "codex/config.toml").read_text())
 
 expected_defaults = {
-    "model": "gpt-6-astra",
+    "model": "gpt-6.1-sol",
     "model_reasoning_effort": "medium",
     "service_tier": "default",
 }
@@ -56,11 +56,15 @@ assert config.get("sandbox_mode") == "workspace-write", (
 assert config.get("approval_policy") == "on-request", (
     "codex config approval_policy must be on-request"
 )
+assert config.get("approvals_reviewer") == "auto_review"
+assert config["features"].get("guardian_approval") is True, (
+    "auto_review needs guardian_approval left on"
+)
 assert "model_catalog_json" not in config, "Codex model catalog override must stay machine-local"
 assert "material approvals" in config["developer_instructions"]
 agent_defaults = config["agents"]
 assert agent_defaults.get("default_subagent_model") == "gpt-6-luna"
-assert agent_defaults.get("default_subagent_reasoning_effort") == "max"
+assert agent_defaults.get("default_subagent_reasoning_effort") == "high"
 assert agent_defaults.get("max_concurrent_threads_per_session") == 2
 multi_agent_v2 = config["features"]["multi_agent_v2"]
 assert multi_agent_v2.get("hide_spawn_agent_metadata") is False
@@ -74,9 +78,15 @@ expected_agents = {
         "service_tier": "default",
         "sandbox_mode": "workspace-write",
     },
+    "judgment_worker": {
+        "model": "gpt-6.1-sol",
+        "model_reasoning_effort": "medium",
+        "service_tier": "default",
+        "sandbox_mode": "workspace-write",
+    },
     "fast_scan": {
         "model": "gpt-6-luna",
-        "model_reasoning_effort": "max",
+        "model_reasoning_effort": "high",
         "service_tier": "default",
         "sandbox_mode": "read-only",
     },
@@ -107,6 +117,8 @@ for path in sorted((root / "codex/agents").glob("*.toml")):
 assert agent_names == set(expected_agents), "dotfiles-owned Codex agent inventory changed"
 
 assert not (root / "codex/sol-advisor.config.toml").exists()
+astra_profile = tomllib.loads((root / "codex/astra.config.toml").read_text())
+assert astra_profile == {"model": "gpt-6-astra", "model_reasoning_effort": "medium"}
 assert "sol-advisor@sol-advisor" not in config.get("plugins", {})
 
 skill_root = root / "codex/skills/orchestrate"
@@ -144,31 +156,60 @@ check_codex_installer_migration() {
     mkdir -p "$sandbox/home/.codex/skills/orchestrate"
     printf 'user owned\n' > "$sandbox/home/.codex/skills/orchestrate/SKILL.md"
     printf '%s\n' \
-        'model = "gpt-6.1-sol"' \
+        'model = "gpt-5.5"' \
         'sandbox_mode = "danger-full-access"' \
         'approval_policy = "never"' \
         '[features]' \
-        'guardian_approval = true' \
+        'guardian_approval = false' \
         '[features.multi_agent_v2]' \
         'enabled = true' \
         'hide_spawn_agent_metadata = false' \
         'tool_namespace = "agents"' \
         '[mcp_servers.example]' \
         'enabled = true' \
+        '[projects."/tmp/example"]' \
+        'trust_level = "trusted"' \
         > "$live_config"
+
+    # Declining the sync leaves the copied config byte-identical apart from the
+    # deprecated-key migrations.
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" bash -c '
+        set -Eeuo pipefail
+        header() { :; }
+        info() { :; }
+        warn() { :; }
+        ask_yes_no() { return 1; }
+        create_symlink() {
+            mkdir -p "$(dirname "$2")"
+            ln -sfn "$1" "$2"
+        }
+        DOTFILES_DIR="$1"
+        source "$1/install/codex.sh"
+    ' _ "$ROOT_DIR"
+    grep -q 'sandbox_mode = "danger-full-access"' "$live_config" \
+        || fail "declined sync must not rewrite sandbox_mode"
+    grep -q 'model = "gpt-5.5"' "$live_config" \
+        || fail "declined sync must not rewrite model"
+    grep -q 'guardian_approval = false' "$live_config" \
+        || fail "declined sync must not rewrite guardian_approval"
+    ! compgen -G "$live_config.backup.*" > /dev/null \
+        || fail "declined sync must not create a backup"
 
     HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" bash -c '
         set -Eeuo pipefail
         header() { :; }
         info() { :; }
         warn() { :; }
+        ask_yes_no() { return 0; }
         create_symlink() {
             mkdir -p "$(dirname "$2")"
-            ln -s "$1" "$2"
+            ln -sfn "$1" "$2"
         }
         DOTFILES_DIR="$1"
         source "$1/install/codex.sh"
     ' _ "$ROOT_DIR"
+    compgen -G "$live_config.backup.*" > /dev/null \
+        || fail "accepted sync must keep a backup"
 
     LIVE_CONFIG="$live_config" ROOT_DIR="$ROOT_DIR" HOME="$sandbox/home" python3 - <<'PY'
 import os
@@ -179,8 +220,15 @@ import tomllib
 root = Path(os.environ["ROOT_DIR"])
 home = Path(os.environ["HOME"])
 config = tomllib.loads(Path(os.environ["LIVE_CONFIG"]).read_text())
+source = tomllib.loads((root / "codex/config.toml").read_text())
+for key in ("model", "model_reasoning_effort", "sandbox_mode", "approval_policy", "approvals_reviewer", "developer_instructions"):
+    assert config[key] == source[key], f"managed key {key} was not synced"
 assert config["sandbox_mode"] == "workspace-write"
 assert config["approval_policy"] == "on-request"
+for key in ("default_subagent_model", "default_subagent_reasoning_effort"):
+    assert config["agents"][key] == source["agents"][key], f"managed key agents.{key} was not synced"
+assert "max_depth" not in config["agents"], "unmanaged agents keys must not be added"
+assert config["projects"]["/tmp/example"]["trust_level"] == "trusted"
 assert config["features"]["guardian_approval"] is True
 assert "enabled" not in config["features"]["multi_agent_v2"]
 assert config["mcp_servers"]["example"]["enabled"] is True

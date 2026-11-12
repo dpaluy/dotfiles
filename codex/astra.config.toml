@@ -1,0 +1,5 @@
+# Profile for the hardest work: codex --profile astra
+# The default model is gpt-6.1-sol; escalate here when a failed run costs more
+# than the price difference.
+model = "gpt-6-astra"
+model_reasoning_effort = "medium"
