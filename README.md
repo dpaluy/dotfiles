@@ -173,7 +173,7 @@ Optional AI coding assistants (prompted during install):
 | [OpenCode](https://opencode.ai/) | Open-source coding CLI |
 | [OMP (Oh My Pi)](https://omp.sh/) | Coding agent with the IDE wired in |
 | [Kimi Code](https://www.kimi.com/code) | Kimi K2.5 coding CLI |
-| [Oh My OpenAgent](https://ohmyopenagent.com/) | Multi-agent orchestration plugin for OpenCode |
+| [oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim) | Agent orchestration plugin for OpenCode 1 and 2 |
 | [Oh My Codex](https://github.com/Yeachan-Heo/oh-my-codex) | Structured workflows and skills for Codex CLI |
 | [pi](https://github.com/mariozechner/pi-coding-agent) | Coding agent |
 | [qmd](https://github.com/tobilu/qmd) | Local markdown search (installed with Bun) |

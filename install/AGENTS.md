@@ -21,7 +21,7 @@ install/
 ├── symlinks.sh     ← Config links/wrappers (zsh, git, ghostty, etc.)
 ├── claude.sh       ← Claude Code config (CLAUDE.md, hooks, settings.json)
 ├── codex.sh        ← Codex config (AGENTS.md, config.toml, hooks)
-├── opencode.sh     ← OpenCode config (AGENTS.md, opencode.json)
+├── opencode.sh     ← OpenCode config (AGENTS.md, opencode.json, oh-my-opencode-slim.json)
 └── local-config.sh ← Template creation in ~/.local/dotfiles/
 ```
 

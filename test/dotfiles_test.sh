@@ -517,6 +517,68 @@ check_pi_package_sources() {
     ' "$ROOT_DIR/pi/settings.json" || fail "shared settings must load only the durable subagent provider"
 }
 
+check_opencode_install() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local live="$sandbox/home/.config/opencode"
+    mkdir -p "$sandbox/bin" "$live" "$sandbox/home/.local/dotfiles"
+    : > "$sandbox/bin/opencode2"
+    chmod +x "$sandbox/bin/opencode2"
+    printf '%s\n' '{"plugin":["oh-my-openagent","oh-my-opencode@3.1.0","local-plugin",["./p.ts",{"a":1}],"oh-my-opencode-slim"],"theme":"local","mcp":{"qmd":{"type":"remote","url":"http://old","enabled":false},"mine":{"type":"local","command":["x"]}}}' \
+        > "$live/opencode.json"
+    printf '%s\n' '{"plugin":["oh-my-openagent","other-tui"]}' > "$live/tui.json"
+    printf '%s\n' '{"agents":{}}' > "$live/oh-my-openagent.json"
+    printf '%s\n' '{"preset":"old"}' > "$live/oh-my-opencode-slim.json"
+    printf '%s\n' '{"presets":{"openai":{"explorer":{"variant":"low"}}}}' \
+        > "$sandbox/home/.local/dotfiles/oh-my-opencode-slim.local.json"
+
+    run_opencode_installer() {
+        HOME="$sandbox/home" PATH="$sandbox/bin:/usr/bin:/bin" bash -c '
+            set -Eeuo pipefail
+            header() { :; }
+            info() { :; }
+            warn() { :; }
+            create_symlink() { mkdir -p "$(dirname "$2")"; ln -sfn "$1" "$2"; }
+            DOTFILES_DIR="$1"
+            source "$1/install/opencode.sh"
+        ' _ "$ROOT_DIR"
+    }
+
+    run_opencode_installer
+    local pinned
+    pinned="$(jq -r '.plugin[0]' "$ROOT_DIR/opencode/opencode.json")"
+    [[ "$pinned" == oh-my-opencode-slim@* ]] || fail "shared OpenCode config must pin oh-my-opencode-slim"
+    jq -e --arg pinned "$pinned" '
+        .plugin == ["local-plugin", ["./p.ts", {"a": 1}], $pinned]
+        and .theme == "local"
+        and .mcp.qmd.url == "http://localhost:8181/mcp"
+        and .mcp.mine.command == ["x"]
+    ' "$live/opencode.json" > /dev/null || fail "OpenCode config merge lost local settings or kept a retired plugin"
+    jq -e '.plugin == ["other-tui"]' "$live/tui.json" > /dev/null \
+        || fail "retired plugin was not removed from tui.json"
+    [[ ! -e "$live/oh-my-openagent.json" ]] || fail "retired plugin config is still live"
+    compgen -G "$live/oh-my-openagent.json.retired.*" > /dev/null \
+        || fail "retired plugin config was deleted instead of kept"
+    jq -e '
+        .preset == "openai"
+        and .presets.openai.explorer.variant == "low"
+        and .presets.openai.explorer.model == "openai/gpt-6-luna"
+        and (.presets.openai | keys) == ["designer", "explorer", "fixer", "oracle", "orchestrator"]
+    ' "$live/oh-my-opencode-slim.json" > /dev/null || fail "slim config did not merge shared defaults with the local override"
+    compgen -G "$live/oh-my-opencode-slim.json.backup.*" > /dev/null \
+        || fail "replaced slim config was not backed up"
+    [[ "$live/AGENTS.md" -ef "$ROOT_DIR/opencode/AGENTS.md" ]] || fail "OpenCode AGENTS.md was not linked"
+    [[ ! -e "$ROOT_DIR/opencode/oh-my-openagent.json" ]] || fail "retired plugin config is still in dotfiles"
+
+    # A second run changes nothing and creates no further backups.
+    local before after
+    before="$(cd "$live" && ls -1 | sort && cat opencode.json tui.json oh-my-opencode-slim.json)"
+    sleep 1
+    run_opencode_installer
+    after="$(cd "$live" && ls -1 | sort && cat opencode.json tui.json oh-my-opencode-slim.json)"
+    [[ "$before" == "$after" ]] || fail "OpenCode installer is not idempotent"
+}
+
 check_skills_help() {
     make_temp_dir
     local output
@@ -598,6 +660,7 @@ run_check "installer helpers" check_install_helpers
 run_check "remote script failure handling" check_remote_script_failure_handling
 run_check "wrapper and Pi settings preservation" check_wrapper_and_pi_settings_preservation
 run_check "Pi package sources" check_pi_package_sources
+run_check "OpenCode config and plugin migration" check_opencode_install
 run_check "skills installer help" check_skills_help
 run_check "zsh PATH setup" check_zsh_path_setup
 run_check "hunk PATH setup" check_hunk_path_setup

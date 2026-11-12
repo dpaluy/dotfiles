@@ -271,19 +271,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 fi
 
-# Oh My OpenAgent — agent harness plugin for OpenCode
-if command -v opencode &>/dev/null; then
-    if bun pm ls -g 2>/dev/null | grep -q "oh-my-openagent"; then
-        info "Oh My OpenAgent already installed"
-    elif ask_yes_no "Install Oh My OpenAgent (multi-agent orchestration plugin for OpenCode)?"; then
-        if ensure_bun; then
-            info "Installing Oh My OpenAgent..."
-            bunx oh-my-openagent install || warn "Oh My OpenAgent installation failed"
-        else
-            warn "bun not found after installer setup. Check mise installation before installing Oh My OpenAgent."
-        fi
-    fi
-fi
+# oh-my-opencode-slim — agent orchestration plugin for OpenCode 1 and 2.
+# install/opencode.sh registers the pinned plugin and installs its config, so no
+# plugin installer runs here. OpenCode downloads the package on next start.
 
 # Oh My Codex — workflow layer for OpenAI Codex CLI
 if command -v omx &>/dev/null; then

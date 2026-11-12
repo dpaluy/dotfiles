@@ -181,10 +181,6 @@ BUN_GLOBALS=(
     https://github.com/tobi/qmd
 )
 
-if command -v opencode &>/dev/null; then
-    BUN_GLOBALS+=(oh-my-openagent)
-fi
-
 if command -v codex &>/dev/null; then
     BUN_GLOBALS+=(oh-my-codex)
 fi

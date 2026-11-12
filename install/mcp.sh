@@ -174,14 +174,6 @@ TOML
         if [[ "${perplexity_choices:-}" == *"OpenCode"* ]]; then
             oc_config="$HOME/.config/opencode/opencode.json"
             if [[ -f "$oc_config" ]] && command -v jq &>/dev/null; then
-                # De-symlink if needed (opencode.json may be symlinked from dotfiles)
-                if [[ -L "$oc_config" ]]; then
-                    tmp="$(mktemp)"
-                    cat "$oc_config" > "$tmp"
-                    rm "$oc_config"
-                    mv "$tmp" "$oc_config"
-                fi
-
                 jq --arg shell "$perplexity_mcp_shell" \
                     '.mcp.perplexity = {"type":"local","command":["zsh","-lc",$shell],"enabled":true}' \
                     "$oc_config" > "$oc_config.tmp" && mv "$oc_config.tmp" "$oc_config"
