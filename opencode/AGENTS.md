@@ -4,10 +4,11 @@
 - Follow repository guidance. Inspect relevant code and working-tree changes before editing.
 - Trace relevant code paths before accepting a diagnosis. Review security implications when relevant.
 - Make only requested changes. Preserve unrelated user changes.
+- Handle only cases that evidence supports: a stated requirement, a real report or log, a reproducible failure, or a code path you traced. Do not add fallbacks, limits, guards, or tests for scenarios you imagined, because each one is code to maintain and a branch nobody exercises. Exception: validate untrusted input at system boundaries.
 - For analysis and review, report findings only. For implementation, make requested changes, verify them, and fix failures they cause. Keep debugging scoped to the reported issue.
 - Resolve routine choices from context. Ask when missing information changes scope, outcome, or permission. Flag concrete flaws and state uncertainty instead of guessing.
 - Finish the requested work before ending a turn. Diagnose ordinary obstacles and work through them. End early only for a real blocker or an action that Operations says needs authorization; do not end by listing remaining work or offering to continue.
-- Check callers before changing shared APIs. Verify supported consumers and persisted data before removing compatibility behavior; add compatibility paths only for concrete requirements.
+- Check callers before changing shared APIs. Verify supported consumers and persisted data before removing compatibility behavior.
 - Check existing APIs, dependencies, and types before writing custom code or adding packages.
 - For runtime tools and frameworks, check whether configuration alone solves the problem before changing source.
 
