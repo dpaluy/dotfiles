@@ -58,6 +58,7 @@ fi
 - `starship/starship.toml` → `~/.config/starship.toml`
 - `ssh/config` → included in `~/.ssh/config` via `Include` (preserves local hosts)
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md` (via `install/claude.sh`)
+- `claude/agents/*.md` → `~/.claude/agents/*.md` (individual agent symlinks via `install/claude.sh`; `Explore` uses Haiku)
 - `claude/hooks/*.sh` → `~/.claude/hooks/*.sh` (optional, registers in settings.json)
 - `codex/config.toml` → `~/.codex/config.toml` (copied, not symlinked)
 - `codex/*.config.toml` → `~/.codex/*.config.toml` (named profiles copied, not symlinked)

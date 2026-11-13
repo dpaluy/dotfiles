@@ -15,6 +15,13 @@ mkdir -p "$HOME/.claude"
 # CLAUDE.md (global instructions)
 create_symlink "$DOTFILES_DIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 
+# Custom agents (Explore stays on Haiku rather than inheriting a higher-cost model)
+mkdir -p "$HOME/.claude/agents"
+for agent in "$DOTFILES_DIR/claude/agents/"*.md; do
+    [[ -f "$agent" ]] || continue
+    create_symlink "$agent" "$HOME/.claude/agents/$(basename "$agent")"
+done
+
 # Output styles
 if [[ -d "$DOTFILES_DIR/claude/styles" ]]; then
     mkdir -p "$HOME/.claude/output-styles"
