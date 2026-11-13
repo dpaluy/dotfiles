@@ -97,7 +97,10 @@ fi
 
 # Claude Code settings
 # Policy: stay on Claude Code defaults so new models and features are picked up.
-#   - No model pin: the account default tracks the current model.
+#   - Main model is the "opus" alias, so it follows new Opus releases.
+#   - Advisor is pinned to claude-fable-5-2 (consulted when choosing an approach,
+#     on recurring errors, and before declaring work done). Needs Claude Code
+#     v2.1.321+ and stays off if CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC is set.
 #   - No effort env var: CLAUDE_CODE_EFFORT_LEVEL overrides /effort and per-model
 #     modelSettings. Use /effort, which saves a level per model.
 #   - No context or compaction env vars: current models default to the 1M window
@@ -119,7 +122,8 @@ if command -v jq &>/dev/null; then
     already_configured=false
     if [[ -f "$settings" ]] && jq -e --argjson legacy "$legacy_env" '
             ([(.env // {}) | to_entries[] | select($legacy[.key] == .value)] | length == 0)
-            and .model != "claude-sonnet-4-6"
+            and .model == "opus"
+            and .advisorModel == "claude-fable-5-2"
             and .env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS == "1"
             and (.attribution | type == "object" and has("sessionUrl"))' "$settings" &>/dev/null; then
         already_configured=true
@@ -127,12 +131,13 @@ if command -v jq &>/dev/null; then
 
     if $already_configured; then
         info "Claude Code settings already configured"
-    elif ask_yes_no "Apply recommended Claude Code settings (remove outdated model pin and env overrides, enable agent teams, no commit attribution)?"; then
+    elif ask_yes_no "Apply recommended Claude Code settings (Opus with Fable 5.2 advisor, remove outdated env overrides, enable agent teams, no commit attribution)?"; then
         [[ -f "$settings" ]] || echo '{}' > "$settings"
         jq --argjson legacy "$legacy_env" '
             .env = ((.env // {}) | with_entries(select($legacy[.key] != .value)))
             | .env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
-            | if .model == "claude-sonnet-4-6" then del(.model) else . end
+            | .model = "opus"
+            | .advisorModel = "claude-fable-5-2"
             | .attribution = ((.attribution // {}) | if type == "object" then . else {} end
                 | .commit //= "" | .pr //= ""
                 | if has("sessionUrl") then . else .sessionUrl = false end)' \
