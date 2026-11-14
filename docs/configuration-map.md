@@ -31,10 +31,12 @@ install/
 ├── multiplexer.sh      ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux) + herdr-ohmyzsh plugin
 ├── ai-tools.sh         ← AI tool selection + installation orchestrator
 ├── omp.sh             ← OMP plugins
+├── pi.sh              ← pi extensions (packages from pi/settings.json) + durable-subagents config
 ├── mcp.sh              ← MCP server registration (qmd, Perplexity)
 ├── skills.sh           ← Agent skills setup (dotfiles + external repos)
 ├── claude.sh           ← Claude Code config (CLAUDE.md, hooks, settings.json)
 ├── codex.sh            ← Codex config (AGENTS.md, config.toml)
+├── codex-config-sync.py ← Managed-key drift report/sync for the copied Codex config (used by codex.sh)
 ├── opencode.sh         ← OpenCode config (AGENTS.md, opencode.json)
 ├── symlinks.sh         ← Config symlinks
 └── local-config.sh     ← Template creation
