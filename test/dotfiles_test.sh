@@ -143,6 +143,45 @@ SH
 }
 
 
+check_omp_plugin_opt_in() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local fake_bin="$sandbox/bin"
+    local invocation="$sandbox/omp-invocation"
+
+    mkdir -p "$fake_bin"
+    cat > "$fake_bin/omp" <<'SH'
+#!/usr/bin/env bash
+printf '%s\n' "$*" > "$OMP_INVOCATION"
+SH
+    chmod +x "$fake_bin/omp"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" OMP_INVOCATION="$invocation" \
+        bash -c '
+            set -Eeuo pipefail
+            source "$1/install/lib.sh"
+            has_gum() { return 1; }
+            source "$1/install/omp.sh"
+        ' _ "$ROOT_DIR"
+
+    [[ ! -e "$invocation" ]] \
+        || fail "OMP plugin installed without explicit opt-in"
+
+    HOME="$sandbox/home" PATH="$fake_bin:/usr/bin:/bin" \
+        DOTFILES_DIR="$ROOT_DIR" OMP_INVOCATION="$invocation" \
+        bash -c '
+            set -Eeuo pipefail
+            source "$1/install/lib.sh"
+            has_gum() { return 1; }
+            install_omp=true
+            source "$1/install/omp.sh"
+        ' _ "$ROOT_DIR"
+
+    [[ "$(<"$invocation")" == plugin\ install\ --force\ github:praneybehl/omp-reflect#* ]] \
+        || fail "OMP plugin was not installed after explicit opt-in"
+}
+
 check_pi_global_install() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -676,6 +715,7 @@ check_claude_environment_hook() {
 trap cleanup EXIT
 
 run_check "OMP installer selection" check_omp_install_selection
+run_check "OMP plugin requires explicit opt-in" check_omp_plugin_opt_in
 run_check "Collie installer selection" check_collie_install_selection
 run_check "Open Code Review installer selection" check_ocr_install_selection
 run_check "Pi global install replaces npx wrapper" check_pi_global_install

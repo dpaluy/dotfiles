@@ -84,7 +84,7 @@ fi
 - `pi/durable-subagents/config.json` → `${DSA_HOME:-~/.pi/durable-subagents}/config.json` (copied only when absent; runtime state and local configuration are preserved)
 - `npm:pi-durable-subagents` → the sole subagent provider installed via `install/pi.sh`; exposes `subagents` and `/subagents`. Legacy subagent-manager files are left on disk but no longer loaded by shared settings.
 - `npm:pi-claude-bridge` → installed as a Pi package via `install/pi.sh`
-- `praneybehl/omp-reflect` → installed at a pinned revision via `install/omp.sh`
+- `praneybehl/omp-reflect` → installed at a pinned revision via `install/omp.sh` only when OMP is explicitly selected during AI tool installation (`install_omp=true`; default false)
 - `robbyrussell/herdr-ohmyzsh` → installed via `install/multiplexer.sh` (`herdr plugin install`) when herdr is present
 - `pi/AGENTS.md` → `~/.pi/agent/AGENTS.md` (if pi installed)
 - `agents/skills/*` → `~/.agents/skills/*` (individual skill symlinks via `install/skills.sh`)
