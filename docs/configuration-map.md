@@ -29,6 +29,7 @@ install/
 ├── common.sh           ← Oh My Zsh, Atuin, shell setup
 ├── cli-tools.sh        ← Optional CLI tools (Google CLI, etc.)
 ├── multiplexer.sh      ← Optional multiplexer (tmux/herdr) + tmux companions (sesh, gitmux) + herdr-ohmyzsh plugin
+├── rex.sh             ← Optional Rex configuration symlink
 ├── ai-tools.sh         ← AI tool selection + installation orchestrator
 ├── omp.sh             ← OMP plugins
 ├── pi.sh              ← pi extensions (packages from pi/settings.json) + durable-subagents config
@@ -57,6 +58,7 @@ fi
 - `git/ignore` → `~/.config/git/ignore`
 - `ghostty/config` → `~/.config/ghostty/config`
 - `tmux/tmux.conf` → `~/.tmux.conf`
+- `rex/init.lua` → `${XDG_CONFIG_HOME:-~/.config}/rex/init.lua` (opt-in via `install/rex.sh`; app installation is separate)
 - `starship/starship.toml` → `~/.config/starship.toml`
 - `ssh/config` → included in `~/.ssh/config` via `Include` (preserves local hosts)
 - `claude/CLAUDE.md` → `~/.claude/CLAUDE.md` (via `install/claude.sh`)

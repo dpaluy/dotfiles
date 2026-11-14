@@ -30,6 +30,33 @@ run_check() {
     echo "ok - $name"
 }
 
+check_rex_config_setup() {
+    make_temp_dir
+    local sandbox="$TEST_TEMP_DIR"
+    local config_dir
+
+    for config_dir in "$sandbox/home/.config" "$sandbox/xdg"; do
+        printf 'y\n' | HOME="$sandbox/home" XDG_CONFIG_HOME="$config_dir" \
+            DOTFILES_DIR="$ROOT_DIR" bash -c '
+                source "$1/install/lib.sh"
+                has_gum() { return 1; }
+                source "$1/install/rex.sh"
+            ' _ "$ROOT_DIR" >/dev/null
+        [[ -L "$config_dir/rex/init.lua" ]] \
+            && [[ "$(readlink "$config_dir/rex/init.lua")" == "$ROOT_DIR/rex/init.lua" ]] \
+            || fail "Rex config was not linked at the selected XDG location"
+    done
+
+    printf 'n\n' | HOME="$sandbox/declined" XDG_CONFIG_HOME="" \
+        DOTFILES_DIR="$ROOT_DIR" bash -c '
+            source "$1/install/lib.sh"
+            has_gum() { return 1; }
+            source "$1/install/rex.sh"
+        ' _ "$ROOT_DIR" >/dev/null
+    [[ ! -e "$sandbox/declined/.config/rex/init.lua" ]] \
+        || fail "Rex config was linked after declining setup"
+}
+
 check_qmd_skill_install() {
     make_temp_dir
     local sandbox="$TEST_TEMP_DIR"
@@ -652,6 +679,7 @@ run_check "OMP installer selection" check_omp_install_selection
 run_check "Collie installer selection" check_collie_install_selection
 run_check "Open Code Review installer selection" check_ocr_install_selection
 run_check "Pi global install replaces npx wrapper" check_pi_global_install
+run_check "Rex opt-in configuration" check_rex_config_setup
 run_check "herdr-ohmyzsh plugin install" check_herdr_ohmyzsh_plugin_install
 run_check "qmd skill install" check_qmd_skill_install
 run_check "installer helpers" check_install_helpers

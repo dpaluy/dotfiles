@@ -49,6 +49,9 @@ source "$SCRIPT_DIR/install/cli-tools.sh"
 # Terminal multiplexer (optional: tmux and/or herdr)
 source "$SCRIPT_DIR/install/multiplexer.sh"
 
+# Rex configuration (optional)
+source "$SCRIPT_DIR/install/rex.sh"
+
 # AI coding assistants + agent skills
 source "$SCRIPT_DIR/install/ai-tools.sh"
 
