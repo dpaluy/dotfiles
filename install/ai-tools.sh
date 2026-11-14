@@ -271,10 +271,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 fi
 
-# oh-my-opencode-slim — agent orchestration plugin for OpenCode 1 and 2.
-# install/opencode.sh registers the pinned plugin and installs its config, so no
-# plugin installer runs here. OpenCode downloads the package on next start.
-
 # Oh My Codex — workflow layer for OpenAI Codex CLI
 if command -v omx &>/dev/null; then
     info "Oh My Codex already installed"

@@ -524,9 +524,9 @@ check_opencode_install() {
     mkdir -p "$sandbox/bin" "$live" "$sandbox/home/.local/dotfiles"
     : > "$sandbox/bin/opencode2"
     chmod +x "$sandbox/bin/opencode2"
-    printf '%s\n' '{"plugin":["oh-my-openagent","oh-my-opencode@3.1.0","local-plugin",["./p.ts",{"a":1}],"oh-my-opencode-slim"],"theme":"local","mcp":{"qmd":{"type":"remote","url":"http://old","enabled":false},"mine":{"type":"local","command":["x"]}}}' \
+    printf '%s\n' '{"plugin":["oh-my-openagent","oh-my-opencode@3.1.0","oh-my-opencode-slim@3.0.7","local-plugin",["./p.ts",{"a":1}]],"theme":"local","mcp":{"qmd":{"type":"remote","url":"http://old","enabled":false},"mine":{"type":"local","command":["x"]}}}' \
         > "$live/opencode.json"
-    printf '%s\n' '{"plugin":["oh-my-openagent","other-tui"]}' > "$live/tui.json"
+    printf '%s\n' '{"plugin":["oh-my-openagent","oh-my-opencode-slim","other-tui"]}' > "$live/tui.json"
     printf '%s\n' '{"agents":{}}' > "$live/oh-my-openagent.json"
     printf '%s\n' '{"preset":"old"}' > "$live/oh-my-opencode-slim.json"
     printf '%s\n' '{"presets":{"openai":{"explorer":{"variant":"low"}}}}' \
@@ -545,11 +545,10 @@ check_opencode_install() {
     }
 
     run_opencode_installer
-    local pinned
-    pinned="$(jq -r '.plugin[0]' "$ROOT_DIR/opencode/opencode.json")"
-    [[ "$pinned" == oh-my-opencode-slim@* ]] || fail "shared OpenCode config must pin oh-my-opencode-slim"
-    jq -e --arg pinned "$pinned" '
-        .plugin == ["local-plugin", ["./p.ts", {"a": 1}], $pinned]
+    jq -e '.plugin == []' "$ROOT_DIR/opencode/opencode.json" > /dev/null \
+        || fail "shared OpenCode config must not pin any plugin"
+    jq -e '
+        .plugin == ["local-plugin", ["./p.ts", {"a": 1}]]
         and .theme == "local"
         and .mcp.qmd.url == "http://localhost:8181/mcp"
         and .mcp.mine.command == ["x"]
@@ -559,23 +558,22 @@ check_opencode_install() {
     [[ ! -e "$live/oh-my-openagent.json" ]] || fail "retired plugin config is still live"
     compgen -G "$live/oh-my-openagent.json.retired.*" > /dev/null \
         || fail "retired plugin config was deleted instead of kept"
-    jq -e '
-        .preset == "openai"
-        and .presets.openai.explorer.variant == "low"
-        and .presets.openai.explorer.model == "openai/gpt-6-luna"
-        and (.presets.openai | keys) == ["designer", "explorer", "fixer", "oracle", "orchestrator"]
-    ' "$live/oh-my-opencode-slim.json" > /dev/null || fail "slim config did not merge shared defaults with the local override"
-    compgen -G "$live/oh-my-opencode-slim.json.backup.*" > /dev/null \
-        || fail "replaced slim config was not backed up"
+    [[ ! -e "$live/oh-my-opencode-slim.json" ]] || fail "removed slim config is still live"
+    compgen -G "$live/oh-my-opencode-slim.json.retired.*" > /dev/null \
+        || fail "removed slim config was deleted instead of kept"
+    printf '%s\n' '{"presets":{"openai":{"explorer":{"variant":"low"}}}}' \
+        | cmp - "$sandbox/home/.local/dotfiles/oh-my-opencode-slim.local.json" \
+        || fail "installer touched the retired local override"
     [[ "$live/AGENTS.md" -ef "$ROOT_DIR/opencode/AGENTS.md" ]] || fail "OpenCode AGENTS.md was not linked"
     [[ ! -e "$ROOT_DIR/opencode/oh-my-openagent.json" ]] || fail "retired plugin config is still in dotfiles"
+    [[ ! -e "$ROOT_DIR/opencode/oh-my-opencode-slim.json" ]] || fail "removed plugin config is still in dotfiles"
 
     # A second run changes nothing and creates no further backups.
     local before after
-    before="$(cd "$live" && ls -1 | sort && cat opencode.json tui.json oh-my-opencode-slim.json)"
+    before="$(cd "$live" && ls -1 | sort && cat opencode.json tui.json)"
     sleep 1
     run_opencode_installer
-    after="$(cd "$live" && ls -1 | sort && cat opencode.json tui.json oh-my-opencode-slim.json)"
+    after="$(cd "$live" && ls -1 | sort && cat opencode.json tui.json)"
     [[ "$before" == "$after" ]] || fail "OpenCode installer is not idempotent"
 }
 

@@ -35,7 +35,7 @@ install/
 ├── skills.sh           ← Agent skills setup (dotfiles + external repos)
 ├── claude.sh           ← Claude Code config (CLAUDE.md, hooks, settings.json)
 ├── codex.sh            ← Codex config (AGENTS.md, config.toml)
-├── opencode.sh         ← OpenCode config (AGENTS.md, opencode.json, oh-my-opencode-slim.json)
+├── opencode.sh         ← OpenCode config (AGENTS.md, opencode.json)
 ├── symlinks.sh         ← Config symlinks
 └── local-config.sh     ← Template creation
 ```
@@ -67,7 +67,6 @@ fi
 - `codex/AGENTS.md` → `~/.codex/AGENTS.md` (if codex installed)
 - `opencode/AGENTS.md` → `~/.config/opencode/AGENTS.md` (if opencode installed)
 - `opencode/opencode.json` → merged into `~/.config/opencode/opencode.json` (local values win, except the qmd MCP entry and the plugin list, which dotfiles owns; backup kept on change)
-- `opencode/oh-my-opencode-slim.json` (+ optional `~/.local/dotfiles/oh-my-opencode-slim.local.json`) → `~/.config/opencode/oh-my-opencode-slim.json` (replaced on change, backup kept)
 - `gh-dash/config.yml` → `~/.config/gh-dash/config.yml`
 - `worktrunk/config.toml` → `~/.config/worktrunk/config.toml` (if wt installed)
 - `hunk/config.toml` → `~/.config/hunk/config.toml` (if hunk installed)

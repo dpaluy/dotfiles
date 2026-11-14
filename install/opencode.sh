@@ -35,39 +35,43 @@ install_opencode_json() {
 # AGENTS.md (global instructions)
 create_symlink "$DOTFILES_DIR/opencode/AGENTS.md" "$opencode_dir/AGENTS.md"
 
-# Oh My OpenAgent (formerly oh-my-opencode) is retired: its plugin does not run
-# on OpenCode 2. Rename its live config out of the way so nothing reads it.
-for retired_omo in oh-my-openagent.json oh-my-openagent.jsonc oh-my-opencode.json oh-my-opencode.jsonc; do
+# Oh My OpenAgent (formerly oh-my-opencode) and oh-my-opencode-slim are
+# retired: their plugins do not run on OpenCode 2. Rename their live configs
+# out of the way so nothing reads them.
+for retired_omo in oh-my-openagent.json oh-my-openagent.jsonc oh-my-opencode.json oh-my-opencode.jsonc oh-my-opencode-slim.json oh-my-opencode-slim.jsonc; do
     if [[ -f "$opencode_dir/$retired_omo" ]]; then
         command mv -f "$opencode_dir/$retired_omo" "$opencode_dir/$retired_omo.retired.$opencode_stamp"
         info "Retired ~/.config/opencode/$retired_omo"
     fi
 done
-if command -v bun &>/dev/null && bun pm ls -g 2>/dev/null | grep -q "oh-my-openagent"; then
-    bun remove -g oh-my-openagent &>/dev/null \
-        && info "Removed the oh-my-openagent global package" \
-        || warn "Could not remove the oh-my-openagent global package; run: bun remove -g oh-my-openagent"
-fi
-if [[ -f "$HOME/.local/dotfiles/oh-my-openagent.local.json" ]]; then
-    warn "~/.local/dotfiles/oh-my-openagent.local.json is no longer read; move private model routing to ~/.local/dotfiles/oh-my-opencode-slim.local.json"
-fi
+for retired_pkg in oh-my-openagent oh-my-opencode-slim; do
+    if command -v bun &>/dev/null && bun pm ls -g 2>/dev/null | grep -q "$retired_pkg"; then
+        bun remove -g "$retired_pkg" &>/dev/null \
+            && info "Removed the $retired_pkg global package" \
+            || warn "Could not remove the $retired_pkg global package; run: bun remove -g $retired_pkg"
+    fi
+done
+for retired_local in oh-my-openagent oh-my-opencode-slim; do
+    if [[ -f "$HOME/.local/dotfiles/$retired_local.local.json" ]]; then
+        warn "~/.local/dotfiles/$retired_local.local.json is no longer read; the plugin was removed, delete the file when ready"
+    fi
+done
 
 if ! command -v jq &>/dev/null; then
-    warn "jq not found — skipping OpenCode config, plugin registration, and oh-my-opencode-slim config"
+    warn "jq not found — skipping OpenCode config and plugin cleanup"
     return 0 2>/dev/null || exit 0
 fi
 
 # Drops retired plugin entries from a plugin array and keeps everything else,
 # including [package, options] tuples.
 opencode_plugin_filter='
-    def retired: type == "string" and test("^oh-my-(openagent|opencode)(@.*)?$");
-    def slim: type == "string" and test("^oh-my-opencode-slim(@.*)?$");
+    def retired: type == "string" and test("^oh-my-(openagent|opencode(-slim)?)(@.*)?$");
 '
 
 # opencode.json: machine-local settings win over shared defaults, except for
 # the entries dotfiles owns: the qmd MCP server and the plugin list. Plugins
-# are merged by name, so local plugins stay, retired ones go, and the pinned
-# oh-my-opencode-slim entry replaces any other version of itself.
+# are merged by name, so local plugins stay, retired ones go, and any shared
+# pins replace other versions of themselves.
 opencode_config="$opencode_dir/opencode.json"
 shared_config="$DOTFILES_DIR/opencode/opencode.json"
 
@@ -81,11 +85,11 @@ else
         | ($shared * $live)
         | .mcp.qmd = $shared.mcp.qmd
         | .plugin = (
-            [($live.plugin // [])[] | select((retired or slim) | not)]
+            [($live.plugin // [])[] | select(retired | not)]
             + ($shared.plugin // [])
           )
         | if (.plugins | type) == "array"
-          then .plugins |= map(select((retired or slim) | not))
+          then .plugins |= map(select(retired | not))
           else . end
     ' "$shared_config" "$opencode_config" > "$tmp"; then
         install_opencode_json "$tmp" "$opencode_config" "~/.config/opencode/opencode.json"
@@ -107,22 +111,3 @@ if [[ -f "$opencode_tui" ]] && jq -e "$opencode_plugin_filter"'
     fi
 fi
 
-# oh-my-opencode-slim.json: owned by dotfiles. Private model routing, such as
-# cross-provider fallback chains, goes in the local override and is merged on
-# top. A live file that differs is backed up before it is replaced.
-slim_config="$opencode_dir/oh-my-opencode-slim.json"
-shared_slim="$DOTFILES_DIR/opencode/oh-my-opencode-slim.json"
-local_slim="$HOME/.local/dotfiles/oh-my-opencode-slim.local.json"
-
-tmp="$(mktemp)"
-if [[ -f "$local_slim" ]]; then
-    if jq -s '.[0] * .[1]' "$shared_slim" "$local_slim" > "$tmp"; then
-        install_opencode_json "$tmp" "$slim_config" "~/.config/opencode/oh-my-opencode-slim.json (shared + local)"
-    else
-        rm -f "$tmp"
-        warn "Could not merge oh-my-opencode-slim config; leaving the live file unchanged"
-    fi
-else
-    command cp -f "$shared_slim" "$tmp"
-    install_opencode_json "$tmp" "$slim_config" "~/.config/opencode/oh-my-opencode-slim.json"
-fi
