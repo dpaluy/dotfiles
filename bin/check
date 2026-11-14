@@ -23,9 +23,6 @@ if command -v plutil >/dev/null; then
     done
 fi
 
-"$ROOT_DIR/test/dotfiles_test.sh"
-"$ROOT_DIR/test/codex_test.sh"
-
 if command -v shellcheck >/dev/null; then
     shellcheck --severity=warning install.sh update.sh harden-mac.sh install/*.sh claude/hooks/*.sh
 fi

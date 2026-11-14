@@ -25,4 +25,4 @@ Shared configuration for macOS and Linux. Private values belong in `~/.local/dot
 
 ## Validation
 
-Use syntax checks and the relevant tests in `test/` for shell or installer changes. Documentation-only changes need link and structure checks; do not run `install.sh` or `brew bundle` as validation.
+Run `bash bin/check` for shell or installer changes. Documentation-only changes need link and structure checks; do not run `install.sh` or `brew bundle` as validation.

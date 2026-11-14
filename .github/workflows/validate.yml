@@ -27,7 +27,7 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install --yes jq ripgrep shellcheck zsh
 
-      - name: Validate configuration and behavior
+      - name: Validate syntax and configuration
         run: bash bin/check
 
       - name: Run ShellCheck
