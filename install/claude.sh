@@ -104,6 +104,7 @@ fi
 
 # Claude Code settings
 # Policy: stay on Claude Code defaults so new models and features are picked up.
+#   - Auto memory is disabled; persistent instructions are maintained explicitly.
 #   - Main model is the "opus" alias, so it follows new Opus releases.
 #   - Advisor is pinned to claude-fable-5-2 (consulted when choosing an approach,
 #     on recurring errors, and before declaring work done). Needs Claude Code
@@ -132,17 +133,19 @@ if command -v jq &>/dev/null; then
             and .model == "opus"
             and .advisorModel == "claude-fable-5-2"
             and .env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS == "1"
+            and .env.CLAUDE_CODE_DISABLE_AUTO_MEMORY == "1"
             and (.attribution | type == "object" and has("sessionUrl"))' "$settings" &>/dev/null; then
         already_configured=true
     fi
 
     if $already_configured; then
         info "Claude Code settings already configured"
-    elif ask_yes_no "Apply recommended Claude Code settings (Opus with Fable 5.2 advisor, remove outdated env overrides, enable agent teams, no commit attribution)?"; then
+    elif ask_yes_no "Apply recommended Claude Code settings (Opus with Fable 5.2 advisor, remove outdated env overrides, disable auto memory, enable agent teams, no commit attribution)?"; then
         [[ -f "$settings" ]] || echo '{}' > "$settings"
         jq --argjson legacy "$legacy_env" '
             .env = ((.env // {}) | with_entries(select($legacy[.key] != .value)))
             | .env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"
+            | .env.CLAUDE_CODE_DISABLE_AUTO_MEMORY = "1"
             | .model = "opus"
             | .advisorModel = "claude-fable-5-2"
             | .attribution = ((.attribution // {}) | if type == "object" then . else {} end
