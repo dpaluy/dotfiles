@@ -1,6 +1,6 @@
 {
   "defaultProvider": "openai",
-  "defaultModel": "gpt-6.2-sol",
+  "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "medium",
   "images": {
     "blockImages": false
