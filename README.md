@@ -21,7 +21,6 @@ cd ~/dotfiles
 - **LazyGit** for terminal-based git UI
 - **Starship** cross-shell prompt
 - **Atuin** for shell history sync
-- **tmux** terminal multiplexer
 - **Ghostty** terminal configuration
 - **Delta** for beautiful git diffs
 - **Hunk** for review-first terminal diffs
@@ -52,8 +51,6 @@ cd ~/dotfiles
 │   └── linux.conf                     # Linux-only Ghostty settings
 ├── starship/
 │   └── starship.toml                  # Prompt configuration
-├── tmux/
-│   └── tmux.conf                      # Tmux configuration
 ├── hypr/                              # Hyprland (Linux only)
 │   ├── hyprland.conf
 │   └── bindings.conf
@@ -87,7 +84,7 @@ cd ~/dotfiles
 
 ### macOS (via Homebrew)
 
-- Development: git, neovim, tmux, lazygit, gh, worktrunk, hunk
+- Development: git, neovim, lazygit, gh, worktrunk, hunk
 - Search: fzf, fd, ripgrep
 - Shell: starship, atuin
 - Utilities: jq, gum, git-delta
@@ -95,7 +92,7 @@ cd ~/dotfiles
 
 ### Linux
 
-- Core: zsh, git, curl, neovim, tmux
+- Core: zsh, git, curl, neovim
 - Search: fzf, fd, ripgrep
 - Git TUIs: lazygit, hunk
 - Shell history: atuin

@@ -120,26 +120,6 @@ fi
 # Starship
 create_symlink "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
-# tmux.conf is linked from install/multiplexer.sh (gated on the tmux prompt).
-
-# gitmux config (git status for tmux status bar)
-if command -v gitmux &>/dev/null; then
-    mkdir -p "$HOME/.config/tmux"
-    create_symlink "$DOTFILES_DIR/tmux/gitmux.yml" "$HOME/.config/tmux/gitmux.yml"
-fi
-
-# sesh config (copied, not symlinked — each machine customizes its own sessions)
-if command -v sesh &>/dev/null; then
-    mkdir -p "$HOME/.config/sesh"
-    if [[ ! -f "$HOME/.config/sesh/sesh.toml" ]]; then
-        cp "$DOTFILES_DIR/sesh/sesh.toml" "$HOME/.config/sesh/sesh.toml"
-        info "Created default sesh config (customize at ~/.config/sesh/sesh.toml)"
-    else
-        info "sesh config already exists, skipping"
-    fi
-fi
-
-
 # SSH - use Include pattern (preserves local host-specific config)
 ensure_ssh_include() {
     local ssh_dir="$HOME/.ssh"

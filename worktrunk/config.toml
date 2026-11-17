@@ -8,10 +8,6 @@ worktree-path = "{{ repo_path }}/.worktrees/{{ branch | sanitize }}"
 # Hooks — run for all repositories
 # ------------------------------------------------------------------------------
 
-# Rename tmux window to branch name on switch
-[post-switch]
-tmux = "[ -n \"$TMUX\" ] && tmux rename-window {{ branch | sanitize }}"
-
 # Fetch if last fetch was more than 6 hours ago
 [pre-switch]
 fetch = """

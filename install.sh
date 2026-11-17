@@ -46,7 +46,7 @@ source "$SCRIPT_DIR/install/common.sh"
 # CLI tools (optional)
 source "$SCRIPT_DIR/install/cli-tools.sh"
 
-# Terminal multiplexer (optional: tmux and/or herdr)
+# Terminal multiplexer (optional: Herdr)
 source "$SCRIPT_DIR/install/multiplexer.sh"
 
 # Rex configuration (optional)

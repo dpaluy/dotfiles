@@ -76,10 +76,3 @@ export HEADROOM_TELEMETRY=off
 
 # Ripgrep
 export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config"
-
-# ------------------------------------------------------------------------------
-# Starship
-# ------------------------------------------------------------------------------
-
-# Inside tmux, gitmux already shows git info in the status bar — use a leaner prompt
-[[ -n "$TMUX" ]] && export STARSHIP_CONFIG="$DOTFILES_DIR/starship/starship-tmux.toml"

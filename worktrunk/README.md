@@ -41,10 +41,6 @@ wtr
 
 Runs `git fetch` before switching if the last fetch was more than 6 hours ago. Keeps branches up to date without fetching on every switch.
 
-### post-switch — Tmux window rename
-
-Renames the current tmux window to the branch name when switching worktrees. Only runs inside a tmux session.
-
 ## Available Hook Types
 
 Hooks are shell commands that run at key points in the worktree lifecycle. Define them in `config.toml` (user-wide) or `.config/wt.toml` (per-project).
@@ -54,7 +50,7 @@ Hooks are shell commands that run at key points in the worktree lifecycle. Defin
 | `pre-switch` | Before every switch | Yes | Fetching, validation |
 | `post-create` | After worktree created | Yes | Installing deps, generating .env |
 | `post-start` | After worktree created | No (background) | Dev servers, file watchers, builds |
-| `post-switch` | After every switch | No (background) | Tmux titles, notifications |
+| `post-switch` | After every switch | No (background) | Notifications |
 | `pre-commit` | Before commit during merge | Yes | Linting, formatting |
 | `pre-merge` | Before merging to target | Yes | Tests, build verification |
 | `post-merge` | After successful merge | Yes | Deployment, notifications |
