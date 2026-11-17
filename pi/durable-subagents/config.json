@@ -11,14 +11,14 @@
     ],
     "researcher": [
       "zai/glm-5.3-flash:high",
-      "openai/gpt-6-luna:high"
+      "openai/gpt-6.1-luna:high"
     ],
     "reviewer": [
       "openai/gpt-6.1-sol:high",
       "kimi-coding/k3:high"
     ],
     "tasker": [
-      "openai/gpt-6-luna:high",
+      "openai/gpt-6.1-luna:high",
       "zai/glm-5.3-flash:high"
     ],
     "writer": [
