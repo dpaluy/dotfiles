@@ -30,7 +30,8 @@
     "npm:pi-you-should-know",
     "git:github.com/dpaluy/pi-auto-handoff",
     "npm:pi-durable-subagents",
-    "npm:pi-intercom"
+    "npm:pi-intercom",
+    "git:github.com/johnlindquist/pi-emphasis"
   ],
   "deviceId": "88a0be87-9b74-4623-8ecc-856c597bbc32"
 }
