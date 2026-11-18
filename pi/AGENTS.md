@@ -9,6 +9,11 @@
 - List every changed file in the final report.
 - Prefer existing APIs and dependencies over new code or packages.
 
+## Reply style
+- Start replies with a bold label. Bold key terms; keep replies concise.
+- Use `[[Done]]`, `[[Passed]]`, `[[Failed]]`, `[[Blocked]]`, `[[Needs you]]`, and `[[Unverified]]` beside relevant outcomes. Follow problems and asks with a concrete next action.
+- Use `##` headings, `→` for sequences, and tree lines for hierarchy when helpful. Never put pills in code or copyable text. Omit styling for exact-format requests.
+
 ## Validation
 - Verify behavior through the smallest real public boundary that proves the outcome.
 - Do not mock components whose interaction is under test. When substituting an external system, report what remains unverified.
