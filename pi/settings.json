@@ -1,7 +1,13 @@
 {
+  "compaction": {
+    "enabled": true
+  },
   "defaultProvider": "openai",
-  "defaultModel": "gpt-6.1-sol",
-  "defaultThinkingLevel": "medium",
+  "defaultModel": "gpt-6.2-sol",
+  "defaultThinkingLevel": "high",
+  "defaultTools": [
+    "+codemode"
+  ],
   "images": {
     "blockImages": false
   },
@@ -11,7 +17,7 @@
   "hideThinkingBlock": true,
   "quietStartup": true,
   "theme": "catppuccin-macchiato",
-  "steeringMode": "all",
+  "steeringMode": "one-at-a-time",
   "followUpMode": "all",
   "collapseChangelog": true,
   "packages": [
@@ -32,6 +38,5 @@
     "npm:pi-durable-subagents",
     "npm:pi-intercom",
     "git:github.com/johnlindquist/pi-emphasis"
-  ],
-  "deviceId": "88a0be87-9b74-4623-8ecc-856c597bbc32"
+  ]
 }
