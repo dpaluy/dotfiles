@@ -16,3 +16,5 @@ Thumbs.db
 .omx/
 .sisyphus/
 /codex/tmp/
+
+.lavish/
