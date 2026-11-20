@@ -7,11 +7,27 @@ cdx() {
         help|-h|--help)
             cat <<'USAGE' >&2
 Usage: cdx [codex args...]
+       cdx --drymode [codex exec args...]
 Runs Codex in YOLO mode, without approvals or sandboxing.
 Special: -r/--resume resumes the most recent session
+         --drymode runs a workspace-write exec with integrations disabled and
+                   skips user config. Defaults to GPT-6.2 Sol. Use -m to override.
          update -> npm install -g @openai/codex@latest
 USAGE
             return 0 ;;
+        --drymode)
+            shift
+            # An empty MCP table would merge with the configured servers.
+            command codex exec --ignore-user-config --skip-git-repo-check \
+                --sandbox workspace-write \
+                -c 'model="gpt-6.2-sol"' -c 'web_search="disabled"' \
+                --disable plugins --disable apps \
+                --disable remote_plugin --disable plugin_sharing \
+                --disable browser_use --disable browser_use_external --disable computer_use \
+                --disable image_generation --disable in_app_browser \
+                --disable skill_search --disable skill_mcp_dependency_install \
+                "$@"
+            return $? ;;
         update)
             npm install -g @openai/codex@latest
             return 0 ;;
