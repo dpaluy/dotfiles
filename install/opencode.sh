@@ -21,15 +21,15 @@ mkdir -p "$opencode_dir"
 # Replace a live JSON file only when its content changes, keeping a timestamped
 # backup of what was there.
 install_opencode_json() {
-    local candidate="$1" dest="$2" label="$3"
+    local candidate="$1" dest="$2"
     if [[ -f "$dest" ]] && [[ "$(jq -S . "$dest" 2>/dev/null)" == "$(jq -S . "$candidate")" ]]; then
         rm -f "$candidate"
-        info "$label already up to date"
+        info "$dest already up to date"
         return 0
     fi
     [[ -f "$dest" ]] && command cp -f "$dest" "$dest.backup.$opencode_stamp"
     command mv -f "$candidate" "$dest"
-    info "Updated $label"
+    info "Updated $dest"
 }
 
 # AGENTS.md (global instructions)
@@ -52,8 +52,9 @@ for retired_pkg in oh-my-openagent oh-my-opencode-slim; do
     fi
 done
 for retired_local in oh-my-openagent oh-my-opencode-slim; do
-    if [[ -f "$HOME/.local/dotfiles/$retired_local.local.json" ]]; then
-        warn "~/.local/dotfiles/$retired_local.local.json is no longer read; the plugin was removed, delete the file when ready"
+    retired_config="$HOME/.local/dotfiles/$retired_local.local.json"
+    if [[ -f "$retired_config" ]]; then
+        warn "$retired_config is no longer read; the plugin was removed, delete the file when ready"
     fi
 done
 
@@ -92,7 +93,7 @@ else
           then .plugins |= map(select(retired | not))
           else . end
     ' "$shared_config" "$opencode_config" > "$tmp"; then
-        install_opencode_json "$tmp" "$opencode_config" "~/.config/opencode/opencode.json"
+        install_opencode_json "$tmp" "$opencode_config"
     else
         rm -f "$tmp"
         warn "Could not merge OpenCode config; leaving ~/.config/opencode/opencode.json unchanged"
@@ -105,7 +106,7 @@ if [[ -f "$opencode_tui" ]] && jq -e "$opencode_plugin_filter"'
         [(.plugin // [])[] | select(retired)] | length > 0' "$opencode_tui" &>/dev/null; then
     tmp="$(mktemp)"
     if jq "$opencode_plugin_filter"'.plugin |= map(select(retired | not))' "$opencode_tui" > "$tmp"; then
-        install_opencode_json "$tmp" "$opencode_tui" "~/.config/opencode/tui.json"
+        install_opencode_json "$tmp" "$opencode_tui"
     else
         rm -f "$tmp"
     fi
