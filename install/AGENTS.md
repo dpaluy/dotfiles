@@ -8,7 +8,7 @@ Modular installation scripts for cross-platform dotfiles setup.
 install.sh          ← Main orchestrator (run this)
 install/
 ├── lib.sh          ← Shared utilities (colors, helpers, prompts)
-├── macos.sh        ← macOS: Homebrew, fonts, Raycast, LazyVim, fzf
+├── macos.sh        ← macOS: Homebrew, fonts, Touch ID sudo, Raycast, LazyVim, fzf
 ├── linux.sh        ← Linux: packages, gum, fonts (Debian/Fedora/Arch)
 ├── common.sh       ← Cross-platform: Oh My Zsh, plugins, Atuin, shell
 ├── cli-tools.sh    ← Optional CLI tools (gh-dash)
@@ -25,7 +25,8 @@ install/
 ├── codex.sh        ← Codex config (AGENTS.md, config.toml, hooks)
 ├── codex-config-sync.py ← Managed-key drift report/sync for the copied Codex config (used by codex.sh)
 ├── opencode.sh     ← OpenCode config (AGENTS.md, opencode.json)
-└── local-config.sh ← Template creation in ~/.local/dotfiles/
+├── local-config.sh ← Template creation in ~/.local/dotfiles/
+└── templates/      ← Installed system configuration templates
 ```
 
 ## How It Works

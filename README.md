@@ -223,6 +223,8 @@ Add public skills by creating a folder in `agents/skills/` with a `SKILL.md` fil
 
 ### macOS
 
+**Touch ID for sudo:** The installer offers to enable Touch ID authentication through `/etc/pam.d/sudo_local`, which macOS includes from its main sudo configuration. An existing file without the Touch ID rule is preserved unchanged.
+
 **Security Hardening:**
 
 ```bash

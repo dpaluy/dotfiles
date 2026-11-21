@@ -136,6 +136,26 @@ else
 fi
 
 # ==============================================================================
+# Touch ID for sudo
+# ==============================================================================
+
+header "Touch ID for sudo"
+
+sudo_local_source="$DOTFILES_DIR/install/templates/sudo_local"
+sudo_local_target="/etc/pam.d/sudo_local"
+
+if [[ -f "$sudo_local_target" ]] && grep -Eq '^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_tid\.so([[:space:]]*(#.*)?)?$' "$sudo_local_target"; then
+    info "Touch ID is already enabled for sudo"
+elif [[ -e "$sudo_local_target" ]]; then
+    warn "$sudo_local_target exists without the Touch ID rule; leaving it unchanged"
+elif ask_yes_no "Enable Touch ID authentication for sudo?" "y"; then
+    sudo install -o root -g wheel -m 0444 "$sudo_local_source" "$sudo_local_target"
+    info "Touch ID enabled for sudo"
+else
+    info "Skipping Touch ID for sudo"
+fi
+
+# ==============================================================================
 # LazyVim Setup
 # ==============================================================================
 

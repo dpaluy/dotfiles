@@ -1,0 +1,3 @@
+# Local sudo authentication customizations; included by /etc/pam.d/sudo.
+# Enable Touch ID authentication for sudo.
+auth       sufficient     pam_tid.so
