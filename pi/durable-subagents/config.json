@@ -18,7 +18,7 @@
       "kimi-coding/k3.1-pro:high"
     ],
     "tasker": [
-      "openai/gpt-6.1-terra:high",
+      "openai/gpt-6.1-terra:medium",
       "zai/glm-5.4:high"
     ],
     "writer": [
