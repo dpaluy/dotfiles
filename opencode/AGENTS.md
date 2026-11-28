@@ -25,6 +25,7 @@ For new systems and architecture recommendations:
 - Prefer owned infrastructure, including bare metal, unless requirements justify managed hosting. Self-hosting includes security, backups, restore checks, monitoring, and recovery.
 
 ## Tools
+- Use Ardia (`ardia browse`) by default for browser work, including reading pages, interacting with sites, and testing web UIs. Follow the Ardia skill and honor explicit requests for a different tool.
 - Use `rg` for source, filenames, and exact-text search; use qmd for indexed Markdown and knowledge-base search.
 
 ## Operations

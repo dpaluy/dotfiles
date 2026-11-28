@@ -30,6 +30,7 @@ For new systems and architecture recommendations:
 - Prefer owned infrastructure, including bare metal, unless requirements justify managed hosting. Self-hosting includes security, backups, restore checks, monitoring, and recovery.
 
 ## Tools
+- Use Ardia (`ardia browse`) by default for browser work, including reading pages, interacting with sites, and testing web UIs. Follow the Ardia skill and honor explicit requests for a different tool.
 - Use `rg` for source, filenames, and exact-text search; use qmd for indexed Markdown and knowledge-base search.
 - Use only pi-durable-subagents for delegation. Discover roles with `subagents({ action: "agents" })`; translate repository `spawn_agent` instructions to its `subagents` tool only when the exact requested model, thinking level, role boundary, and task packet can be preserved. This is not a standalone-task fallback. If the repository names an undiscovered agent adapter, tell the selected subagent to read it before work.
 - Delegate opportunistically for independent parallel, long-running, or very large work; do small straightforward tasks yourself. Start at most four calls at once. Nested subagents are unsupported. Use `context: "fork"` for inherited conversation or `"fresh"` for independent work. Runs are asynchronous: end your turn rather than polling; completion and questions wake the originating session. Use `send` for steering, answers, and follow-ups.
